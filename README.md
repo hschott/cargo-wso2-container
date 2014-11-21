@@ -119,7 +119,7 @@ cargo.runtime.args | N/A
 When a container is started cargo.protocol, cargo.hostname and cargo.servlet.port are used to check if the containers Carbon Management Console is up and running.
 The WSO2 Carbon container is stopped via JMX management bean invocation. Therefore cargo.rmi.port, cargo.remote.username and cargo.remote.password can be configured.
 
-Use cargo.port.offset to shift all carbon container ports by the given integer value.
+Use cargo.port.offset to shift all ports by the given integer value.
 See [Default Ports of WSO2 Products](https://docs.wso2.com/display/Carbon420/Default+Ports+of+WSO2+Products)
 
 
