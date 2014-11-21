@@ -9,6 +9,7 @@ For more details about configuring Cargo visit please [Cargo](http://cargo.codeh
 ## Supported Container Features
 
 *The cargo-wso2-container 0.1.0 supports WSO2 Carbon 4.x*
+
 Container ID: wso2carbon4x
 
 * [Container Instantiation](http://cargo.codehaus.org/Container+Instantiation)
@@ -124,9 +125,9 @@ See [Default Ports of WSO2 Products](https://docs.wso2.com/display/Carbon420/Def
 
 #### Supported Local Configuration Properties (Standalone Container)
 
-Property name | Default value
----: | ---
-cargo.wso2carbon.contextroot | / (context root of WSO2 Carbon Management Console)
+Property name | Default value | Description
+---: | --- | ---
+cargo.wso2carbon.contextroot | / | (context root of WSO2 Carbon Management Console)
 
 In addition to the aforementioned properties, this container configuration can also set up datasources and/or resources.
 For more details, please read: [DataSource and Resource Support](http://cargo.codehaus.org/DataSource+and+Resource+Support).
