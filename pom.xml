@@ -169,6 +169,36 @@
 							<syncMode>sync</syncMode>
 						</configuration>
 					</execution>
+					<execution>
+						<id>MediationLibraryUploader</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>wsdl2code</goal>
+						</goals>
+						<configuration>
+							<wsdlFile>src/main/wsdl/MediationLibraryUploader.wsdl</wsdlFile>
+							<packageName>org.wso2.carbon.mediation.library.stub.upload</packageName>
+							<databindingName>adb</databindingName>
+							<unwrap>true</unwrap>
+							<unpackClasses>true</unpackClasses>
+							<syncMode>sync</syncMode>
+						</configuration>
+					</execution>
+					<execution>
+						<id>MediationLibraryAdminService</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>wsdl2code</goal>
+						</goals>
+						<configuration>
+							<wsdlFile>src/main/wsdl/MediationLibraryAdminService.wsdl</wsdlFile>
+							<packageName>org.wso2.carbon.mediation.library.stub</packageName>
+							<databindingName>adb</databindingName>
+							<unwrap>true</unwrap>
+							<unpackClasses>true</unpackClasses>
+							<syncMode>sync</syncMode>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 		</plugins>

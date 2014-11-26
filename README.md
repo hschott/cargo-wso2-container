@@ -36,11 +36,13 @@ Container ID: wso2carbon4x
 ## Supported Deployer Features
 
 Static deployment of:
+
 * [WAR](http://cargo.codehaus.org/Static+deployment+of+WAR)
 * [Expanded WAR](http://cargo.codehaus.org/Static+deployment+of+expanded+WAR),
 * CAR (Carbon Application)
 * AAR (Axis2 Service)
 * MAR (Axis2 Module)
+* ZIP (WSO2 Connector)
 
 For deployables of type WAR a version can be configured.
 
@@ -50,12 +52,14 @@ Remote deployment and un-deployment of:
 * CAR
 * AAR 
 * MAR
+* ZIP (WSO2 Connector)
 
 Remote start and stop of:
 
 * WAR
 * AAR (all services within a service group)
 * MAR (globally engage and disengage)
+* ZIP (WSO2 Connector)
 
 
 ## Configuration

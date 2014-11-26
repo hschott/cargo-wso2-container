@@ -23,6 +23,7 @@ import com.tsystems.cargo.container.wso2.deployable.Axis2Module;
 import com.tsystems.cargo.container.wso2.deployable.Axis2Service;
 import com.tsystems.cargo.container.wso2.deployable.CarbonApplication;
 import com.tsystems.cargo.container.wso2.deployable.WSO2Axis2Service;
+import com.tsystems.cargo.container.wso2.deployable.WSO2Connector;
 import com.tsystems.cargo.container.wso2.deployable.WSO2WAR;
 import com.tsystems.cargo.container.wso2.deployer.WSO2Carbon4xInstalledLocalDeployer;
 import com.tsystems.cargo.container.wso2.deployer.WSO2Carbon4xRemoteDeployer;
@@ -96,13 +97,12 @@ public class WSO2FactoryRegistry extends AbstractFactoryRegistry {
      */
     @Override
     protected void register(final DeployableFactory factory) {
-        factory.registerDeployable(WSO2Carbon4xContainer.ID, CarbonApplication.TYPE,
-                CarbonApplication.class);
+        factory.registerDeployable(WSO2Carbon4xContainer.ID, CarbonApplication.TYPE, CarbonApplication.class);
         factory.registerDeployable(WSO2Carbon4xContainer.ID, DeployableType.WAR, WSO2WAR.class);
         factory.registerDeployable(WSO2Carbon4xContainer.ID, Axis2Module.TYPE, Axis2Module.class);
         factory.registerDeployable(WSO2Carbon4xContainer.ID, Axis2Service.TYPE, Axis2Service.class);
-        factory.registerDeployable(WSO2Carbon4xContainer.ID, WSO2Axis2Service.TYPE,
-                WSO2Axis2Service.class);
+        factory.registerDeployable(WSO2Carbon4xContainer.ID, WSO2Axis2Service.TYPE, WSO2Axis2Service.class);
+        factory.registerDeployable(WSO2Carbon4xContainer.ID, WSO2Connector.TYPE, WSO2Connector.class);
     }
 
     /**

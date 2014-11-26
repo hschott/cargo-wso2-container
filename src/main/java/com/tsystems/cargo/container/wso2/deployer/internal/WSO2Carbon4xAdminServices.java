@@ -21,6 +21,9 @@ import org.wso2.carbon.application.mgt.stub.ApplicationAdminStub;
 import org.wso2.carbon.application.upload.stub.CarbonAppUploaderStub;
 import org.wso2.carbon.application.upload.xsd.UploadedFileItem;
 import org.wso2.carbon.core.services.authentication.stub.AuthenticationAdminStub;
+import org.wso2.carbon.mediation.library.service.upload.xsd.LibraryFileItem;
+import org.wso2.carbon.mediation.library.stub.MediationLibraryAdminServiceStub;
+import org.wso2.carbon.mediation.library.stub.upload.MediationLibraryUploaderStub;
 import org.wso2.carbon.module.mgt.stub.ModuleAdminServiceStub;
 import org.wso2.carbon.module.mgt.xsd.ModuleMetaData;
 import org.wso2.carbon.module.mgt.xsd.ModuleUploadData;
@@ -33,6 +36,7 @@ import org.wso2.carbon.webapp.mgt.xsd.WebappUploadData;
 import com.tsystems.cargo.container.wso2.deployable.Axis2Module;
 import com.tsystems.cargo.container.wso2.deployable.Axis2Service;
 import com.tsystems.cargo.container.wso2.deployable.CarbonApplication;
+import com.tsystems.cargo.container.wso2.deployable.WSO2Connector;
 import com.tsystems.cargo.container.wso2.deployable.WSO2WAR;
 
 public class WSO2Carbon4xAdminServices extends LoggedObject implements WSO2AdminServices {
@@ -130,6 +134,29 @@ public class WSO2Carbon4xAdminServices extends LoggedObject implements WSO2Admin
         }
     }
 
+    public void deploy(WSO2Connector deployable) throws WSO2AdminServicesException {
+        try {
+            MediationLibraryUploaderStub mediationLibraryUploaderStub = new MediationLibraryUploaderStub(new URL(
+                    this.url + "/services/MediationLibraryUploader").toString());
+
+            authenticate();
+            prepareServiceClient(mediationLibraryUploaderStub._getServiceClient());
+
+            LibraryFileItem[] libraryFileItems = new LibraryFileItem[1];
+            LibraryFileItem libraryFileItem = new LibraryFileItem();
+            DataHandler dh = new DataHandler(new File(deployable.getFile()).toURI().toURL());
+
+            libraryFileItem.setFileName(new File(deployable.getFile()).getName());
+            libraryFileItem.setDataHandler(dh);
+            libraryFileItem.setFileType("zip");
+            libraryFileItems[0] = libraryFileItem;
+
+            mediationLibraryUploaderStub.uploadLibrary(libraryFileItems);
+        } catch (Exception e) {
+            throw new WSO2AdminServicesException("error uploading connector", e);
+        }
+    }
+
     public void deploy(WSO2WAR deployable) throws WSO2AdminServicesException {
         try {
             WebappAdminStub webappAdminStub = new WebappAdminStub(
@@ -219,6 +246,26 @@ public class WSO2Carbon4xAdminServices extends LoggedObject implements WSO2Admin
         return false;
     }
 
+    public boolean exists(WSO2Connector deployable) throws WSO2AdminServicesException {
+        try {
+            MediationLibraryAdminServiceStub mediationLibraryAdminServiceStub = new MediationLibraryAdminServiceStub(
+                    new URL(this.url + "/services/MediationLibraryAdminService").toString());
+            authenticate();
+            prepareServiceClient(mediationLibraryAdminServiceStub._getServiceClient());
+            String[] libraries = mediationLibraryAdminServiceStub.getAllLibraries();
+            if (libraries == null) {
+                return false;
+            }
+            for (String library : libraries) {
+                if (library.equals(deployable.getApplicationName()))
+                    return true;
+            }
+        } catch (Exception e) {
+            throw new WSO2AdminServicesException("error checking connector", e);
+        }
+        return false;
+    }
+
     public boolean exists(WSO2WAR deployable) throws WSO2AdminServicesException {
         try {
             WebappAdminStub webappAdminStub = new WebappAdminStub(
@@ -287,6 +334,20 @@ public class WSO2Carbon4xAdminServices extends LoggedObject implements WSO2Admin
         }
     }
 
+    public void start(WSO2Connector deployable) throws WSO2AdminServicesException {
+        try {
+            MediationLibraryAdminServiceStub mediationLibraryAdminServiceStub = new MediationLibraryAdminServiceStub(
+                    new URL(this.url + "/services/MediationLibraryAdminService").toString());
+            authenticate();
+            prepareServiceClient(mediationLibraryAdminServiceStub._getServiceClient());
+
+            mediationLibraryAdminServiceStub.updateStatus(deployable.getApplicationName(), null, null, "enabled");
+
+        } catch (Exception e) {
+            throw new WSO2AdminServicesException("error checking connector", e);
+        }
+    }
+
     public void start(WSO2WAR deployable) throws WSO2AdminServicesException {
         try {
             WebappAdminStub webappAdminStub = new WebappAdminStub(
@@ -336,6 +397,20 @@ public class WSO2Carbon4xAdminServices extends LoggedObject implements WSO2Admin
             }
         } catch (Exception e) {
             throw new WSO2AdminServicesException("error stopping axis2 service", e);
+        }
+    }
+
+    public void stop(WSO2Connector deployable) throws WSO2AdminServicesException {
+        try {
+            MediationLibraryAdminServiceStub mediationLibraryAdminServiceStub = new MediationLibraryAdminServiceStub(
+                    new URL(this.url + "/services/MediationLibraryAdminService").toString());
+            authenticate();
+            prepareServiceClient(mediationLibraryAdminServiceStub._getServiceClient());
+
+            mediationLibraryAdminServiceStub.updateStatus(deployable.getApplicationName(), null, null, "disabled");
+
+        } catch (Exception e) {
+            throw new WSO2AdminServicesException("error checking connector", e);
         }
     }
 
@@ -390,6 +465,18 @@ public class WSO2Carbon4xAdminServices extends LoggedObject implements WSO2Admin
             applicationAdminStub.deleteApplication(deployable.getApplicationName());
         } catch (Exception e) {
             throw new WSO2AdminServicesException("error removing carbon application", e);
+        }
+    }
+
+    public void undeploy(WSO2Connector deployable) throws WSO2AdminServicesException {
+        try {
+            MediationLibraryAdminServiceStub mediationLibraryAdminServiceStub = new MediationLibraryAdminServiceStub(
+                    new URL(this.url + "/services/MediationLibraryAdminService").toString());
+            authenticate();
+            prepareServiceClient(mediationLibraryAdminServiceStub._getServiceClient());
+            mediationLibraryAdminServiceStub.deleteLibrary(deployable.getApplicationName());
+        } catch (Exception e) {
+            throw new WSO2AdminServicesException("error removing connector", e);
         }
     }
 

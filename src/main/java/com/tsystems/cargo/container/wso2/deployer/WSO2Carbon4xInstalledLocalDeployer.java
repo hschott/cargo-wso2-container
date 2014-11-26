@@ -8,6 +8,7 @@ import com.tsystems.cargo.container.wso2.deployable.Axis2Module;
 import com.tsystems.cargo.container.wso2.deployable.Axis2Service;
 import com.tsystems.cargo.container.wso2.deployable.CarbonApplication;
 import com.tsystems.cargo.container.wso2.deployable.WSO2Axis2Service;
+import com.tsystems.cargo.container.wso2.deployable.WSO2Connector;
 
 public class WSO2Carbon4xInstalledLocalDeployer extends AbstractWSO2InstalledLocalDeployer {
 
@@ -35,6 +36,9 @@ public class WSO2Carbon4xInstalledLocalDeployer extends AbstractWSO2InstalledLoc
         } else if (Axis2Module.TYPE.equals(deployable.getType())) {
             deployableDir = getFileHandler().append(((InstalledLocalContainer) getContainer()).getHome(),
                     "repository/deployment/server/axis2modules");
+        } else if (WSO2Connector.TYPE.equals(deployable.getType())) {
+            deployableDir = getFileHandler().append(((InstalledLocalContainer) getContainer()).getHome(),
+                    "repository/deployment/server/synapse-libs");
         }
 
         if (!getFileHandler().exists(deployableDir)) {
