@@ -134,7 +134,7 @@ See [Default Ports of WSO2 Products](https://docs.wso2.com/display/Carbon420/Def
 Property name | Default value | Description
 ---: | --- | ---
 cargo.wso2carbon.contextroot | / | (context root of WSO2 Carbon Management Console)
-cargo.wso2carbon.serverroles | N/A | Additional server roles
+cargo.wso2carbon.serverroles | N/A | Additional server roles (comma separated)
 
 In addition to the aforementioned properties, this container configuration can also set up datasources and/or resources.
 For more details, please read: [DataSource and Resource Support](http://cargo.codehaus.org/DataSource+and+Resource+Support).
@@ -274,6 +274,7 @@ The JDBC driver jar file will be looked up from Maven dependencies by the classn
           <properties>
             <cargo.port.offset>1</cargo.port.offset>
             <cargo.wso2carbon.contextroot>/mgmt</cargo.wso2carbon.contextroot>
+            <cargo.wso2carbon.serverroles>role1,role2</cargo.wso2carbon.serverroles>
             <cargo.datasource.datasource.mydatasource>
               cargo.datasource.driver=com.mysql.jdbc.Driver|
               cargo.datasource.url=jdbc:mysql://localhost:3306/mydatabase|
