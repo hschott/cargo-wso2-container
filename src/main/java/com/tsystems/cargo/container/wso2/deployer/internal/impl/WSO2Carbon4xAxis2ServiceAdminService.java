@@ -5,12 +5,12 @@ import java.net.URL;
 
 import javax.activation.DataHandler;
 
-import org.wso2.carbon.aarservices.mgt.stub.ServiceAdminStub;
-import org.wso2.carbon.aarservices.mgt.stub.ServiceGroupAdminStub;
-import org.wso2.carbon.aarservices.uploader.stub.ServiceUploaderStub;
 import org.wso2.carbon.aarservices.xsd.AARServiceData;
+import org.wso2.carbon.service.mgt.ServiceAdminStub;
+import org.wso2.carbon.service.mgt.ServiceGroupAdminStub;
 import org.wso2.carbon.service.mgt.xsd.ServiceGroupMetaData;
 import org.wso2.carbon.service.mgt.xsd.ServiceMetaData;
+import org.wso2.carbon.service.upload.ServiceUploaderStub;
 
 import com.tsystems.cargo.container.wso2.deployable.Axis2Service;
 import com.tsystems.cargo.container.wso2.deployer.internal.WSO2AdminServicesException;

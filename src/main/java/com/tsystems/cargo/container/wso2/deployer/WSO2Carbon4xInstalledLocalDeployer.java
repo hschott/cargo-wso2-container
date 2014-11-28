@@ -6,6 +6,7 @@ import org.codehaus.cargo.container.deployable.DeployableType;
 
 import com.tsystems.cargo.container.wso2.deployable.Axis2Module;
 import com.tsystems.cargo.container.wso2.deployable.Axis2Service;
+import com.tsystems.cargo.container.wso2.deployable.BAMToolbox;
 import com.tsystems.cargo.container.wso2.deployable.CarbonApplication;
 import com.tsystems.cargo.container.wso2.deployable.WSO2Axis2Service;
 import com.tsystems.cargo.container.wso2.deployable.WSO2Connector;
@@ -39,6 +40,9 @@ public class WSO2Carbon4xInstalledLocalDeployer extends AbstractWSO2InstalledLoc
         } else if (WSO2Connector.TYPE.equals(deployable.getType())) {
             deployableDir = getFileHandler().append(((InstalledLocalContainer) getContainer()).getHome(),
                     "repository/deployment/server/synapse-libs");
+        } else if (BAMToolbox.TYPE.equals(deployable.getType())) {
+            deployableDir = getFileHandler().append(((InstalledLocalContainer) getContainer()).getHome(),
+                    "repository/deployment/server/bam-toolbox");
         }
 
         if (!getFileHandler().exists(deployableDir)) {

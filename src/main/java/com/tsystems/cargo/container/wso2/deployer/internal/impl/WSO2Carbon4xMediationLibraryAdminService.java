@@ -5,9 +5,9 @@ import java.net.URL;
 
 import javax.activation.DataHandler;
 
+import org.wso2.carbon.mediation.library.service.MediationLibraryAdminServiceStub;
+import org.wso2.carbon.mediation.library.service.upload.MediationLibraryUploaderStub;
 import org.wso2.carbon.mediation.library.service.upload.xsd.LibraryFileItem;
-import org.wso2.carbon.mediation.library.stub.MediationLibraryAdminServiceStub;
-import org.wso2.carbon.mediation.library.stub.upload.MediationLibraryUploaderStub;
 
 import com.tsystems.cargo.container.wso2.deployable.WSO2Connector;
 import com.tsystems.cargo.container.wso2.deployer.internal.WSO2AdminServicesException;

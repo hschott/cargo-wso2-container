@@ -5,7 +5,7 @@ import java.net.URL;
 
 import javax.activation.DataHandler;
 
-import org.wso2.carbon.webapp.mgt.stub.WebappAdminStub;
+import org.wso2.carbon.webapp.mgt.WebappAdminStub;
 import org.wso2.carbon.webapp.mgt.xsd.WebappMetadata;
 import org.wso2.carbon.webapp.mgt.xsd.WebappUploadData;
 

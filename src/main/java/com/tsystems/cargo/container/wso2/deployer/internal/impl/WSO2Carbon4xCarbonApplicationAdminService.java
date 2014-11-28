@@ -6,8 +6,8 @@ import java.util.Arrays;
 
 import javax.activation.DataHandler;
 
-import org.wso2.carbon.application.mgt.stub.ApplicationAdminStub;
-import org.wso2.carbon.application.upload.stub.CarbonAppUploaderStub;
+import org.wso2.carbon.application.mgt.ApplicationAdminStub;
+import org.wso2.carbon.application.upload.CarbonAppUploaderStub;
 import org.wso2.carbon.application.upload.xsd.UploadedFileItem;
 
 import com.tsystems.cargo.container.wso2.deployable.CarbonApplication;

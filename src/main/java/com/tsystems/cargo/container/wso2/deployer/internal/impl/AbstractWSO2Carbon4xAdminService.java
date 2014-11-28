@@ -10,7 +10,7 @@ import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 import org.codehaus.cargo.container.deployable.Deployable;
 import org.codehaus.cargo.util.log.LoggedObject;
-import org.wso2.carbon.core.services.authentication.stub.AuthenticationAdminStub;
+import org.wso2.carbon.core.services.authentication.AuthenticationAdminStub;
 
 import com.tsystems.cargo.container.wso2.deployer.internal.WSO2AdminServicesException;
 import com.tsystems.cargo.container.wso2.deployer.internal.WSO2BaseAdminService;

@@ -43,6 +43,7 @@ Static deployment of:
 * AAR (Axis2 Service)
 * MAR (Axis2 Module)
 * ZIP (WSO2 Connector)
+* TBOX (BAM Toolbox)
 
 For deployables of type WAR a version can be configured.
 
@@ -53,6 +54,7 @@ Remote deployment and un-deployment of:
 * AAR 
 * MAR
 * ZIP (WSO2 Connector)
+* TBOX
 
 Remote start and stop of:
 

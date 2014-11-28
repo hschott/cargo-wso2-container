@@ -57,7 +57,7 @@
 						</goals>
 						<configuration>
 							<wsdlFile>src/main/wsdl/AuthenticationAdmin.wsdl</wsdlFile>
-							<packageName>org.wso2.carbon.core.services.authentication.stub</packageName>
+							<packageName>org.wso2.carbon.core.services.authentication</packageName>
 							<databindingName>adb</databindingName>
 							<unwrap>true</unwrap>
 							<unpackClasses>true</unpackClasses>
@@ -72,7 +72,7 @@
 						</goals>
 						<configuration>
 							<wsdlFile>src/main/wsdl/ApplicationAdmin.wsdl</wsdlFile>
-							<packageName>org.wso2.carbon.application.mgt.stub</packageName>
+							<packageName>org.wso2.carbon.application.mgt</packageName>
 							<databindingName>adb</databindingName>
 							<unwrap>true</unwrap>
 							<unpackClasses>true</unpackClasses>
@@ -87,7 +87,7 @@
 						</goals>
 						<configuration>
 							<wsdlFile>src/main/wsdl/CarbonAppUploader.wsdl</wsdlFile>
-							<packageName>org.wso2.carbon.application.upload.stub</packageName>
+							<packageName>org.wso2.carbon.application.upload</packageName>
 							<databindingName>adb</databindingName>
 							<unwrap>true</unwrap>
 							<unpackClasses>true</unpackClasses>
@@ -102,7 +102,7 @@
 						</goals>
 						<configuration>
 							<wsdlFile>src/main/wsdl/WebappAdmin.wsdl</wsdlFile>
-							<packageName>org.wso2.carbon.webapp.mgt.stub</packageName>
+							<packageName>org.wso2.carbon.webapp.mgt</packageName>
 							<databindingName>adb</databindingName>
 							<unwrap>true</unwrap>
 							<unpackClasses>true</unpackClasses>
@@ -117,7 +117,7 @@
 						</goals>
 						<configuration>
 							<wsdlFile>src/main/wsdl/ServiceUploader.wsdl</wsdlFile>
-							<packageName>org.wso2.carbon.aarservices.uploader.stub</packageName>
+							<packageName>org.wso2.carbon.service.upload</packageName>
 							<databindingName>adb</databindingName>
 							<unwrap>true</unwrap>
 							<unpackClasses>true</unpackClasses>
@@ -132,7 +132,7 @@
 						</goals>
 						<configuration>
 							<wsdlFile>src/main/wsdl/ServiceAdmin.wsdl</wsdlFile>
-							<packageName>org.wso2.carbon.aarservices.mgt.stub</packageName>
+							<packageName>org.wso2.carbon.service.mgt</packageName>
 							<databindingName>adb</databindingName>
 							<unwrap>true</unwrap>
 							<unpackClasses>true</unpackClasses>
@@ -147,7 +147,7 @@
 						</goals>
 						<configuration>
 							<wsdlFile>src/main/wsdl/ServiceGroupAdmin.wsdl</wsdlFile>
-							<packageName>org.wso2.carbon.aarservices.mgt.stub</packageName>
+							<packageName>org.wso2.carbon.service.mgt</packageName>
 							<databindingName>adb</databindingName>
 							<unwrap>true</unwrap>
 							<unpackClasses>true</unpackClasses>
@@ -162,7 +162,7 @@
 						</goals>
 						<configuration>
 							<wsdlFile>src/main/wsdl/ModuleAdminService.wsdl</wsdlFile>
-							<packageName>org.wso2.carbon.module.mgt.stub</packageName>
+							<packageName>org.wso2.carbon.module.mgt</packageName>
 							<databindingName>adb</databindingName>
 							<unwrap>true</unwrap>
 							<unpackClasses>true</unpackClasses>
@@ -177,7 +177,7 @@
 						</goals>
 						<configuration>
 							<wsdlFile>src/main/wsdl/MediationLibraryUploader.wsdl</wsdlFile>
-							<packageName>org.wso2.carbon.mediation.library.stub.upload</packageName>
+							<packageName>org.wso2.carbon.mediation.library.service.upload</packageName>
 							<databindingName>adb</databindingName>
 							<unwrap>true</unwrap>
 							<unpackClasses>true</unpackClasses>
@@ -192,7 +192,22 @@
 						</goals>
 						<configuration>
 							<wsdlFile>src/main/wsdl/MediationLibraryAdminService.wsdl</wsdlFile>
-							<packageName>org.wso2.carbon.mediation.library.stub</packageName>
+							<packageName>org.wso2.carbon.mediation.library.service</packageName>
+							<databindingName>adb</databindingName>
+							<unwrap>true</unwrap>
+							<unpackClasses>true</unpackClasses>
+							<syncMode>sync</syncMode>
+						</configuration>
+					</execution>
+					<execution>
+						<id>BAMToolboxDepolyerService</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>wsdl2code</goal>
+						</goals>
+						<configuration>
+							<wsdlFile>src/main/wsdl/BAMToolboxDepolyerService.wsdl</wsdlFile>
+							<packageName>org.wso2.carbon.bam.toolbox.deployer.service</packageName>
 							<databindingName>adb</databindingName>
 							<unwrap>true</unwrap>
 							<unpackClasses>true</unpackClasses>
