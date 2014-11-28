@@ -1,7 +1,7 @@
 package com.tsystems.cargo.container.wso2.configuration;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -59,6 +59,15 @@ public class WSO2StandaloneLocalConfiguration extends AbstractStandaloneLocalCon
         addXmlReplacement(configurationXmlFile, "//Server/Ports/Offset", GeneralPropertySet.PORT_OFFSET);
         addXmlReplacement(configurationXmlFile, "//Server/WebContextRoot", WSO2CarbonPropertySet.CARBON_CONTEXT_ROOT);
 
+        String serverRolesCsv = getPropertyValue(WSO2CarbonPropertySet.CARBON_SERVER_ROLES);
+
+        if (serverRolesCsv != null) {
+            for (String serverRole : serverRolesCsv.split(",")) {
+                writeConfigurationToXpath(getFileHandler().append(getHome(), configurationXmlFile), "<Role>"
+                        + serverRole.trim() + "</Role>", "//carbon:Server/carbon:ServerRoles");
+            }
+        }
+
         writeConfigurationToXpath(getFileHandler().append(getHome(), "tomcat/catalina-server.xml"),
                 "<GlobalNamingResources/>", "//Server");
 
@@ -111,7 +120,9 @@ public class WSO2StandaloneLocalConfiguration extends AbstractStandaloneLocalCon
 
     @Override
     protected Map<String, String> getNamespaces() {
-        return Collections.emptyMap();
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("carbon", "http://wso2.org/projects/carbon/carbon.xml");
+        return map;
     }
 
     @Override

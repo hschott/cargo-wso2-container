@@ -132,6 +132,7 @@ See [Default Ports of WSO2 Products](https://docs.wso2.com/display/Carbon420/Def
 Property name | Default value | Description
 ---: | --- | ---
 cargo.wso2carbon.contextroot | / | (context root of WSO2 Carbon Management Console)
+cargo.wso2carbon.serverroles | N/A | Additional server roles
 
 In addition to the aforementioned properties, this container configuration can also set up datasources and/or resources.
 For more details, please read: [DataSource and Resource Support](http://cargo.codehaus.org/DataSource+and+Resource+Support).
