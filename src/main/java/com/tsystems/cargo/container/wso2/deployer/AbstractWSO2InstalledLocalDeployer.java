@@ -26,6 +26,7 @@ import org.codehaus.cargo.container.ContainerException;
 import org.codehaus.cargo.container.InstalledLocalContainer;
 import org.codehaus.cargo.container.deployable.Deployable;
 import org.codehaus.cargo.container.deployable.DeployableType;
+import org.codehaus.cargo.container.deployer.Deployer;
 import org.codehaus.cargo.container.spi.deployer.AbstractInstalledLocalDeployer;
 import org.codehaus.cargo.util.CargoException;
 
@@ -40,172 +41,187 @@ import com.tsystems.cargo.container.wso2.deployable.WSO2WAR;
  * directory).
  *
  */
-public abstract class AbstractWSO2InstalledLocalDeployer extends
-		AbstractInstalledLocalDeployer {
-	/**
-	 * Contains those DeployableTypes that should not be deployed expanded.
-	 * Default is to allow expanded deployment and the exceptions to that rule
-	 * are set here.
-	 */
-	private Set<DeployableType> doNotDeployExpanded = new HashSet<DeployableType>();
+public abstract class AbstractWSO2InstalledLocalDeployer extends AbstractInstalledLocalDeployer {
+    /**
+     * Contains those DeployableTypes that should not be deployed expanded.
+     * Default is to allow expanded deployment and the exceptions to that rule
+     * are set here.
+     */
+    private Set<DeployableType> doNotDeployExpanded = new HashSet<DeployableType>();
 
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @see AbstractInstalledLocalDeployer#AbstractInstalledLocalDeployer(org.codehaus.cargo.container.LocalContainer)
-	 */
-	public AbstractWSO2InstalledLocalDeployer(InstalledLocalContainer container) {
-		super(container);
-	}
+    /**
+     * {@inheritDoc}
+     *
+     * @see AbstractInstalledLocalDeployer#AbstractInstalledLocalDeployer(org.codehaus.cargo.container.LocalContainer)
+     */
+    public AbstractWSO2InstalledLocalDeployer(InstalledLocalContainer container) {
+        super(container);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @see org.codehaus.cargo.container.deployer.Deployer#deploy(Deployable)
-	 */
-	@Override
-	public synchronized void deploy(Deployable deployable) {
+    /**
+     * {@inheritDoc}
+     *
+     * @see org.codehaus.cargo.container.deployer.Deployer#deploy(Deployable)
+     */
+    @Override
+    public synchronized void deploy(Deployable deployable) {
 
-		// Check that the container supports the deployable type to deploy
-		if (!getContainer().getCapability().supportsDeployableType(
-				deployable.getType())) {
-			throw new ContainerException(deployable.getType().getType()
-					.toUpperCase()
-					+ " archives are not supported for deployment in ["
-					+ getContainer().getId()
-					+ "]. Got ["
-					+ deployable.getFile() + "]");
-		}
+        // Check that the container supports the deployable type to deploy
+        if (!getContainer().getCapability().supportsDeployableType(deployable.getType())) {
+            throw new ContainerException(deployable.getType().getType().toUpperCase()
+                    + " archives are not supported for deployment in [" + getContainer().getId() + "]. Got ["
+                    + deployable.getFile() + "]");
+        }
 
-		String deployableDir = getDeployableDir(deployable);
+        String deployableDir = getDeployableDir(deployable);
 
-		try {
-			if (deployable.isExpanded()) {
-				if (!shouldDeployExpanded(deployable.getType())) {
-					throw new ContainerException("Container "
-							+ getContainer().getName()
-							+ " cannot deploy expanded " + deployable.getType()
-							+ " deployables");
-				}
+        try {
+            if (deployable.isExpanded()) {
+                if (!shouldDeployExpanded(deployable.getType())) {
+                    throw new ContainerException("Container " + getContainer().getName() + " cannot deploy expanded "
+                            + deployable.getType() + " deployables");
+                }
 
-				if (!getFileHandler().isDirectory(deployable.getFile())) {
-					throw new ContainerException(
-							"The deployable's file "
-									+ deployable.getFile()
-									+ " is not a directory, hence cannot be deployed as expanded");
-				}
-			}
+                if (!getFileHandler().isDirectory(deployable.getFile())) {
+                    throw new ContainerException("The deployable's file " + deployable.getFile()
+                            + " is not a directory, hence cannot be deployed as expanded");
+                }
+            }
 
-			doDeploy(deployableDir, deployable);
-		} catch (Exception e) {
-			throw new ContainerException("Failed to deploy ["
-					+ deployable.getFile() + "] to [" + deployableDir + "]", e);
-		}
-	}
+            doDeploy(deployableDir, deployable);
+        } catch (Exception e) {
+            throw new ContainerException("Failed to deploy [" + deployable.getFile() + "] to [" + deployableDir + "]",
+                    e);
+        }
+    }
 
-	/**
-	 * Do the actual deployment. This can be overriden.
-	 *
-	 * @param deployableDir
-	 *            Directory in which to deploy.
-	 * @param deployable
-	 *            Deployable to deploy.
-	 */
-	protected void doDeploy(String deployableDir, Deployable deployable) {
-		getLogger().info(
-				"Deploying [" + deployable.getFile() + "] to [" + deployableDir
-						+ "]...", this.getClass().getName());
+    /**
+     * Do the actual deployment. This can be overriden.
+     *
+     * @param deployableDir
+     *            Directory in which to deploy.
+     * @param deployable
+     *            Deployable to deploy.
+     */
+    protected void doDeploy(String deployableDir, Deployable deployable) {
+        getLogger().info("Deploying [" + deployable.getFile() + "] to [" + deployableDir + "]...",
+                this.getClass().getName());
 
-		if (!getFileHandler().isDirectory(deployableDir)) {
-			throw new CargoException(
-					"Target deployable directory does not exist: "
-							+ deployableDir);
-		}
+        if (!getFileHandler().isDirectory(deployableDir)) {
+            throw new CargoException("Target deployable directory does not exist: " + deployableDir);
+        }
 
-		String target = getFileHandler().append(deployableDir,
-				getDeployableName(deployable));
+        String target = getFileHandler().append(deployableDir, getDeployableName(deployable));
 
-		if (deployable.isExpanded()) {
-			if (getFileHandler().exists(target)
-					&& !getFileHandler().isDirectory(target)) {
-				// We are trying to deploy an expanded deployable but there
-				// already exists a file
-				// with the same name as the deployable. Delete, else we have
-				// bug CARGO-1037.
-				getFileHandler().delete(target);
-			}
+        if (deployable.isExpanded()) {
+            if (getFileHandler().exists(target) && !getFileHandler().isDirectory(target)) {
+                // We are trying to deploy an expanded deployable but there
+                // already exists a file
+                // with the same name as the deployable. Delete, else we have
+                // bug CARGO-1037.
+                getFileHandler().delete(target);
+            }
 
-			getFileHandler().copyDirectory(deployable.getFile(), target);
-		} else {
-			if (getFileHandler().exists(target)
-					&& getFileHandler().isDirectory(target)) {
-				// We are trying to deploy a file deployable but there already
-				// exists a directory
-				// with the same name as the deployable. Delete, else we have
-				// bug CARGO-1037.
-				getFileHandler().delete(target);
-			}
+            getFileHandler().copyDirectory(deployable.getFile(), target);
+        } else {
+            if (getFileHandler().exists(target) && getFileHandler().isDirectory(target)) {
+                // We are trying to deploy a file deployable but there already
+                // exists a directory
+                // with the same name as the deployable. Delete, else we have
+                // bug CARGO-1037.
+                getFileHandler().delete(target);
+            }
 
-			getFileHandler().copyFile(deployable.getFile(), target, true);
-		}
-	}
+            getFileHandler().copyFile(deployable.getFile(), target, true);
+        }
+    }
 
-	/**
-	 * Specifies the directory
-	 * {@link org.codehaus.cargo.container.deployable.Deployable}s should be
-	 * copied to.
-	 *
-	 * @return Deployable directory
-	 */
-	public abstract String getDeployableDir(Deployable deployable);
+    /**
+     * Do the actual undeployment. This can be overriden.
+     *
+     * @param deployableDir
+     *            Directory in which to undeploy.
+     * @param deployable
+     *            Deployable to undeploy.
+     */
+    protected void doUndeploy(String deployableDir, Deployable deployable) {
+        String target = getFileHandler().append(deployableDir, getDeployableName(deployable));
+        getFileHandler().delete(target);
+    }
 
-	/**
-	 * Gets the deployable name for the given <code>deployable</code>.
-	 *
-	 * @param deployable
-	 *            Deployable to get the name for.
-	 * @return Deployable name.
-	 */
-	protected String getDeployableName(Deployable deployable) {
-		String deployableName;
-		if (DeployableType.WAR.equals(deployable.getType())) {
-			WSO2WAR war = (WSO2WAR) deployable;
-			deployableName = war.getName();
-		} else {
-			deployableName = getFileHandler().getName(deployable.getFile());
-		}
-		return deployableName;
-	}
+    /**
+     * Specifies the directory
+     * {@link org.codehaus.cargo.container.deployable.Deployable}s should be
+     * copied to.
+     *
+     * @return Deployable directory
+     */
+    public abstract String getDeployableDir(Deployable deployable);
 
-	/**
-	 * Decide whether some expanded deployables of the specified type should be
-	 * deployed or not. Some classes using this deployer may not want to deploy
-	 * some expanded deployables, as they may want to deploy them in-situ by
-	 * modifying the container's configuration file to point to the location of
-	 * the expanded deployable. This saves some copying time and make it easier
-	 * for development round-trips.
-	 *
-	 * @param type
-	 *            the deployable type
-	 * @param flag
-	 *            whether expanded deployment of the specified deployment type
-	 *            should be allowed or not
-	 */
-	public void setShouldDeployExpanded(DeployableType type, boolean flag) {
-		if (flag) {
-			this.doNotDeployExpanded.remove(type);
-		} else {
-			this.doNotDeployExpanded.add(type);
-		}
-	}
+    /**
+     * Gets the deployable name for the given <code>deployable</code>.
+     *
+     * @param deployable
+     *            Deployable to get the name for.
+     * @return Deployable name.
+     */
+    protected String getDeployableName(Deployable deployable) {
+        String deployableName;
+        if (DeployableType.WAR.equals(deployable.getType())) {
+            WSO2WAR war = (WSO2WAR) deployable;
+            deployableName = war.getName();
+        } else {
+            deployableName = getFileHandler().getName(deployable.getFile());
+        }
+        return deployableName;
+    }
 
-	/**
-	 * @param type
-	 *            the deployable type
-	 * @return whether expanded deployment of the specified deployment type
-	 *         should be done
-	 */
-	protected boolean shouldDeployExpanded(DeployableType type) {
-		return !this.doNotDeployExpanded.contains(type);
-	}
+    /**
+     * Decide whether some expanded deployables of the specified type should be
+     * deployed or not. Some classes using this deployer may not want to deploy
+     * some expanded deployables, as they may want to deploy them in-situ by
+     * modifying the container's configuration file to point to the location of
+     * the expanded deployable. This saves some copying time and make it easier
+     * for development round-trips.
+     *
+     * @param type
+     *            the deployable type
+     * @param flag
+     *            whether expanded deployment of the specified deployment type
+     *            should be allowed or not
+     */
+    public void setShouldDeployExpanded(DeployableType type, boolean flag) {
+        if (flag) {
+            this.doNotDeployExpanded.remove(type);
+        } else {
+            this.doNotDeployExpanded.add(type);
+        }
+    }
+
+    /**
+     * @param type
+     *            the deployable type
+     * @return whether expanded deployment of the specified deployment type
+     *         should be done
+     */
+    protected boolean shouldDeployExpanded(DeployableType type) {
+        return !this.doNotDeployExpanded.contains(type);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see Deployer#undeploy(org.codehaus.cargo.container.deployable.Deployable)
+     */
+    @Override
+    public void undeploy(Deployable deployable) {
+        String deployableDir = getDeployableDir(deployable);
+        try {
+            doUndeploy(deployableDir, deployable);
+        } catch (Exception e) {
+            throw new ContainerException("Failed to undeploy [" + deployable.getFile() + "] from [" + deployableDir
+                    + "]", e);
+        }
+    }
+
 }

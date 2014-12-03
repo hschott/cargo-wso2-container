@@ -48,14 +48,16 @@ public class WSO2Carbon4xInstalledLocalContainer extends AbstractWSO2InstalledLo
         LocalConfiguration configuration = getConfiguration();
 
         String prefix = "";
+        String carbon = "";
+
         if (configuration instanceof ExistingLocalConfiguration) {
-            prefix = "Existing";
+            prefix = "Existing ";
+            carbon = getFileHandler().append(configuration.getHome(), "repository/conf/carbon.xml");
         }
         if (configuration instanceof StandaloneLocalConfiguration) {
-            prefix = "Standalone";
+            prefix = "Standalone ";
+            carbon = getFileHandler().append(configuration.getHome(), "carbon.xml");
         }
-
-        String carbon = getFileHandler().append(configuration.getHome(), "carbon.xml");
 
         Document doc;
         try {
@@ -64,9 +66,9 @@ public class WSO2Carbon4xInstalledLocalContainer extends AbstractWSO2InstalledLo
             Node node = (Node) xPathExpr.evaluate(doc, XPathConstants.NODE);
             String serverName = node.getFirstChild().getNodeValue();
 
-            return prefix + " " + NAME + " " + serverName;
+            return prefix + NAME + " " + serverName;
         } catch (Exception e) {
-            return prefix + " " + NAME;
+            return prefix + NAME;
         }
     }
 }

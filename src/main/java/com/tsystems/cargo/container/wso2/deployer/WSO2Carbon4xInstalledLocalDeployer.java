@@ -19,30 +19,27 @@ public class WSO2Carbon4xInstalledLocalDeployer extends AbstractWSO2InstalledLoc
         setShouldDeployExpanded(WSO2Axis2Service.TYPE, false);
         setShouldDeployExpanded(Axis2Service.TYPE, false);
         setShouldDeployExpanded(Axis2Module.TYPE, false);
+        setShouldDeployExpanded(WSO2Connector.TYPE, false);
+        setShouldDeployExpanded(BAMToolbox.TYPE, false);
     }
 
     @Override
     public String getDeployableDir(Deployable deployable) {
-        String deployableDir = getFileHandler().append(getContainer().getConfiguration().getHome(), "tmp");
+        String deployableDir = System.getProperty("java.io.tmpdir");
+        String home = ((InstalledLocalContainer) getContainer()).getConfiguration().getHome();
 
         if (CarbonApplication.TYPE.equals(deployable.getType())) {
-            deployableDir = getFileHandler().append(((InstalledLocalContainer) getContainer()).getHome(),
-                    "repository/deployment/server/carbonapps");
+            deployableDir = getFileHandler().append(home, "repository/deployment/server/carbonapps");
         } else if (DeployableType.WAR.equals(deployable.getType())) {
-            deployableDir = getFileHandler().append(((InstalledLocalContainer) getContainer()).getHome(),
-                    "repository/deployment/server/webapps");
+            deployableDir = getFileHandler().append(home, "repository/deployment/server/webapps");
         } else if (Axis2Service.TYPE.equals(deployable.getType()) || WSO2Axis2Service.TYPE.equals(deployable.getType())) {
-            deployableDir = getFileHandler().append(((InstalledLocalContainer) getContainer()).getHome(),
-                    "repository/deployment/server/axis2services");
+            deployableDir = getFileHandler().append(home, "repository/deployment/server/axis2services");
         } else if (Axis2Module.TYPE.equals(deployable.getType())) {
-            deployableDir = getFileHandler().append(((InstalledLocalContainer) getContainer()).getHome(),
-                    "repository/deployment/server/axis2modules");
+            deployableDir = getFileHandler().append(home, "repository/deployment/server/axis2modules");
         } else if (WSO2Connector.TYPE.equals(deployable.getType())) {
-            deployableDir = getFileHandler().append(((InstalledLocalContainer) getContainer()).getHome(),
-                    "repository/deployment/server/synapse-libs");
+            deployableDir = getFileHandler().append(home, "repository/deployment/server/synapse-libs");
         } else if (BAMToolbox.TYPE.equals(deployable.getType())) {
-            deployableDir = getFileHandler().append(((InstalledLocalContainer) getContainer()).getHome(),
-                    "repository/deployment/server/bam-toolbox");
+            deployableDir = getFileHandler().append(home, "repository/deployment/server/bam-toolbox");
         }
 
         if (!getFileHandler().exists(deployableDir)) {
