@@ -20,6 +20,7 @@ public class WSO2Carbon4xWarAdminService extends AbstractWSO2Carbon4xAdminServic
     }
 
     public void deploy(WSO2WAR deployable) throws WSO2AdminServicesException {
+        logUpload(deployable);
         try {
             WebappAdminStub webappAdminStub = new WebappAdminStub(
                     new URL(getUrl() + "/services/WebappAdmin").toString());
@@ -37,6 +38,7 @@ public class WSO2Carbon4xWarAdminService extends AbstractWSO2Carbon4xAdminServic
     }
 
     public boolean exists(WSO2WAR deployable) throws WSO2AdminServicesException {
+        logExists(deployable);
         try {
             WebappAdminStub webappAdminStub = new WebappAdminStub(
                     new URL(getUrl() + "/services/WebappAdmin").toString());
@@ -58,6 +60,7 @@ public class WSO2Carbon4xWarAdminService extends AbstractWSO2Carbon4xAdminServic
     }
 
     public void start(WSO2WAR deployable) throws WSO2AdminServicesException {
+        logStart(deployable);
         try {
             WebappAdminStub webappAdminStub = new WebappAdminStub(
                     new URL(getUrl() + "/services/WebappAdmin").toString());
@@ -74,6 +77,7 @@ public class WSO2Carbon4xWarAdminService extends AbstractWSO2Carbon4xAdminServic
     }
 
     public void stop(WSO2WAR deployable) throws WSO2AdminServicesException {
+        logStop(deployable);
         try {
             WebappAdminStub webappAdminStub = new WebappAdminStub(
                     new URL(getUrl() + "/services/WebappAdmin").toString());
@@ -90,6 +94,7 @@ public class WSO2Carbon4xWarAdminService extends AbstractWSO2Carbon4xAdminServic
     }
 
     public void undeploy(WSO2WAR deployable) throws WSO2AdminServicesException {
+        logRemove(deployable);
         try {
             WebappAdminStub webappAdminStub = new WebappAdminStub(
                     new URL(getUrl() + "/services/WebappAdmin").toString());

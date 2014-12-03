@@ -21,6 +21,7 @@ public class WSO2Carbon4xAxis2ModuleAdminService extends AbstractWSO2Carbon4xAdm
     }
 
     public void deploy(Axis2Module deployable) throws WSO2AdminServicesException {
+        logUpload(deployable);
         try {
             ModuleAdminServiceStub moduleAdminServiceStub = new ModuleAdminServiceStub(new URL(getUrl()
                     + "/services/ModuleAdminService").toString());
@@ -40,6 +41,7 @@ public class WSO2Carbon4xAxis2ModuleAdminService extends AbstractWSO2Carbon4xAdm
     }
 
     public boolean exists(Axis2Module deployable) throws WSO2AdminServicesException {
+        logExists(deployable);
         try {
             ModuleAdminServiceStub moduleAdminServiceStub = new ModuleAdminServiceStub(new URL(getUrl()
                     + "/services/ModuleAdminService").toString());
@@ -62,6 +64,7 @@ public class WSO2Carbon4xAxis2ModuleAdminService extends AbstractWSO2Carbon4xAdm
     }
 
     public void start(Axis2Module deployable) throws WSO2AdminServicesException {
+        logStart(deployable);
         try {
             ModuleAdminServiceStub moduleAdminServiceStub = new ModuleAdminServiceStub(new URL(getUrl()
                     + "/services/ModuleAdminService").toString());
@@ -74,6 +77,7 @@ public class WSO2Carbon4xAxis2ModuleAdminService extends AbstractWSO2Carbon4xAdm
     }
 
     public void stop(Axis2Module deployable) throws WSO2AdminServicesException {
+        logStop(deployable);
         try {
             ModuleAdminServiceStub moduleAdminServiceStub = new ModuleAdminServiceStub(new URL(getUrl()
                     + "/services/ModuleAdminService").toString());
@@ -86,6 +90,7 @@ public class WSO2Carbon4xAxis2ModuleAdminService extends AbstractWSO2Carbon4xAdm
     }
 
     public void undeploy(Axis2Module deployable) throws WSO2AdminServicesException {
+        logRemove(deployable);
         try {
             ModuleAdminServiceStub moduleAdminServiceStub = new ModuleAdminServiceStub(new URL(getUrl()
                     + "/services/ModuleAdminService").toString());

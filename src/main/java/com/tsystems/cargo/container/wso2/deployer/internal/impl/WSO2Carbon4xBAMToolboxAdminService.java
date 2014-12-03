@@ -20,6 +20,7 @@ public class WSO2Carbon4xBAMToolboxAdminService extends AbstractWSO2Carbon4xAdmi
     }
 
     public void deploy(BAMToolbox deployable) throws WSO2AdminServicesException {
+        logUpload(deployable);
         try {
             BAMToolboxDepolyerServiceStub bamToolboxDepolyerServiceStub = new BAMToolboxDepolyerServiceStub(new URL(
                     getUrl() + "/services/BAMToolboxDepolyerService").toString());
@@ -33,6 +34,7 @@ public class WSO2Carbon4xBAMToolboxAdminService extends AbstractWSO2Carbon4xAdmi
     }
 
     public boolean exists(BAMToolbox deployable) throws WSO2AdminServicesException {
+        logExists(deployable);
         try {
             BAMToolboxDepolyerServiceStub bamToolboxDepolyerServiceStub = new BAMToolboxDepolyerServiceStub(new URL(
                     getUrl() + "/services/BAMToolboxDepolyerService").toString());
@@ -54,6 +56,7 @@ public class WSO2Carbon4xBAMToolboxAdminService extends AbstractWSO2Carbon4xAdmi
     }
 
     public void undeploy(BAMToolbox deployable) throws WSO2AdminServicesException {
+        logRemove(deployable);
         try {
             BAMToolboxDepolyerServiceStub bamToolboxDepolyerServiceStub = new BAMToolboxDepolyerServiceStub(new URL(
                     getUrl() + "/services/BAMToolboxDepolyerService").toString());

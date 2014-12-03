@@ -22,6 +22,7 @@ public class WSO2Carbon4xCarbonApplicationAdminService extends AbstractWSO2Carbo
     }
 
     public void deploy(CarbonApplication deployable) throws WSO2AdminServicesException {
+        logUpload(deployable);
         try {
             CarbonAppUploaderStub carbonAppUploaderStub = new CarbonAppUploaderStub(new URL(getUrl()
                     + "/services/CarbonAppUploader").toString());
@@ -41,6 +42,7 @@ public class WSO2Carbon4xCarbonApplicationAdminService extends AbstractWSO2Carbo
     }
 
     public boolean exists(CarbonApplication deployable) throws WSO2AdminServicesException {
+        logExists(deployable);
         try {
             ApplicationAdminStub applicationAdminStub = new ApplicationAdminStub(new URL(getUrl()
                     + "/services/ApplicationAdmin").toString());
@@ -59,6 +61,7 @@ public class WSO2Carbon4xCarbonApplicationAdminService extends AbstractWSO2Carbo
     }
 
     public void undeploy(CarbonApplication deployable) throws WSO2AdminServicesException {
+        logRemove(deployable);
         try {
             ApplicationAdminStub applicationAdminStub = new ApplicationAdminStub(new URL(getUrl()
                     + "/services/ApplicationAdmin").toString());

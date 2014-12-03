@@ -24,6 +24,7 @@ public class WSO2Carbon4xAxis2ServiceAdminService extends AbstractWSO2Carbon4xAd
     }
 
     public void deploy(Axis2Service deployable) throws WSO2AdminServicesException {
+        logUpload(deployable);
         try {
             ServiceUploaderStub serviceUploaderStub = new ServiceUploaderStub(new URL(getUrl()
                     + "/services/ServiceUploader").toString());
@@ -42,6 +43,7 @@ public class WSO2Carbon4xAxis2ServiceAdminService extends AbstractWSO2Carbon4xAd
     }
 
     public boolean exists(Axis2Service deployable) throws WSO2AdminServicesException {
+        logExists(deployable);
         try {
             ServiceGroupAdminStub serviceGroupAdminStub = new ServiceGroupAdminStub(new URL(getUrl()
                     + "/services/ServiceGroupAdmin").toString());
@@ -66,6 +68,7 @@ public class WSO2Carbon4xAxis2ServiceAdminService extends AbstractWSO2Carbon4xAd
     }
 
     public void start(Axis2Service deployable) throws WSO2AdminServicesException {
+        logStart(deployable);
         try {
             ServiceGroupAdminStub serviceGroupAdminStub = new ServiceGroupAdminStub(new URL(getUrl()
                     + "/services/ServiceGroupAdmin").toString());
@@ -91,6 +94,7 @@ public class WSO2Carbon4xAxis2ServiceAdminService extends AbstractWSO2Carbon4xAd
     }
 
     public void stop(Axis2Service deployable) throws WSO2AdminServicesException {
+        logStop(deployable);
         try {
             ServiceGroupAdminStub serviceGroupAdminStub = new ServiceGroupAdminStub(new URL(getUrl()
                     + "/services/ServiceGroupAdmin").toString());
@@ -115,6 +119,7 @@ public class WSO2Carbon4xAxis2ServiceAdminService extends AbstractWSO2Carbon4xAd
     }
 
     public void undeploy(Axis2Service deployable) throws WSO2AdminServicesException {
+        logRemove(deployable);
         try {
             ServiceAdminStub serviceAdminStub = new ServiceAdminStub(
                     new URL(getUrl() + "/services/ServiceAdmin").toString());
