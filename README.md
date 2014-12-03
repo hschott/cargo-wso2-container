@@ -35,7 +35,7 @@ Container ID: wso2carbon4x
 
 ## Supported Deployer Features
 
-Static deployment of:
+Static deployment and un-deployment of:
 
 * [WAR](http://cargo.codehaus.org/Static+deployment+of+WAR)
 * [Expanded WAR](http://cargo.codehaus.org/Static+deployment+of+expanded+WAR),
