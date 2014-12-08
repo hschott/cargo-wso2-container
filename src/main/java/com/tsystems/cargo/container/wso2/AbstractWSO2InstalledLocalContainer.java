@@ -12,7 +12,9 @@ import javax.xml.xpath.XPathFactory;
 
 import org.codehaus.cargo.container.ContainerCapability;
 import org.codehaus.cargo.container.ContainerException;
+import org.codehaus.cargo.container.configuration.ExistingLocalConfiguration;
 import org.codehaus.cargo.container.configuration.LocalConfiguration;
+import org.codehaus.cargo.container.configuration.StandaloneLocalConfiguration;
 import org.codehaus.cargo.container.deployer.DeployableMonitor;
 import org.codehaus.cargo.container.deployer.URLDeployableMonitor;
 import org.codehaus.cargo.container.property.GeneralPropertySet;
@@ -71,7 +73,7 @@ public abstract class AbstractWSO2InstalledLocalContainer extends AbstractInstal
     public URL getCarbonURL(LocalConfiguration configuration) {
         try {
 
-            String carbon = getFileHandler().append(configuration.getHome(), "carbon.xml");
+            String carbon = getFileHandler().append(configuration.getHome(), "repository/conf/carbon.xml");
 
             Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File(carbon));
 
@@ -90,9 +92,38 @@ public abstract class AbstractWSO2InstalledLocalContainer extends AbstractInstal
         }
     }
 
+    public abstract String getCommonName();
+
+    public String getName() {
+        LocalConfiguration configuration = getConfiguration();
+
+        String prefix = "";
+
+        if (configuration instanceof ExistingLocalConfiguration) {
+            prefix = "Existing ";
+        }
+        if (configuration instanceof StandaloneLocalConfiguration) {
+            prefix = "Standalone ";
+        }
+
+        String carbon = getFileHandler().append(configuration.getHome(), "repository/conf/carbon.xml");
+        Document doc;
+        try {
+            doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File(carbon));
+            XPathExpression xPathExpr = XPathFactory.newInstance().newXPath().compile("//Server/Name");
+            Node node = (Node) xPathExpr.evaluate(doc, XPathConstants.NODE);
+            String serverName = node.getFirstChild().getNodeValue();
+
+            return prefix + getCommonName() + " " + serverName;
+        } catch (Exception e) {
+            return prefix + getCommonName();
+        }
+    }
+
     protected void invokeContainer(String action, JvmLauncher java) throws Exception {
         String containerHome = getFileHandler().getAbsolutePath(getHome());
-        String configurationHome = getFileHandler().getAbsolutePath(getConfiguration().getHome());
+        String configurationHome = getFileHandler().getAbsolutePath(
+                getFileHandler().append(getConfiguration().getHome(), "repository/conf"));
 
         java.setSystemProperty("carbon.home", containerHome);
         java.setSystemProperty("catalina.base", getFileHandler().append(containerHome, "lib/tomcat"));

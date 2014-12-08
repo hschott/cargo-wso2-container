@@ -50,12 +50,15 @@ public class WSO2StandaloneLocalConfiguration extends AbstractStandaloneLocalCon
         InstalledLocalContainer container = (InstalledLocalContainer) c;
 
         String sourceConf = getFileHandler().append(container.getHome(), "repository/conf");
-        getFileHandler().copyDirectory(sourceConf, getHome());
+        String targetConf = getFileHandler().append(getHome(), "repository/conf");
+        getFileHandler().mkdirs(targetConf);
+        getFileHandler().copyDirectory(sourceConf, targetConf);
 
         getResourceUtils().copyResource("com/tsystems/cargo/container/wso2/datasources/datasources.xml",
-                getFileHandler().append(getHome(), "datasources/cargo-datasources.xml"), getFileHandler());
+                getFileHandler().append(getHome(), "repository/conf/datasources/cargo-datasources.xml"),
+                getFileHandler());
 
-        String configurationXmlFile = "carbon.xml";
+        String configurationXmlFile = "repository/conf/carbon.xml";
         addXmlReplacement(configurationXmlFile, "//Server/Ports/Offset", GeneralPropertySet.PORT_OFFSET);
         addXmlReplacement(configurationXmlFile, "//Server/WebContextRoot", WSO2CarbonPropertySet.CARBON_CONTEXT_ROOT);
 
@@ -68,7 +71,7 @@ public class WSO2StandaloneLocalConfiguration extends AbstractStandaloneLocalCon
             }
         }
 
-        writeConfigurationToXpath(getFileHandler().append(getHome(), "tomcat/catalina-server.xml"),
+        writeConfigurationToXpath(getFileHandler().append(getHome(), "repository/conf/tomcat/catalina-server.xml"),
                 "<GlobalNamingResources/>", "//Server");
 
         List<String> driverClasses = new ArrayList<String>();
@@ -127,12 +130,12 @@ public class WSO2StandaloneLocalConfiguration extends AbstractStandaloneLocalCon
 
     @Override
     protected String getOrCreateDataSourceConfigurationFile(DataSource ds, LocalContainer container) {
-        return getFileHandler().append(getHome(), "datasources/cargo-datasources.xml");
+        return getFileHandler().append(getHome(), "repository/conf/datasources/cargo-datasources.xml");
     }
 
     @Override
     protected String getOrCreateResourceConfigurationFile(Resource resource, LocalContainer container) {
-        return getFileHandler().append(getHome(), "tomcat/catalina-server.xml");
+        return getFileHandler().append(getHome(), "repository/conf/tomcat/catalina-server.xml");
     }
 
     @Override

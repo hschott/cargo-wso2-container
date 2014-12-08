@@ -3,17 +3,8 @@ package com.tsystems.cargo.container.wso2;
 import java.io.File;
 import java.io.FilenameFilter;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathFactory;
-
-import org.codehaus.cargo.container.configuration.ExistingLocalConfiguration;
 import org.codehaus.cargo.container.configuration.LocalConfiguration;
-import org.codehaus.cargo.container.configuration.StandaloneLocalConfiguration;
 import org.codehaus.cargo.container.spi.jvm.JvmLauncher;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 
 public class WSO2Carbon4xInstalledLocalContainer extends AbstractWSO2InstalledLocalContainer implements
         WSO2Carbon4xContainer {
@@ -40,35 +31,12 @@ public class WSO2Carbon4xInstalledLocalContainer extends AbstractWSO2InstalledLo
         }
     }
 
-    public String getId() {
-        return ID;
+    @Override
+    public String getCommonName() {
+        return NAME;
     }
 
-    public String getName() {
-        LocalConfiguration configuration = getConfiguration();
-
-        String prefix = "";
-        String carbon = "";
-
-        if (configuration instanceof ExistingLocalConfiguration) {
-            prefix = "Existing ";
-            carbon = getFileHandler().append(configuration.getHome(), "repository/conf/carbon.xml");
-        }
-        if (configuration instanceof StandaloneLocalConfiguration) {
-            prefix = "Standalone ";
-            carbon = getFileHandler().append(configuration.getHome(), "carbon.xml");
-        }
-
-        Document doc;
-        try {
-            doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File(carbon));
-            XPathExpression xPathExpr = XPathFactory.newInstance().newXPath().compile("//Server/Name");
-            Node node = (Node) xPathExpr.evaluate(doc, XPathConstants.NODE);
-            String serverName = node.getFirstChild().getNodeValue();
-
-            return prefix + NAME + " " + serverName;
-        } catch (Exception e) {
-            return prefix + NAME;
-        }
+    public String getId() {
+        return ID;
     }
 }
