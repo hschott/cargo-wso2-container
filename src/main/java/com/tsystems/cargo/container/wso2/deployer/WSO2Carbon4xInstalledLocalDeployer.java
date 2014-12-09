@@ -27,6 +27,9 @@ public class WSO2Carbon4xInstalledLocalDeployer extends AbstractWSO2InstalledLoc
     public String getDeployableDir(Deployable deployable) {
         String deployableDir = System.getProperty("java.io.tmpdir");
         String home = ((InstalledLocalContainer) getContainer()).getHome();
+        if (home == null) {
+            home = getContainer().getConfiguration().getHome();
+        }
 
         if (CarbonApplication.TYPE.equals(deployable.getType())) {
             deployableDir = getFileHandler().append(home, "repository/deployment/server/carbonapps");
