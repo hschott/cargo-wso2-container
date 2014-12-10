@@ -73,7 +73,8 @@ public class WSO2Carbon4xMediationLibraryAdminService extends AbstractWSO2Carbon
             authenticate();
             prepareServiceClient(mediationLibraryAdminServiceStub._getServiceClient());
 
-            mediationLibraryAdminServiceStub.updateStatus(deployable.getApplicationName(), null, null, "enabled");
+            mediationLibraryAdminServiceStub.updateStatus(deployable.getApplicationName(), deployable.getLibName(),
+                    deployable.getPackageName(), "enabled");
 
         } catch (Exception e) {
             throw new WSO2AdminServicesException("error checking connector", e);

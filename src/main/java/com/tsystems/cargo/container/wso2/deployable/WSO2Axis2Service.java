@@ -7,7 +7,7 @@ import org.codehaus.cargo.container.deployable.DeployableType;
  * https://axis.apache.org/axis2/java/core/docs/xmlbased-server.html packaging
  * type.
  */
-public class WSO2Axis2Service extends Axis2Service {
+public class WSO2Axis2Service extends Axis2Service implements WSO2Deployable {
 
     public static final DeployableType TYPE = DeployableType.toType("service/axis2");
 

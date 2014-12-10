@@ -19,11 +19,13 @@ import org.w3c.dom.Node;
  * A Axis2 application deployable. Matches
  * https://axis.apache.org/axis2/java/core/docs/modules.html packaging type.
  */
-public class Axis2Module extends AbstractDeployable {
+public class Axis2Module extends AbstractDeployable implements WSO2Deployable {
 
     public static final DeployableType TYPE = DeployableType.toType("mar");
 
     private String applicationName;
+
+    private long deployTimeout = -1;
 
     public Axis2Module(final String file) {
         super(file);
@@ -33,23 +35,22 @@ public class Axis2Module extends AbstractDeployable {
      * @return the applicationName
      */
     public String getApplicationName() {
-        if (applicationName == null) {
-            setApplicationName();
-        }
-
-        if (applicationName == null) {
-            final String fileName = getFile();
-            return fileName.substring(fileName.lastIndexOf(File.separator) + 1, fileName.lastIndexOf("."));
+        if (applicationName == null || applicationName.length() == 0) {
+            parseApplicationName();
         }
 
         return applicationName;
+    }
+
+    public long getDeployTimeout() {
+        return deployTimeout;
     }
 
     public DeployableType getType() {
         return TYPE;
     }
 
-    public final void setApplicationName() {
+    public final void parseApplicationName() {
         Document doc;
         try {
             JarArchive jarArchive = JarArchiveIo.open(new File(getFile()));
@@ -65,7 +66,18 @@ public class Axis2Module extends AbstractDeployable {
 
         } catch (Exception e) {
             getLogger().warn("can not parse module name, fallback to deployable name", getClass().getSimpleName());
+            final String fileName = getFile();
+            applicationName = fileName.substring(fileName.lastIndexOf(File.separator) + 1, fileName.lastIndexOf("."));
         }
 
+    }
+
+    public void setApplicationName(String applicationName) {
+        getLogger().warn("Deployable applicationName overwritten by user", getClass().getSimpleName());
+        this.applicationName = applicationName;
+    }
+
+    public void setDeployTimeout(long deployTimeout) {
+        this.deployTimeout = deployTimeout;
     }
 }

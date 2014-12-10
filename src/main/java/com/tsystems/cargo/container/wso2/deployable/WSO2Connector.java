@@ -8,6 +8,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
+import org.codehaus.cargo.container.deployable.DeployableException;
 import org.codehaus.cargo.container.deployable.DeployableType;
 import org.codehaus.cargo.container.spi.deployable.AbstractDeployable;
 import org.codehaus.cargo.module.JarArchive;
@@ -19,11 +20,14 @@ import org.w3c.dom.Node;
  * A WSO2 Connector deployable. Matches
  * https://docs.wso2.com/display/ESB481/Creating+a+Connector packaging type.
  */
-public class WSO2Connector extends AbstractDeployable {
+public class WSO2Connector extends AbstractDeployable implements WSO2Deployable {
 
     public static final DeployableType TYPE = DeployableType.toType("zip");
 
-    private String applicationName;
+    private String packageName;
+    private String libName;
+
+    private long deployTimeout = -1;
 
     public WSO2Connector(final String file) {
         super(file);
@@ -33,23 +37,30 @@ public class WSO2Connector extends AbstractDeployable {
      * @return the applicationName
      */
     public String getApplicationName() {
-        if (applicationName == null) {
-            setApplicationName();
+        if (packageName == null || packageName.length() == 0 || libName == null || libName.length() == 0) {
+            parseApplicationName();
         }
 
-        if (applicationName == null) {
-            final String fileName = getFile();
-            return fileName.substring(fileName.lastIndexOf(File.separator) + 1, fileName.lastIndexOf("."));
-        }
+        return "{" + packageName + "}" + libName;
+    }
 
-        return applicationName;
+    public long getDeployTimeout() {
+        return deployTimeout;
+    }
+
+    public String getLibName() {
+        return libName;
+    }
+
+    public String getPackageName() {
+        return packageName;
     }
 
     public DeployableType getType() {
         return TYPE;
     }
 
-    public final void setApplicationName() {
+    public final void parseApplicationName() {
         Document doc;
         try {
             JarArchive jarArchive = JarArchiveIo.open(new File(getFile()));
@@ -60,18 +71,22 @@ public class WSO2Connector extends AbstractDeployable {
             XPathExpression xPathPackage = XPathFactory.newInstance().newXPath()
                     .compile("//connector/component/@package");
             Node nodePackage = (Node) xPathPackage.evaluate(doc, XPathConstants.NODE);
-            String packageString = nodePackage.getNodeValue();
+            packageName = nodePackage.getNodeValue();
 
             XPathExpression xPathName = XPathFactory.newInstance().newXPath().compile("//connector/component/@name");
             Node nodeName = (Node) xPathName.evaluate(doc, XPathConstants.NODE);
-            String nameString = nodeName.getNodeValue();
-
-            applicationName = "{" + packageString + "}" + nameString;
+            libName = nodeName.getNodeValue();
 
         } catch (Exception e) {
-            getLogger().warn("can not parse connector library name, fallback to deployable name",
-                    getClass().getSimpleName());
+            throw new DeployableException("can not parse connector library name", e);
         }
+    }
 
+    public void setApplicationName(String applicationName) {
+        getLogger().warn("Deployable applicationName can not be overwritten by user", getClass().getSimpleName());
+    }
+
+    public void setDeployTimeout(long deployTimeout) {
+        this.deployTimeout = deployTimeout;
     }
 }

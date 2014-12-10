@@ -42,8 +42,8 @@ Static deployment and un-deployment of:
 * CAR (Carbon Application)
 * AAR (Axis2 Service)
 * MAR (Axis2 Module)
-* ZIP (WSO2 Connector)
-* TBOX (BAM Toolbox)
+* ZIP (WSO2 ESB Connector)
+* TBOX (WSO2 BAM Toolbox)
 
 For deployables of type WAR a version can be configured.
 
@@ -53,7 +53,7 @@ Remote deployment and un-deployment of:
 * CAR
 * AAR 
 * MAR
-* ZIP (WSO2 Connector)
+* ZIP (WSO2 ESB Connector)
 * TBOX
 
 Remote start and stop of:
@@ -61,7 +61,7 @@ Remote start and stop of:
 * WAR
 * AAR (all services within a service group)
 * MAR (globally engage and disengage)
-* ZIP (WSO2 Connector)
+* ZIP (WSO2 ESB Connector)
 
 
 ## Configuration
@@ -135,6 +135,7 @@ Property name | Default value | Description
 ---: | --- | ---
 cargo.wso2carbon.contextroot | / | (context root of WSO2 Carbon Management Console)
 cargo.wso2carbon.serverroles | N/A | Additional server roles (comma separated)
+cargo.wso2carbon.deploytimeout | N/A | Deployment timeout in milliseconds. Enables check if artifacts is successfully deployed on the server.
 
 In addition to the aforementioned properties, this container configuration can also set up datasources and/or resources.
 For more details, please read: [DataSource and Resource Support](http://cargo.codehaus.org/DataSource+and+Resource+Support).
@@ -186,7 +187,7 @@ The JDBC driver jar file will be looked up from Maven dependencies by the classn
 
 ```
 
-#### Remote WSO2 Carbon container with URI, CAR deployable and Ping. The plugin execution is bound to pre-integration-test phase.
+#### Remote WSO2 Carbon container with URI, CAR deployable and deployTimeout. The plugin execution is bound to pre-integration-test phase.
 
 ```xml
 
@@ -224,8 +225,7 @@ The JDBC driver jar file will be looked up from Maven dependencies by the classn
                 <groupId>${project.groupId}</groupId>
                 <artifactId>${project.artifactId}</artifactId>
                 <type>carbon/application</type>
-                <pingURL>https://company.domain.tld/appcontext/metrics/healthcheck</pingURL>
-                <pingTimeout>120000</pingTimeout>
+                <deployTimeout>120000</deployTimeout>
               </deployable>
             </deployables>
           </configuration>

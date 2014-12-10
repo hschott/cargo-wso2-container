@@ -28,7 +28,7 @@ public class WSO2Carbon4xWarAdminService extends AbstractWSO2Carbon4xAdminServic
             prepareServiceClient(webappAdminStub._getServiceClient());
             WebappUploadData webApp = new WebappUploadData();
             DataHandler dh = new DataHandler(new File(deployable.getFile()).toURI().toURL());
-            webApp.setFileName(deployable.getName());
+            webApp.setFileName(deployable.getApplicationName());
             webApp.setDataHandler(dh);
 
             webappAdminStub.uploadWebapp(new WebappUploadData[] { webApp });
@@ -45,7 +45,7 @@ public class WSO2Carbon4xWarAdminService extends AbstractWSO2Carbon4xAdminServic
             authenticate();
             prepareServiceClient(webappAdminStub._getServiceClient());
 
-            String name = deployable.getName();
+            String name = deployable.getApplicationName();
 
             WebappMetadata webappMetadata = webappAdminStub.getStartedWebapp(name);
             if (webappMetadata != null)
@@ -67,7 +67,7 @@ public class WSO2Carbon4xWarAdminService extends AbstractWSO2Carbon4xAdminServic
             authenticate();
             prepareServiceClient(webappAdminStub._getServiceClient());
 
-            String name = deployable.getName();
+            String name = deployable.getApplicationName();
 
             webappAdminStub.startWebapps(new String[] { name });
 
@@ -84,7 +84,7 @@ public class WSO2Carbon4xWarAdminService extends AbstractWSO2Carbon4xAdminServic
             authenticate();
             prepareServiceClient(webappAdminStub._getServiceClient());
 
-            String name = deployable.getName();
+            String name = deployable.getApplicationName();
 
             webappAdminStub.stopWebapps(new String[] { name });
 
@@ -101,7 +101,7 @@ public class WSO2Carbon4xWarAdminService extends AbstractWSO2Carbon4xAdminServic
             authenticate();
             prepareServiceClient(webappAdminStub._getServiceClient());
 
-            String name = deployable.getName();
+            String name = deployable.getApplicationName();
 
             WebappMetadata webappMetadata = webappAdminStub.getStoppedWebapp(name);
             if (webappMetadata != null) {

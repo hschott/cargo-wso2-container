@@ -169,7 +169,7 @@ public abstract class AbstractWSO2InstalledLocalDeployer extends AbstractInstall
         String deployableName;
         if (DeployableType.WAR.equals(deployable.getType())) {
             WSO2WAR war = (WSO2WAR) deployable;
-            deployableName = war.getName();
+            deployableName = war.getApplicationName();
         } else {
             deployableName = getFileHandler().getName(deployable.getFile());
         }

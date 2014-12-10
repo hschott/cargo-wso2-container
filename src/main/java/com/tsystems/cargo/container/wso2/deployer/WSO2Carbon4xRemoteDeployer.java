@@ -8,11 +8,13 @@ import org.codehaus.cargo.container.property.RemotePropertySet;
 
 import com.tsystems.cargo.container.wso2.deployer.internal.WSO2Axis2ModuleAdminService;
 import com.tsystems.cargo.container.wso2.deployer.internal.WSO2Axis2ServiceAdminService;
+import com.tsystems.cargo.container.wso2.deployer.internal.WSO2BAMToolboxAdminService;
 import com.tsystems.cargo.container.wso2.deployer.internal.WSO2CarbonApplicationAdminService;
 import com.tsystems.cargo.container.wso2.deployer.internal.WSO2MediationLibraryAdminService;
 import com.tsystems.cargo.container.wso2.deployer.internal.WSO2WarAdminService;
 import com.tsystems.cargo.container.wso2.deployer.internal.impl.WSO2Carbon4xAxis2ModuleAdminService;
 import com.tsystems.cargo.container.wso2.deployer.internal.impl.WSO2Carbon4xAxis2ServiceAdminService;
+import com.tsystems.cargo.container.wso2.deployer.internal.impl.WSO2Carbon4xBAMToolboxAdminService;
 import com.tsystems.cargo.container.wso2.deployer.internal.impl.WSO2Carbon4xCarbonApplicationAdminService;
 import com.tsystems.cargo.container.wso2.deployer.internal.impl.WSO2Carbon4xMediationLibraryAdminService;
 import com.tsystems.cargo.container.wso2.deployer.internal.impl.WSO2Carbon4xWarAdminService;
@@ -55,6 +57,11 @@ public class WSO2Carbon4xRemoteDeployer extends AbstractWSO2RemoteDeployer {
                 managerURL, username, password);
         mediationLibraryAdminService.setLogger(getLogger());
         setMediationLibraryAdminService(mediationLibraryAdminService);
+
+        WSO2BAMToolboxAdminService bamToolboxAdminService = new WSO2Carbon4xBAMToolboxAdminService(managerURL,
+                username, password);
+        bamToolboxAdminService.setLogger(getLogger());
+        setBamToolboxAdminService(bamToolboxAdminService);
 
     }
 

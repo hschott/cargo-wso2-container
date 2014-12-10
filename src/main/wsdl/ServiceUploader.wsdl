@@ -16,7 +16,7 @@
  ~ under the License.
  -->
 <wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
-                  xmlns:ns1="http://axis2.apache.org/xsd"
+                  xmlns:ns1="http://org.apache.axis2/xsd"
                   xmlns:ns="http://aarservices.carbon.wso2.org"
                   xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"
                   xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
