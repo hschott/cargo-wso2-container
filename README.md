@@ -45,7 +45,7 @@ Static deployment and un-deployment of:
 * ZIP (WSO2 ESB Connector)
 * TBOX (WSO2 BAM Toolbox)
 
-For deployables of type WAR a `<version/>` can be configured.
+Static deployment does a simple copy of the deployable file to <CARBON_HOME>/repository/deployment/server. And vice versa undeployment removes the deployable file.
 
 Remote deployment and un-deployment of:
 
@@ -55,6 +55,9 @@ Remote deployment and un-deployment of:
 * MAR
 * ZIP (WSO2 ESB Connector)
 * TBOX
+
+For deployables of type AAR, TBOX and CAR an `<applicationName/>` under which the deployable resides on the server can be configured.
+For deployables of type WAR a `<context/>` and `<version/>` can be configured.
 
 For every remote deployable a `<deployTimeout/>` in milliseconds can be configured, which enables a check if the artifact is successfully deployed on the server.
 

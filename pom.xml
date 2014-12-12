@@ -4,7 +4,32 @@
 	<groupId>com.tsystems.cargo.wso2</groupId>
 	<artifactId>cargo-wso2-container</artifactId>
 	<version>0.1.0</version>
-
+	<name>Cargo container extension for WSO2</name>
+	<description>A Cargo container extension for WSO2 Carbon Container.</description>
+	<url>https://github.com/hschott/cargo-wso2-container</url>
+	<developers>
+		<developer>
+			<name>Holger Balow-Schott</name>
+			<email>Holger.Balow-Schott@t-systems-mms.com</email>
+			<organization>T-Systems Multimedia Solutions GmbH</organization>
+			<organizationUrl>http://www.t-systems-mms.com</organizationUrl>
+		</developer>
+	</developers>
+	<licenses>
+		<license>
+			<name>The Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+	<scm>
+		<connection>scm:git:git@github.com:hschott/cargo-wso2-container</connection>
+		<developerConnection>scm:git:git@github.com:hschott/cargo-wso2-container</developerConnection>
+		<url>https://github.com/hschott/cargo-wso2-container</url>
+	</scm>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.axis2</groupId>
@@ -37,12 +62,46 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<includes>
+						<include>com/tsystems/**</include>
+					</includes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
 					<encoding>UTF-8</encoding>
 					<source>1.5</source>
 					<target>1.5</target>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<show>private</show>
+					<nohelp>true</nohelp>
+					<excludePackageNames>*.apache.*:org.wso2.*:java.util.*:main</excludePackageNames>
+				</configuration>
+				<executions>
+					<execution>
+						<id>attach-javadoc</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.axis2</groupId>

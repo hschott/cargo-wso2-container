@@ -8,6 +8,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
+import org.codehaus.cargo.container.deployable.DeployableException;
 import org.codehaus.cargo.container.deployable.DeployableType;
 import org.codehaus.cargo.container.spi.deployable.AbstractDeployable;
 import org.codehaus.cargo.module.JarArchive;
@@ -65,16 +66,12 @@ public class Axis2Module extends AbstractDeployable implements WSO2Deployable {
             applicationName = nameString;
 
         } catch (Exception e) {
-            getLogger().warn("can not parse module name, fallback to deployable name", getClass().getSimpleName());
-            final String fileName = getFile();
-            applicationName = fileName.substring(fileName.lastIndexOf(File.separator) + 1, fileName.lastIndexOf("."));
+            throw new DeployableException("can not parse module name", e);
         }
-
     }
 
     public void setApplicationName(String applicationName) {
-        getLogger().warn("Deployable applicationName overwritten by user", getClass().getSimpleName());
-        this.applicationName = applicationName;
+        getLogger().warn("Deployable applicationName can not be overwritten by user", getClass().getSimpleName());
     }
 
     public void setDeployTimeout(long deployTimeout) {

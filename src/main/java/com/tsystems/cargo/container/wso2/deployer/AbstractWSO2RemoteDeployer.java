@@ -69,6 +69,8 @@ public abstract class AbstractWSO2RemoteDeployer extends AbstractRemoteDeployer 
     public void deploy(Deployable deployable) {
         canBeDeployed(deployable);
         supportsDeployable(deployable);
+        preDeployment(deployable);
+
         if (deployable instanceof Axis2Service) {
             axis2ServiceAdminService.deploy((Axis2Service) deployable);
         } else if (deployable instanceof Axis2Module) {
@@ -86,10 +88,7 @@ public abstract class AbstractWSO2RemoteDeployer extends AbstractRemoteDeployer 
         }
 
         watchForDeployable(deployable, true);
-
-        if (deployable instanceof WSO2Connector) {
-            mediationLibraryAdminService.start((WSO2Connector) deployable);
-        }
+        postDeployment(deployable);
     }
 
     public boolean exists(WSO2Deployable deployable) {
@@ -137,6 +136,21 @@ public abstract class AbstractWSO2RemoteDeployer extends AbstractRemoteDeployer 
 
     public RemoteContainer getContainer() {
         return container;
+    }
+
+    protected void postDeployment(Deployable deployable) {
+        if (deployable instanceof WSO2Connector) {
+            mediationLibraryAdminService.start((WSO2Connector) deployable);
+        }
+    }
+
+    protected void preDeployment(Deployable deployable) {
+        if (deployable instanceof WSO2Connector) {
+            WSO2Connector wso2deployable = (WSO2Connector) deployable;
+            if (wso2deployable.getDeployTimeout() <= 0) {
+                wso2deployable.setDeployTimeout(15000);
+            }
+        }
     }
 
     public void setAxis2ModuleAdminService(WSO2Axis2ModuleAdminService axis2ModuleAdminService) {
@@ -208,6 +222,7 @@ public abstract class AbstractWSO2RemoteDeployer extends AbstractRemoteDeployer 
     @Override
     public void undeploy(Deployable deployable) {
         supportsDeployable(deployable);
+
         if (canBeUndeployed(deployable)) {
             if (deployable instanceof Axis2Service) {
                 axis2ServiceAdminService.undeploy((Axis2Service) deployable);
@@ -230,7 +245,7 @@ public abstract class AbstractWSO2RemoteDeployer extends AbstractRemoteDeployer 
         }
     }
 
-    private void watchForDeployable(Deployable deployable, boolean availability) {
+    protected void watchForDeployable(Deployable deployable, boolean availability) {
         if (deployable instanceof WSO2Deployable) {
             WSO2Deployable wso2Deployable = (WSO2Deployable) deployable;
 
