@@ -45,7 +45,7 @@ Static deployment and un-deployment of:
 * ZIP (WSO2 ESB Connector)
 * TBOX (WSO2 BAM Toolbox)
 
-For deployables of type WAR a version can be configured.
+For deployables of type WAR a `<version/>` can be configured.
 
 Remote deployment and un-deployment of:
 
@@ -56,12 +56,16 @@ Remote deployment and un-deployment of:
 * ZIP (WSO2 ESB Connector)
 * TBOX
 
+For every remote deployable a `<deployTimeout/>` in milliseconds can be configured, which enables a check if the artifact is successfully deployed on the server.
+
 Remote start and stop of:
 
 * WAR
 * AAR (all services within a service group)
 * MAR (globally engage and disengage)
 * ZIP (WSO2 ESB Connector)
+
+Remote deployment/undeployment, start/stop and check for artifact is done via calls to [WSO2 Admin Services](https://docs.wso2.com/display/shared/Calling+Admin+Services+from+Apps).
 
 
 ## Configuration
@@ -135,7 +139,6 @@ Property name | Default value | Description
 ---: | --- | ---
 cargo.wso2carbon.contextroot | / | (context root of WSO2 Carbon Management Console)
 cargo.wso2carbon.serverroles | N/A | Additional server roles (comma separated)
-cargo.wso2carbon.deploytimeout | N/A | Deployment timeout in milliseconds. Enables check if artifacts is successfully deployed on the server.
 
 In addition to the aforementioned properties, this container configuration can also set up datasources and/or resources.
 For more details, please read: [DataSource and Resource Support](http://cargo.codehaus.org/DataSource+and+Resource+Support).
