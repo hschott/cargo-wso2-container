@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/hschott/cargo-wso2-container.svg?branch=master)](https://travis-ci.org/hschott/cargo-wso2-container)
+
 # Introduction
 
 This project is a [Cargo](http://cargo.codehaus.org/) container implementation for [WSO2 Carbon](http://www.wso2.com).
