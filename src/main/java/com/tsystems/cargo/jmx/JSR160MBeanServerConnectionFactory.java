@@ -40,74 +40,74 @@ import org.codehaus.cargo.container.property.RemotePropertySet;
  *
  */
 public class JSR160MBeanServerConnectionFactory {
-	/**
-	 * The default JMX remote URL to use with WSO2 server.
-	 */
-	private static final String DEFAULT_URI = "service:jmx:rmi://localhost/jndi/rmi://localhost:9999/jmxrmi";
+    /**
+     * The default JMX remote URL to use with WSO2 server.
+     */
+    private static final String DEFAULT_URI = "service:jmx:rmi://localhost/jndi/rmi://localhost:9999/jmxrmi";
 
-	/**
-	 * JMX Connector to use with WSO2 server.
-	 */
-	private JMXConnector connector;
+    /**
+     * JMX Connector to use with WSO2 server.
+     */
+    private JMXConnector connector;
 
-	public void destroy() {
-		if (connector != null) {
-			try {
-				connector.close();
-			} catch (IOException e) {
-				e.getMessage();
-			}
-			connector = null;
-		}
+    /**
+     * Shutdown the connector.
+     */
+    public void destroy() {
+        if (connector != null) {
+            try {
+                connector.close();
+            } catch (IOException e) {
+                e.getMessage();
+            }
+            connector = null;
+        }
 
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public MBeanServerConnection getServerConnection(Configuration configuration)
-			throws IOException {
-		String username = configuration
-				.getPropertyValue(RemotePropertySet.USERNAME);
-		String password = configuration
-				.getPropertyValue(RemotePropertySet.PASSWORD);
+    /**
+     * Creates a new connector and returns a MBeanServerConnection.
+     *
+     * @param configuration
+     *            Configuration to read URI, username and password from.
+     * @return MBeanServerConnection fresh connection
+     * @throws IOException
+     */
+    public MBeanServerConnection getServerConnection(Configuration configuration) throws IOException {
+        String username = configuration.getPropertyValue(RemotePropertySet.USERNAME);
+        String password = configuration.getPropertyValue(RemotePropertySet.PASSWORD);
 
-		String jmxRemoteURL = configuration
-				.getPropertyValue(RemotePropertySet.URI);
+        String jmxRemoteURL = configuration.getPropertyValue(RemotePropertySet.URI);
 
-		if (jmxRemoteURL == null || jmxRemoteURL.trim().length() == 0) {
-			jmxRemoteURL = DEFAULT_URI;
+        if (jmxRemoteURL == null || jmxRemoteURL.trim().length() == 0) {
+            jmxRemoteURL = DEFAULT_URI;
 
-			String port = configuration
-					.getPropertyValue(GeneralPropertySet.RMI_PORT);
-			if (port != null) {
-				jmxRemoteURL = jmxRemoteURL.replace("9999", port);
-			}
+            String port = configuration.getPropertyValue(GeneralPropertySet.RMI_PORT);
+            if (port != null) {
+                jmxRemoteURL = jmxRemoteURL.replace("9999", port);
+            }
 
-			String hostname = configuration
-					.getPropertyValue(GeneralPropertySet.HOSTNAME);
-			if (hostname != null) {
-				jmxRemoteURL = jmxRemoteURL.replace("localhost", hostname);
-			}
+            String hostname = configuration.getPropertyValue(GeneralPropertySet.HOSTNAME);
+            if (hostname != null) {
+                jmxRemoteURL = jmxRemoteURL.replace("localhost", hostname);
+            }
 
-		}
+        }
 
-		Map<String, Object> environment = new HashMap<String, Object>();
+        Map<String, Object> environment = new HashMap<String, Object>();
 
-		Object credentials = new String[] { username, password };
-		environment.put(JMXConnector.CREDENTIALS, credentials);
+        Object credentials = new String[] { username, password };
+        environment.put(JMXConnector.CREDENTIALS, credentials);
 
-		if (!environment
-				.containsKey(JMXConnectorFactory.PROTOCOL_PROVIDER_CLASS_LOADER)) {
-			environment.put(JMXConnectorFactory.PROTOCOL_PROVIDER_CLASS_LOADER,
-					this.getClass().getClassLoader());
-		}
+        if (!environment.containsKey(JMXConnectorFactory.PROTOCOL_PROVIDER_CLASS_LOADER)) {
+            environment.put(JMXConnectorFactory.PROTOCOL_PROVIDER_CLASS_LOADER, this.getClass().getClassLoader());
+        }
 
-		JMXServiceURL address = new JMXServiceURL(jmxRemoteURL);
-		connector = JMXConnectorFactory.connect(address, environment);
+        JMXServiceURL address = new JMXServiceURL(jmxRemoteURL);
+        connector = JMXConnectorFactory.connect(address, environment);
 
-		MBeanServerConnection mbsc = connector.getMBeanServerConnection();
+        MBeanServerConnection mbsc = connector.getMBeanServerConnection();
 
-		return mbsc;
-	}
+        return mbsc;
+    }
 }

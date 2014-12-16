@@ -2,6 +2,7 @@
  * ========================================================================
  *
  * Codehaus CARGO, copyright 2004-2011 Vincent Massol.
+ *                           2014 Holger Balow-Schott
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,8 +51,8 @@ public abstract class AbstractWSO2InstalledLocalDeployer extends AbstractInstall
     private Set<DeployableType> doNotDeployExpanded = new HashSet<DeployableType>();
 
     /**
-     * {@inheritDoc}
-     *
+     * @param container
+     *            InstalledLocalContainer
      * @see AbstractInstalledLocalDeployer#AbstractInstalledLocalDeployer(org.codehaus.cargo.container.LocalContainer)
      */
     public AbstractWSO2InstalledLocalDeployer(InstalledLocalContainer container) {
@@ -154,7 +155,10 @@ public abstract class AbstractWSO2InstalledLocalDeployer extends AbstractInstall
      * {@link org.codehaus.cargo.container.deployable.Deployable}s should be
      * copied to.
      *
-     * @return Deployable directory
+     * @param deployable
+     *            Deployable to deploy
+     *
+     * @return String directory to deploy to
      */
     public abstract String getDeployableDir(Deployable deployable);
 
