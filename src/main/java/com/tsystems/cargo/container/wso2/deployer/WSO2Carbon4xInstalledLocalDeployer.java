@@ -1,8 +1,17 @@
 package com.tsystems.cargo.container.wso2.deployer;
 
+import java.io.File;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathFactory;
+
 import org.codehaus.cargo.container.InstalledLocalContainer;
 import org.codehaus.cargo.container.deployable.Deployable;
 import org.codehaus.cargo.container.deployable.DeployableType;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 import com.tsystems.cargo.container.wso2.deployable.Axis2Module;
 import com.tsystems.cargo.container.wso2.deployable.Axis2Service;
@@ -27,22 +36,43 @@ public class WSO2Carbon4xInstalledLocalDeployer extends AbstractWSO2InstalledLoc
     public String getDeployableDir(Deployable deployable) {
         String deployableDir = System.getProperty("java.io.tmpdir");
         String home = ((InstalledLocalContainer) getContainer()).getHome();
+
         if (home == null) {
             home = getContainer().getConfiguration().getHome();
         }
 
+        String carbon = getFileHandler().append(home, "repository/conf/carbon.xml");
+
+        Document doc;
+        String loc;
+        try {
+            doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File(carbon));
+            XPathExpression xPathExpr = XPathFactory.newInstance().newXPath()
+                    .compile("//Server/Axis2Config/RepositoryLocation");
+            Node node = (Node) xPathExpr.evaluate(doc, XPathConstants.NODE);
+            loc = node.getFirstChild().getNodeValue();
+
+            loc = loc.replace("${carbon.home}", home);
+
+            if (!getFileHandler().isDirectory(loc))
+                throw new Exception();
+
+        } catch (Exception e) {
+            loc = getFileHandler().append(home, "repository/deployment/server");
+        }
+
         if (CarbonApplication.TYPE.equals(deployable.getType())) {
-            deployableDir = getFileHandler().append(home, "repository/deployment/server/carbonapps");
+            deployableDir = getFileHandler().append(loc, "carbonapps");
         } else if (DeployableType.WAR.equals(deployable.getType())) {
-            deployableDir = getFileHandler().append(home, "repository/deployment/server/webapps");
+            deployableDir = getFileHandler().append(loc, "webapps");
         } else if (Axis2Service.TYPE.equals(deployable.getType()) || WSO2Axis2Service.TYPE.equals(deployable.getType())) {
-            deployableDir = getFileHandler().append(home, "repository/deployment/server/axis2services");
+            deployableDir = getFileHandler().append(loc, "axis2services");
         } else if (Axis2Module.TYPE.equals(deployable.getType())) {
-            deployableDir = getFileHandler().append(home, "repository/deployment/server/axis2modules");
+            deployableDir = getFileHandler().append(loc, "axis2modules");
         } else if (WSO2Connector.TYPE.equals(deployable.getType())) {
-            deployableDir = getFileHandler().append(home, "repository/deployment/server/synapse-libs");
+            deployableDir = getFileHandler().append(loc, "synapse-libs");
         } else if (BAMToolbox.TYPE.equals(deployable.getType())) {
-            deployableDir = getFileHandler().append(home, "repository/deployment/server/bam-toolbox");
+            deployableDir = getFileHandler().append(loc, "bam-toolbox");
         }
 
         if (!getFileHandler().exists(deployableDir)) {
