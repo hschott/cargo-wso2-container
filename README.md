@@ -47,7 +47,7 @@ Static deployment and un-deployment of:
 * ZIP (WSO2 ESB Connector)
 * TBOX (WSO2 BAM Toolbox)
 
-Static deployment does a simple copy of the deployable file to Carbon server repository, which defaults to <CARBON_HOME>/repository/deployment/server. And vice versa undeployment removes the deployable file.
+Static deployment does a simple copy of the deployable file to Carbon server repository, which defaults to `${carbon_home}/repository/deployment/server`. And vice versa undeployment removes the deployable file.
 
 Remote deployment and un-deployment of:
 
@@ -68,7 +68,7 @@ Remote start and stop of:
 * WAR
 * AAR (all services within a service group)
 * MAR (globally engage and disengage)
-* ZIP (WSO2 ESB Connector)
+* ZIP
 
 Remote deployment/undeployment, start/stop and check for artifact is done via calls to [WSO2 Admin Services](https://docs.wso2.com/display/shared/Calling+Admin+Services+from+Apps).
 
