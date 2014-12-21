@@ -7,6 +7,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
+import org.codehaus.cargo.container.ContainerException;
 import org.codehaus.cargo.container.InstalledLocalContainer;
 import org.codehaus.cargo.container.deployable.Deployable;
 import org.codehaus.cargo.container.deployable.DeployableType;
@@ -55,9 +56,10 @@ public class WSO2Carbon4xInstalledLocalDeployer extends AbstractWSO2InstalledLoc
             loc = loc.replace("${carbon.home}", home);
 
             if (!getFileHandler().isDirectory(loc))
-                throw new Exception();
+                throw new ContainerException("repository location is not a directory: " + loc);
 
         } catch (Exception e) {
+            getLogger().warn("error obtaining repository: " + e.getMessage(), getClass().getSimpleName());
             loc = getFileHandler().append(home, "repository/deployment/server");
         }
 

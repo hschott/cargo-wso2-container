@@ -13,8 +13,13 @@
 			<email>Holger.Balow-Schott@t-systems-mms.com</email>
 			<organization>T-Systems Multimedia Solutions GmbH</organization>
 			<organizationUrl>http://www.t-systems-mms.com</organizationUrl>
+			<timezone>+1</timezone>
 		</developer>
 	</developers>
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/hschott/cargo-wso2-container/issues</url>
+	</issueManagement>
 	<licenses>
 		<license>
 			<name>The Apache License, Version 2.0</name>
