@@ -7,6 +7,7 @@ import org.codehaus.cargo.container.ContainerException;
 import org.codehaus.cargo.container.RemoteContainer;
 import org.codehaus.cargo.container.configuration.Configuration;
 import org.codehaus.cargo.container.deployable.Deployable;
+import org.codehaus.cargo.container.deployer.DeployableMonitor;
 import org.codehaus.cargo.container.property.GeneralPropertySet;
 import org.codehaus.cargo.container.property.RemotePropertySet;
 import org.codehaus.cargo.container.property.ServletPropertySet;
@@ -207,6 +208,17 @@ public abstract class AbstractWSO2RemoteDeployer extends AbstractRemoteDeployer 
         } else {
             super.start(deployable);
         }
+    }
+
+    // CARGO-1296: fix prior 1.4.12e
+    @Override
+    public void stop(Deployable deployable, DeployableMonitor monitor) {
+        stop(deployable);
+
+        // Wait for the Deployable to be stopped
+        DeployerWatchdog watchdog = new DeployerWatchdog(monitor);
+        watchdog.setLogger(getLogger());
+        watchdog.watchForUnavailability();
     }
 
     protected boolean supportsDeployable(Deployable deployable) {
