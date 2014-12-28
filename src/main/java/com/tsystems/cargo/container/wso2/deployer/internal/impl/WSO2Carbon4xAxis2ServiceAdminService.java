@@ -7,7 +7,6 @@ import javax.activation.DataHandler;
 
 import org.wso2.carbon.aarservices.xsd.AARServiceData;
 import org.wso2.carbon.service.mgt.ServiceAdminStub;
-import org.wso2.carbon.service.mgt.ServiceGroupAdminStub;
 import org.wso2.carbon.service.mgt.xsd.ServiceGroupMetaData;
 import org.wso2.carbon.service.mgt.xsd.ServiceMetaData;
 import org.wso2.carbon.service.upload.ServiceUploaderStub;
@@ -45,13 +44,17 @@ public class WSO2Carbon4xAxis2ServiceAdminService extends AbstractWSO2Carbon4xAd
     public boolean exists(Axis2Service deployable) throws WSO2AdminServicesException {
         logExists(deployable);
         try {
-            ServiceGroupAdminStub serviceGroupAdminStub = new ServiceGroupAdminStub(new URL(getUrl()
-                    + "/services/ServiceGroupAdmin").toString());
+            ServiceAdminStub serviceAdminStub = new ServiceAdminStub(
+                    new URL(getUrl() + "/services/ServiceGroupAdmin").toString());
             authenticate();
-            prepareServiceClient(serviceGroupAdminStub._getServiceClient());
+            prepareServiceClient(serviceAdminStub._getServiceClient());
 
-            ServiceGroupMetaData serviceGroupMetaData = serviceGroupAdminStub.listServiceGroup(deployable
-                    .getApplicationName());
+            ServiceGroupMetaData serviceGroupMetaData = null;
+            try {
+                serviceGroupMetaData = serviceAdminStub.listServiceGroup(deployable.getApplicationName());
+            } catch (Exception e) {
+                return false;
+            }
 
             if (serviceGroupMetaData != null) {
                 ServiceMetaData[] serviceMetaDataList = serviceGroupMetaData.getServices();
@@ -62,7 +65,7 @@ public class WSO2Carbon4xAxis2ServiceAdminService extends AbstractWSO2Carbon4xAd
                 }
             }
         } catch (Exception e) {
-            return false;
+            throw new WSO2AdminServicesException("error checking axis2 service", e);
         }
         return false;
     }
@@ -70,7 +73,7 @@ public class WSO2Carbon4xAxis2ServiceAdminService extends AbstractWSO2Carbon4xAd
     public void start(Axis2Service deployable) throws WSO2AdminServicesException {
         logStart(deployable);
         try {
-            ServiceGroupAdminStub serviceGroupAdminStub = new ServiceGroupAdminStub(new URL(getUrl()
+            ServiceAdminStub serviceGroupAdminStub = new ServiceAdminStub(new URL(getUrl()
                     + "/services/ServiceGroupAdmin").toString());
             ServiceAdminStub serviceAdminStub = new ServiceAdminStub(
                     new URL(getUrl() + "/services/ServiceAdmin").toString());
@@ -96,7 +99,7 @@ public class WSO2Carbon4xAxis2ServiceAdminService extends AbstractWSO2Carbon4xAd
     public void stop(Axis2Service deployable) throws WSO2AdminServicesException {
         logStop(deployable);
         try {
-            ServiceGroupAdminStub serviceGroupAdminStub = new ServiceGroupAdminStub(new URL(getUrl()
+            ServiceAdminStub serviceGroupAdminStub = new ServiceAdminStub(new URL(getUrl()
                     + "/services/ServiceGroupAdmin").toString());
             ServiceAdminStub serviceAdminStub = new ServiceAdminStub(
                     new URL(getUrl() + "/services/ServiceAdmin").toString());

@@ -204,21 +204,6 @@
 						</configuration>
 					</execution>
 					<execution>
-						<id>ServiceGroupAdmin</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>wsdl2code</goal>
-						</goals>
-						<configuration>
-							<wsdlFile>src/main/wsdl/ServiceGroupAdmin.wsdl</wsdlFile>
-							<packageName>org.wso2.carbon.service.mgt</packageName>
-							<databindingName>adb</databindingName>
-							<unwrap>true</unwrap>
-							<unpackClasses>true</unpackClasses>
-							<syncMode>sync</syncMode>
-						</configuration>
-					</execution>
-					<execution>
 						<id>ModuleAdminService</id>
 						<phase>generate-sources</phase>
 						<goals>

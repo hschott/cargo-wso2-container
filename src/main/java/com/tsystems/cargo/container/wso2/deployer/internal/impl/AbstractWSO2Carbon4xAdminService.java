@@ -17,7 +17,8 @@ import com.tsystems.cargo.container.wso2.deployer.internal.WSO2BaseAdminService;
 
 public abstract class AbstractWSO2Carbon4xAdminService extends LoggedObject implements WSO2BaseAdminService {
 
-    private long timeout = 30 * 60 * 1000;
+    private static long DEFAULT_TIMEOUT = 30 * 1000;
+    private long timeout = DEFAULT_TIMEOUT;
 
     private URL url;
     private String sessionCookie;
@@ -52,10 +53,9 @@ public abstract class AbstractWSO2Carbon4xAdminService extends LoggedObject impl
     }
 
     private void easySSL() {
-        EasySSLProtocolSocketFactory easySSLProtocolSocketFactory;
-        easySSLProtocolSocketFactory = new EasySSLProtocolSocketFactory();
+        ProtocolSocketFactory easySSLProtocolSocketFactory = new EasySSLProtocolSocketFactory();
         Protocol.unregisterProtocol("https");
-        Protocol.registerProtocol("https", new Protocol("https", (ProtocolSocketFactory) easySSLProtocolSocketFactory,
+        Protocol.registerProtocol("https", new Protocol("https", easySSLProtocolSocketFactory,
                 getUrl().getPort() == -1 ? 443 : getUrl().getPort()));
     }
 
@@ -86,8 +86,13 @@ public abstract class AbstractWSO2Carbon4xAdminService extends LoggedObject impl
     }
 
     void prepareServiceClient(ServiceClient serviceClient) {
+        serviceClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
         serviceClient.getOptions().setTimeOutInMilliSeconds(timeout);
         serviceClient.getOptions().setManageSession(true);
         serviceClient.getOptions().setProperty(HTTPConstants.COOKIE_STRING, sessionCookie);
+    }
+
+    public void setTimeout(long timeout) {
+        this.timeout = timeout;
     }
 }

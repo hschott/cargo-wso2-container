@@ -56,14 +56,6 @@ public abstract class AbstractWSO2RemoteDeployer extends AbstractRemoteDeployer 
                     + "]. Deployable is not a WSO2 deployable.");
     }
 
-    protected boolean canBeUndeployed(Deployable deployable) {
-        if (deployable instanceof WSO2Deployable) {
-            WSO2Deployable wso2Deployable = (WSO2Deployable) deployable;
-            return exists(wso2Deployable);
-        } else
-            return false;
-    }
-
     protected abstract void createWso2AdminServices();
 
     @Override
@@ -110,6 +102,14 @@ public abstract class AbstractWSO2RemoteDeployer extends AbstractRemoteDeployer 
         throw new ContainerException("Not supported");
     }
 
+    protected boolean found(Deployable deployable) {
+        if (deployable instanceof WSO2Deployable) {
+            WSO2Deployable wso2Deployable = (WSO2Deployable) deployable;
+            return exists(wso2Deployable);
+        } else
+            return false;
+    }
+
     protected URL getCarbonBaseURL(Configuration configuration) {
         URL url;
 
@@ -148,7 +148,7 @@ public abstract class AbstractWSO2RemoteDeployer extends AbstractRemoteDeployer 
     protected void preDeployment(Deployable deployable) {
         if (deployable instanceof WSO2Connector) {
             WSO2Connector wso2deployable = (WSO2Connector) deployable;
-            if (wso2deployable.getDeployTimeout() <= 0) {
+            if (wso2deployable.getDeployTimeout() < 15000) {
                 wso2deployable.setDeployTimeout(15000);
             }
         }
@@ -181,36 +181,46 @@ public abstract class AbstractWSO2RemoteDeployer extends AbstractRemoteDeployer 
     @Override
     public void start(Deployable deployable) {
         supportsDeployable(deployable);
-        if (deployable instanceof Axis2Service) {
-            axis2ServiceAdminService.start((Axis2Service) deployable);
-        } else if (deployable instanceof Axis2Module) {
-            axis2ModuleAdminService.start((Axis2Module) deployable);
-        } else if (deployable instanceof WSO2WAR) {
-            warAdminService.start((WSO2WAR) deployable);
-        } else if (deployable instanceof WSO2Connector) {
-            mediationLibraryAdminService.start((WSO2Connector) deployable);
+
+        if (found(deployable)) {
+            if (deployable instanceof Axis2Service) {
+                axis2ServiceAdminService.start((Axis2Service) deployable);
+            } else if (deployable instanceof Axis2Module) {
+                axis2ModuleAdminService.start((Axis2Module) deployable);
+            } else if (deployable instanceof WSO2WAR) {
+                warAdminService.start((WSO2WAR) deployable);
+            } else if (deployable instanceof WSO2Connector) {
+                mediationLibraryAdminService.start((WSO2Connector) deployable);
+            } else {
+                super.start(deployable);
+            }
         } else {
-            super.start(deployable);
+            getLogger().info("Deployable is not deployed.", getClass().getSimpleName());
         }
     }
 
     @Override
     public void stop(Deployable deployable) {
         supportsDeployable(deployable);
-        if (deployable instanceof Axis2Service) {
-            axis2ServiceAdminService.stop((Axis2Service) deployable);
-        } else if (deployable instanceof Axis2Module) {
-            axis2ModuleAdminService.stop((Axis2Module) deployable);
-        } else if (deployable instanceof WSO2WAR) {
-            warAdminService.stop((WSO2WAR) deployable);
-        } else if (deployable instanceof WSO2Connector) {
-            mediationLibraryAdminService.stop((WSO2Connector) deployable);
+
+        if (found(deployable)) {
+            if (deployable instanceof Axis2Service) {
+                axis2ServiceAdminService.stop((Axis2Service) deployable);
+            } else if (deployable instanceof Axis2Module) {
+                axis2ModuleAdminService.stop((Axis2Module) deployable);
+            } else if (deployable instanceof WSO2WAR) {
+                warAdminService.stop((WSO2WAR) deployable);
+            } else if (deployable instanceof WSO2Connector) {
+                mediationLibraryAdminService.stop((WSO2Connector) deployable);
+            } else {
+                super.start(deployable);
+            }
         } else {
-            super.start(deployable);
+            getLogger().info("Deployable is not deployed.", getClass().getSimpleName());
         }
     }
 
-    // CARGO-1296: fix prior 1.4.12e
+    // CARGO-1296: fix prior 1.4.12
     @Override
     public void stop(Deployable deployable, DeployableMonitor monitor) {
         stop(deployable);
@@ -235,7 +245,7 @@ public abstract class AbstractWSO2RemoteDeployer extends AbstractRemoteDeployer 
     public void undeploy(Deployable deployable) {
         supportsDeployable(deployable);
 
-        if (canBeUndeployed(deployable)) {
+        if (found(deployable)) {
             if (deployable instanceof Axis2Service) {
                 axis2ServiceAdminService.undeploy((Axis2Service) deployable);
             } else if (deployable instanceof Axis2Module) {
@@ -254,6 +264,9 @@ public abstract class AbstractWSO2RemoteDeployer extends AbstractRemoteDeployer 
             }
 
             watchForDeployable(deployable, false);
+
+        } else {
+            getLogger().info("Deployable is not deployed.", getClass().getSimpleName());
         }
     }
 
