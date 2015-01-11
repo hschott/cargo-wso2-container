@@ -95,6 +95,7 @@ Update your pom to use cargo plugin and cargo-wso2-container as a dependency:
               <artifactId>cargo-wso2-container</artifactId>
               <version>0.1.0</version>
             </dependency>
+          </dependencies>
         </plugin>
       </plugins>
     </build>

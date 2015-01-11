@@ -33,6 +33,7 @@ public class WSO2StandaloneLocalConfiguration extends AbstractStandaloneLocalCon
         this.setProperty(RemotePropertySet.PASSWORD, "admin");
         this.setProperty(GeneralPropertySet.RMI_PORT, "9999");
         this.setProperty(ServletPropertySet.PORT, "9763");
+        this.setProperty(WSO2CarbonPropertySet.CARBON_CONTEXT_ROOT, "/");
     }
 
     @Override
