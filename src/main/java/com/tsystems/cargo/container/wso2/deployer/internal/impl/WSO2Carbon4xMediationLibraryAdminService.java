@@ -77,7 +77,7 @@ public class WSO2Carbon4xMediationLibraryAdminService extends AbstractWSO2Carbon
                     deployable.getPackageName(), "enabled");
 
         } catch (Exception e) {
-            throw new WSO2AdminServicesException("error checking connector", e);
+            throw new WSO2AdminServicesException("error starting connector", e);
         }
     }
 
@@ -92,7 +92,7 @@ public class WSO2Carbon4xMediationLibraryAdminService extends AbstractWSO2Carbon
             mediationLibraryAdminServiceStub.updateStatus(deployable.getApplicationName(), null, null, "disabled");
 
         } catch (Exception e) {
-            throw new WSO2AdminServicesException("error checking connector", e);
+            throw new WSO2AdminServicesException("error stopping connector", e);
         }
     }
 
