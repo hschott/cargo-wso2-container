@@ -10,5 +10,5 @@ public interface WSO2Deployable extends Deployable {
 
     public void setApplicationName(String applicationName);
 
-    public void setDeployTimeout(long deployTimeout);
+    public void setDeployTimeout(String deployTimeout);
 }

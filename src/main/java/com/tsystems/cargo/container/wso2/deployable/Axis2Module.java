@@ -10,7 +10,6 @@ import javax.xml.xpath.XPathFactory;
 
 import org.codehaus.cargo.container.deployable.DeployableException;
 import org.codehaus.cargo.container.deployable.DeployableType;
-import org.codehaus.cargo.container.spi.deployable.AbstractDeployable;
 import org.codehaus.cargo.module.JarArchive;
 import org.codehaus.cargo.module.JarArchiveIo;
 import org.w3c.dom.Document;
@@ -20,13 +19,11 @@ import org.w3c.dom.Node;
  * A Axis2 application deployable. Matches
  * https://axis.apache.org/axis2/java/core/docs/modules.html packaging type.
  */
-public class Axis2Module extends AbstractDeployable implements WSO2Deployable {
+public class Axis2Module extends AbstractWSO2Deployable implements WSO2Deployable {
 
     public static final DeployableType TYPE = DeployableType.toType("mar");
 
     private String applicationName;
-
-    private long deployTimeout = -1;
 
     public Axis2Module(final String file) {
         super(file);
@@ -41,10 +38,6 @@ public class Axis2Module extends AbstractDeployable implements WSO2Deployable {
         }
 
         return applicationName;
-    }
-
-    public long getDeployTimeout() {
-        return deployTimeout;
     }
 
     public DeployableType getType() {
@@ -72,9 +65,5 @@ public class Axis2Module extends AbstractDeployable implements WSO2Deployable {
 
     public void setApplicationName(String applicationName) {
         getLogger().warn("Deployable applicationName can not be overwritten by user", getClass().getSimpleName());
-    }
-
-    public void setDeployTimeout(long deployTimeout) {
-        this.deployTimeout = deployTimeout;
     }
 }

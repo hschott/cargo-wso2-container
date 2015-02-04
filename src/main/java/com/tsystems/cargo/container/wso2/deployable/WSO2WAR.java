@@ -29,12 +29,13 @@ public class WSO2WAR extends WAR implements WSO2Deployable {
     }
 
     public void setApplicationName(String applicationName) {
-        getLogger().warn("Deployable applicationName can not be set. Use context and version instead.",
-                getClass().getSimpleName());
+        getLogger()
+                .warn("Deployable applicationName can not be set. Use context and version instead.",
+                        getClass().getSimpleName());
     }
 
-    public void setDeployTimeout(long deployTimeout) {
-        this.deployTimeout = deployTimeout;
+    public void setDeployTimeout(String deployTimeout) {
+        this.deployTimeout = Long.valueOf(deployTimeout);
     }
 
     public void setVersion(String version) {

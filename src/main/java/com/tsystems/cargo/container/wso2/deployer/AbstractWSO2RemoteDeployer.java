@@ -149,7 +149,8 @@ public abstract class AbstractWSO2RemoteDeployer extends AbstractRemoteDeployer 
         if (deployable instanceof WSO2Connector) {
             WSO2Connector wso2deployable = (WSO2Connector) deployable;
             if (wso2deployable.getDeployTimeout() < 15000) {
-                wso2deployable.setDeployTimeout(15000);
+                wso2deployable.setDeployTimeout("15000");
+                getLogger().info("Setting deploy timeout to 1500 ms", getClass().getSimpleName());
             }
         }
     }

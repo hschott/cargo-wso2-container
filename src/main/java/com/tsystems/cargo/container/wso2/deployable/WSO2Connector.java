@@ -10,7 +10,6 @@ import javax.xml.xpath.XPathFactory;
 
 import org.codehaus.cargo.container.deployable.DeployableException;
 import org.codehaus.cargo.container.deployable.DeployableType;
-import org.codehaus.cargo.container.spi.deployable.AbstractDeployable;
 import org.codehaus.cargo.module.JarArchive;
 import org.codehaus.cargo.module.JarArchiveIo;
 import org.w3c.dom.Document;
@@ -20,14 +19,12 @@ import org.w3c.dom.Node;
  * A WSO2 Connector deployable. Matches
  * https://docs.wso2.com/display/ESB481/Creating+a+Connector packaging type.
  */
-public class WSO2Connector extends AbstractDeployable implements WSO2Deployable {
+public class WSO2Connector extends AbstractWSO2Deployable implements WSO2Deployable {
 
     public static final DeployableType TYPE = DeployableType.toType("zip");
 
     private String packageName;
     private String libName;
-
-    private long deployTimeout = -1;
 
     public WSO2Connector(final String file) {
         super(file);
@@ -42,10 +39,6 @@ public class WSO2Connector extends AbstractDeployable implements WSO2Deployable 
         }
 
         return "{" + packageName + "}" + libName;
-    }
-
-    public long getDeployTimeout() {
-        return deployTimeout;
     }
 
     public String getLibName() {
@@ -84,9 +77,5 @@ public class WSO2Connector extends AbstractDeployable implements WSO2Deployable 
 
     public void setApplicationName(String applicationName) {
         getLogger().warn("Deployable applicationName can not be overwritten by user", getClass().getSimpleName());
-    }
-
-    public void setDeployTimeout(long deployTimeout) {
-        this.deployTimeout = deployTimeout;
     }
 }
