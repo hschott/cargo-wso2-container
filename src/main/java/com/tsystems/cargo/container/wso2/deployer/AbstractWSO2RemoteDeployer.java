@@ -50,7 +50,7 @@ public abstract class AbstractWSO2RemoteDeployer extends AbstractRemoteDeployer 
             WSO2Deployable wso2Deployable = (WSO2Deployable) deployable;
             if (exists(wso2Deployable))
                 throw new ContainerException("Failed to deploy [" + deployable.getFile()
-                        + "]. Deployable with the same name or context is already deploed.");
+                        + "]. Deployable with the same name or context is already deployed.");
         } else
             throw new ContainerException("Failed to deploy [" + deployable.getFile()
                     + "]. Deployable is not a WSO2 deployable.");
