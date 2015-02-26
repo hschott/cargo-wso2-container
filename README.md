@@ -234,7 +234,9 @@ The JDBC driver jar file will be looked up from Maven dependencies by the classn
                 <groupId>${project.groupId}</groupId>
                 <artifactId>${project.artifactId}</artifactId>
                 <type>carbon/application</type>
-                <deployTimeout>120000</deployTimeout>
+                <properties>
+                  <deployTimeout>120000</deployTimeout>
+                </properties>
               </deployable>
             </deployables>
           </configuration>
