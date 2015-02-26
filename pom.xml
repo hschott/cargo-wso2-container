@@ -5,14 +5,13 @@
 	<artifactId>cargo-wso2-container</artifactId>
 	<version>0.3.0-SNAPSHOT</version>
 	<name>Cargo container extension for WSO2</name>
-	<description>A Cargo container extension for WSO2 Carbon Container.</description>
+	<description>A Cargo container extension for WSO2 Carbon Container. Supports WSO2 Carbon 4.x</description>
 	<url>https://github.com/hschott/cargo-wso2-container</url>
 	<developers>
 		<developer>
 			<name>Holger Balow-Schott</name>
 			<email>Holger.Balow-Schott@t-systems-mms.com</email>
-			<organization>T-Systems Multimedia Solutions GmbH</organization>
-			<organizationUrl>http://www.t-systems-mms.com</organizationUrl>
+			<organizationUrl>https://github.com/hschott/cargo-wso2-container</organizationUrl>
 			<timezone>+1</timezone>
 		</developer>
 	</developers>
@@ -35,6 +34,16 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
 	</properties>
+	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.axis2</groupId>
@@ -104,6 +113,20 @@
 						<id>attach-javadoc</id>
 						<goals>
 							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>1.5</version>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
 						</goals>
 					</execution>
 				</executions>
