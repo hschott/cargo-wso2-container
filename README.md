@@ -10,7 +10,7 @@ For more details about configuring Cargo visit please [Cargo](http://cargo.codeh
 
 ## Supported Container Features
 
-*The cargo-wso2-container 0.2.0 supports WSO2 Carbon 4.x*
+*The cargo-wso2-container 0.3.0 supports WSO2 Carbon 4.x*
 
 Container ID: wso2carbon4x
 
@@ -93,7 +93,7 @@ Update your pom to use cargo plugin and cargo-wso2-container as a dependency:
             <dependency>
               <groupId>com.tsystems.cargo.wso2</groupId>
               <artifactId>cargo-wso2-container</artifactId>
-              <version>0.2.0</version>
+              <version>0.3.0</version>
             </dependency>
           </dependencies>
         </plugin>
@@ -165,7 +165,7 @@ The JDBC driver jar file will be looked up from Maven dependencies by the classn
         <dependency>
           <groupId>com.tsystems.cargo.wso2</groupId>
           <artifactId>cargo-wso2-container</artifactId>
-          <version>0.2.0</version>
+          <version>0.3.0</version>
         </dependency>
       </dependencies>
       <configuration>
@@ -208,7 +208,7 @@ The JDBC driver jar file will be looked up from Maven dependencies by the classn
         <dependency>
           <groupId>com.tsystems.cargo.wso2</groupId>
           <artifactId>cargo-wso2-container</artifactId>
-          <version>0.2.0</version>
+          <version>0.3.0</version>
         </dependency>
       </dependencies>
       <executions>
@@ -258,7 +258,7 @@ The JDBC driver jar file will be looked up from Maven dependencies by the classn
         <dependency>
           <groupId>com.tsystems.cargo.wso2</groupId>
           <artifactId>cargo-wso2-container</artifactId>
-          <version>0.2.0</version>
+          <version>0.3.0</version>
         </dependency>
       </dependencies>
       <configuration>
