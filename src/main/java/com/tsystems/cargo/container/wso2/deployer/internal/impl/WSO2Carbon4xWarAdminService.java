@@ -15,8 +15,8 @@ import com.tsystems.cargo.container.wso2.deployer.internal.WSO2WarAdminService;
 
 public class WSO2Carbon4xWarAdminService extends AbstractWSO2Carbon4xAdminService implements WSO2WarAdminService {
 
-    public WSO2Carbon4xWarAdminService(URL url, String username, String password) {
-        super(url, username, password);
+    public WSO2Carbon4xWarAdminService(URL url, String wso2username, String wso2password, String httpUsername, String httpPassword) {
+        super(url, wso2username, wso2password, httpUsername, httpPassword);
     }
 
     public void deploy(WSO2WAR deployable) throws WSO2AdminServicesException {

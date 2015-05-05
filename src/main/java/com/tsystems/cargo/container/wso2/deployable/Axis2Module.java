@@ -64,6 +64,6 @@ public class Axis2Module extends AbstractWSO2Deployable implements WSO2Deployabl
     }
 
     public void setApplicationName(String applicationName) {
-        getLogger().warn("Deployable applicationName can not be overwritten by user", getClass().getSimpleName());
+        this.applicationName = applicationName;
     }
 }

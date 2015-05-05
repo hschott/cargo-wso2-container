@@ -16,8 +16,8 @@ import com.tsystems.cargo.container.wso2.deployer.internal.WSO2Axis2ModuleAdminS
 public class WSO2Carbon4xAxis2ModuleAdminService extends AbstractWSO2Carbon4xAdminService implements
         WSO2Axis2ModuleAdminService {
 
-    public WSO2Carbon4xAxis2ModuleAdminService(URL url, String username, String password) {
-        super(url, username, password);
+    public WSO2Carbon4xAxis2ModuleAdminService(URL url, String wso2username, String wso2password, String httpUsername, String httpPassword) {
+        super(url, wso2username, wso2password, httpUsername, httpPassword);
     }
 
     public void deploy(Axis2Module deployable) throws WSO2AdminServicesException {

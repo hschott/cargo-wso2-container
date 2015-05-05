@@ -15,7 +15,6 @@ import org.codehaus.cargo.container.configuration.builder.ConfigurationBuilder;
 import org.codehaus.cargo.container.configuration.entry.DataSource;
 import org.codehaus.cargo.container.configuration.entry.Resource;
 import org.codehaus.cargo.container.property.GeneralPropertySet;
-import org.codehaus.cargo.container.property.RemotePropertySet;
 import org.codehaus.cargo.container.property.ServletPropertySet;
 import org.codehaus.cargo.container.spi.configuration.builder.AbstractStandaloneLocalConfigurationWithXMLConfigurationBuilder;
 import org.codehaus.cargo.container.spi.deployer.AbstractLocalDeployer;
@@ -29,8 +28,8 @@ public class WSO2StandaloneLocalConfiguration extends AbstractStandaloneLocalCon
         super(dir);
         // default properties
         this.setProperty(GeneralPropertySet.HOSTNAME, "127.0.0.1");
-        this.setProperty(RemotePropertySet.USERNAME, "admin");
-        this.setProperty(RemotePropertySet.PASSWORD, "admin");
+        this.setProperty(WSO2CarbonPropertySet.CARBON_USERNAME, "admin");
+        this.setProperty(WSO2CarbonPropertySet.CARBON_PASSWORD, "admin");
         this.setProperty(GeneralPropertySet.RMI_PORT, "9999");
         this.setProperty(ServletPropertySet.PORT, "9763");
         this.setProperty(WSO2CarbonPropertySet.CARBON_CONTEXT_ROOT, "/");

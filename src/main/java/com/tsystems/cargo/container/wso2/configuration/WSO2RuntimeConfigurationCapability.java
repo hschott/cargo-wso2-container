@@ -21,6 +21,10 @@ public class WSO2RuntimeConfigurationCapability extends
 		this.supportsMap.put(GeneralPropertySet.PROTOCOL, Boolean.TRUE);
 		this.supportsMap.put(ServletPropertySet.PORT, Boolean.TRUE);
 		this.supportsMap.put(RemotePropertySet.URI, Boolean.TRUE);
+		
+		this.supportsMap.put(WSO2CarbonPropertySet.CARBON_USERNAME, Boolean.TRUE);
+		this.supportsMap.put(WSO2CarbonPropertySet.CARBON_PASSWORD, Boolean.TRUE);
+		
 	}
 
 	@Override

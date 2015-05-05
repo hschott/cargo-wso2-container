@@ -15,8 +15,8 @@ import com.tsystems.cargo.container.wso2.deployer.internal.WSO2BAMToolboxAdminSe
 public class WSO2Carbon4xBAMToolboxAdminService extends AbstractWSO2Carbon4xAdminService implements
         WSO2BAMToolboxAdminService {
 
-    public WSO2Carbon4xBAMToolboxAdminService(URL url, String username, String password) {
-        super(url, username, password);
+    public WSO2Carbon4xBAMToolboxAdminService(URL url, String wso2username, String wso2password, String httpUsername, String httpPassword) {
+        super(url, wso2username, wso2password, httpUsername, httpPassword);
     }
 
     public void deploy(BAMToolbox deployable) throws WSO2AdminServicesException {

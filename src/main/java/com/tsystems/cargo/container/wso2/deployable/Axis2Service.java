@@ -21,8 +21,7 @@ public class Axis2Service extends AbstractWSO2Deployable implements WSO2Deployab
 
     public final String getApplicationName() {
         if (applicationName == null || applicationName.length() == 0) {
-            final String fileName = getFile();
-            applicationName = fileName.substring(fileName.lastIndexOf(File.separator) + 1, fileName.lastIndexOf("."));
+            applicationName = parseApplication(".aar");
         }
         return applicationName;
     }

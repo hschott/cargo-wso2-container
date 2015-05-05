@@ -10,7 +10,7 @@ For more details about configuring Cargo visit please [Cargo](http://cargo.codeh
 
 ## Supported Container Features
 
-*The cargo-wso2-container 0.3.0 supports WSO2 Carbon 4.x*
+*The cargo-wso2-container supports WSO2 Carbon 4.x*
 
 Container ID: wso2carbon4x
 
@@ -93,7 +93,7 @@ Update your pom to use cargo plugin and cargo-wso2-container as a dependency:
             <dependency>
               <groupId>com.tsystems.cargo.wso2</groupId>
               <artifactId>cargo-wso2-container</artifactId>
-              <version>0.3.0</version>
+              <version>${cargo.wso2.container.version}</version>
             </dependency>
           </dependencies>
         </plugin>
@@ -109,12 +109,13 @@ Property name | Default value
 cargo.protocol | http
 cargo.hostname | 127.0.0.1
 cargo.servlet.port | 9763
-cargo.remote.username | admin
-cargo.remote.password | admin
+cargo.remote.username | N/A
+cargo.remote.password | N/A
+cargo.wso2carbon.username | admin
+cargo.wso2carbon.password | admin
 cargo.remote.uri | ${cargo.protocol}://${cargo.hostname}:${cargo.servlet.port}
 
-If configured cargo.remote.uri is preferred.
-
+If configured cargo.remote.uri is preferred. Use cargo.remote.username and cargo.remote.password to authenticate on HTTP server in front of WSO2 Carbon Mangement Console. Use cargo.wso2carbon.username and cargo.wso2carbon.password to authenticate on WSO2 Carbon Mangement Console.
 
 ### Supported Existing Local Configuration Properties (Existing Container)
 
@@ -127,13 +128,13 @@ cargo.port.offset | 0
 cargo.java.home | JAVA_HOME
 cargo.process.spawn | false
 cargo.rmi.port | 9999
-cargo.remote.username | admin
-cargo.remote.password | admin
+cargo.wso2carbon.username | admin
+cargo.wso2carbon.password | admin
 cargo.jvmargs | N/A
 cargo.runtime.args | N/A
 
 When a container is started cargo.protocol, cargo.hostname and cargo.servlet.port are used to check if the containers Carbon Management Console is up and running.
-The WSO2 Carbon container is stopped via JMX management bean invocation. Therefore cargo.rmi.port, cargo.remote.username and cargo.remote.password can be configured.
+The WSO2 Carbon container is stopped via JMX management bean invocation. Therefore cargo.rmi.port, cargo.wso2carbon.username and cargo.wso2carbon.password can be configured.
 
 Use cargo.port.offset to shift all ports by the given integer value.
 See [Default Ports of WSO2 Products](https://docs.wso2.com/display/Carbon420/Default+Ports+of+WSO2+Products)
@@ -165,7 +166,7 @@ The JDBC driver jar file will be looked up from Maven dependencies by the classn
         <dependency>
           <groupId>com.tsystems.cargo.wso2</groupId>
           <artifactId>cargo-wso2-container</artifactId>
-          <version>0.3.0</version>
+          <version>${cargo.wso2.container.version}</version>
         </dependency>
       </dependencies>
       <configuration>
@@ -208,7 +209,7 @@ The JDBC driver jar file will be looked up from Maven dependencies by the classn
         <dependency>
           <groupId>com.tsystems.cargo.wso2</groupId>
           <artifactId>cargo-wso2-container</artifactId>
-          <version>0.3.0</version>
+          <version>${cargo.wso2.container.version}</version>
         </dependency>
       </dependencies>
       <executions>
@@ -258,7 +259,7 @@ The JDBC driver jar file will be looked up from Maven dependencies by the classn
         <dependency>
           <groupId>com.tsystems.cargo.wso2</groupId>
           <artifactId>cargo-wso2-container</artifactId>
-          <version>0.3.0</version>
+          <version>${cargo.wso2.container.version}</version>
         </dependency>
       </dependencies>
       <configuration>

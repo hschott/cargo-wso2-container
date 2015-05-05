@@ -16,8 +16,8 @@ import com.tsystems.cargo.container.wso2.deployer.internal.WSO2MediationLibraryA
 public class WSO2Carbon4xMediationLibraryAdminService extends AbstractWSO2Carbon4xAdminService implements
         WSO2MediationLibraryAdminService {
 
-    public WSO2Carbon4xMediationLibraryAdminService(URL url, String username, String password) {
-        super(url, username, password);
+    public WSO2Carbon4xMediationLibraryAdminService(URL url, String wso2username, String wso2password, String httpUsername, String httpPassword) {
+        super(url, wso2username, wso2password, httpUsername, httpPassword);
     }
 
     public void deploy(WSO2Connector deployable) throws WSO2AdminServicesException {

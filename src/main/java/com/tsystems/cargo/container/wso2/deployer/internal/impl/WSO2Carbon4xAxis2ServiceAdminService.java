@@ -18,8 +18,8 @@ import com.tsystems.cargo.container.wso2.deployer.internal.WSO2Axis2ServiceAdmin
 public class WSO2Carbon4xAxis2ServiceAdminService extends AbstractWSO2Carbon4xAdminService implements
         WSO2Axis2ServiceAdminService {
 
-    public WSO2Carbon4xAxis2ServiceAdminService(URL url, String username, String password) {
-        super(url, username, password);
+    public WSO2Carbon4xAxis2ServiceAdminService(URL url, String wso2username, String wso2password, String httpUsername, String httpPassword) {
+        super(url, wso2username, wso2password, httpUsername, httpPassword);
     }
 
     public void deploy(Axis2Service deployable) throws WSO2AdminServicesException {

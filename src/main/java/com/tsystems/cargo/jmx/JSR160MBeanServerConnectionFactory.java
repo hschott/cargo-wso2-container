@@ -35,6 +35,8 @@ import org.codehaus.cargo.container.configuration.Configuration;
 import org.codehaus.cargo.container.property.GeneralPropertySet;
 import org.codehaus.cargo.container.property.RemotePropertySet;
 
+import com.tsystems.cargo.container.wso2.configuration.WSO2CarbonPropertySet;
+
 /**
  * JMX remoting (JSR 160) implementation to get a remote MBeanServerConnection.
  *
@@ -74,8 +76,8 @@ public class JSR160MBeanServerConnectionFactory {
      * @throws IOException
      */
     public MBeanServerConnection getServerConnection(Configuration configuration) throws IOException {
-        String username = configuration.getPropertyValue(RemotePropertySet.USERNAME);
-        String password = configuration.getPropertyValue(RemotePropertySet.PASSWORD);
+        String username = configuration.getPropertyValue(WSO2CarbonPropertySet.CARBON_USERNAME);
+        String password = configuration.getPropertyValue(WSO2CarbonPropertySet.CARBON_PASSWORD);
 
         String jmxRemoteURL = configuration.getPropertyValue(RemotePropertySet.URI);
 
