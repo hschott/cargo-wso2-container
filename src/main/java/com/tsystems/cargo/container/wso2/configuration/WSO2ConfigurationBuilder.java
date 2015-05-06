@@ -8,10 +8,12 @@ import org.codehaus.cargo.container.spi.configuration.builder.AbstractConfigurat
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
-public class WSO2ConfigurationBuilder extends AbstractConfigurationBuilder {
+public class WSO2ConfigurationBuilder extends AbstractConfigurationBuilder
+{
 
     @Override
-    public String buildConfigurationEntryForXADataSourceConfiguredDataSource(DataSource ds) {
+    public String buildConfigurationEntryForXADataSourceConfiguredDataSource(DataSource ds)
+    {
         Element datasource = DocumentHelper.createDocument().addElement("datasource");
         Element configuration = createConfigurationElement(ds, datasource);
 
@@ -22,12 +24,14 @@ public class WSO2ConfigurationBuilder extends AbstractConfigurationBuilder {
         ds.getConnectionProperties().put("password", ds.getPassword());
 
         Element props = configuration.addElement("dataSourceProps");
-        if (ds.getConnectionProperties() != null && ds.getConnectionProperties().size() != 0) {
+        if (ds.getConnectionProperties() != null && ds.getConnectionProperties().size() != 0)
+        {
             Iterator<Object> i = ds.getConnectionProperties().keySet().iterator();
-            while (i.hasNext()) {
+            while (i.hasNext())
+            {
                 String key = i.next().toString();
                 props.addElement("property").addAttribute("name", key)
-                        .setText(ds.getConnectionProperties().getProperty(key));
+                    .setText(ds.getConnectionProperties().getProperty(key));
             }
 
         }
@@ -37,13 +41,15 @@ public class WSO2ConfigurationBuilder extends AbstractConfigurationBuilder {
     }
 
     @Override
-    public String buildEntryForDriverConfiguredDataSourceWithLocalTx(DataSource ds) {
-        throw new UnsupportedOperationException("WSO2 does not support " + ds.getTransactionSupport()
-                + " for DataSource implementations.");
+    public String buildEntryForDriverConfiguredDataSourceWithLocalTx(DataSource ds)
+    {
+        throw new UnsupportedOperationException("WSO2 does not support "
+            + ds.getTransactionSupport() + " for DataSource implementations.");
     }
 
     @Override
-    public String buildEntryForDriverConfiguredDataSourceWithNoTx(DataSource ds) {
+    public String buildEntryForDriverConfiguredDataSourceWithNoTx(DataSource ds)
+    {
         Element datasource = DocumentHelper.createDocument().addElement("datasource");
         Element configuration = createConfigurationElement(ds, datasource);
 
@@ -59,12 +65,14 @@ public class WSO2ConfigurationBuilder extends AbstractConfigurationBuilder {
     }
 
     @Override
-    public String buildEntryForDriverConfiguredDataSourceWithXaTx(DataSource ds) {
-        throw new UnsupportedOperationException("WSO2 does not support " + ds.getTransactionSupport()
-                + " for DataSource implementations.");
+    public String buildEntryForDriverConfiguredDataSourceWithXaTx(DataSource ds)
+    {
+        throw new UnsupportedOperationException("WSO2 does not support "
+            + ds.getTransactionSupport() + " for DataSource implementations.");
     }
 
-    private void configureConnectionPooling(Element configuration) {
+    private void configureConnectionPooling(Element configuration)
+    {
         configuration.addElement("maxActive").setText("50");
         configuration.addElement("maxWait").setText("30000");
         configuration.addElement("testOnBorrow").setText("true");
@@ -72,25 +80,30 @@ public class WSO2ConfigurationBuilder extends AbstractConfigurationBuilder {
         configuration.addElement("validationInterval").setText("30000");
     }
 
-    private Element createConfigurationElement(DataSource ds, Element datasource) {
+    private Element createConfigurationElement(DataSource ds, Element datasource)
+    {
         datasource.addElement("name").setText(ds.getId());
         datasource.addElement("description").setText("Configured by Cargo");
-        if (ds.getJndiLocation() != null && ds.getJndiLocation().length() > 0) {
+        if (ds.getJndiLocation() != null && ds.getJndiLocation().length() > 0)
+        {
             datasource.addElement("jndiConfig").addElement("name").setText(ds.getJndiLocation());
         }
-        Element configuration = datasource.addElement("definition").addAttribute("type", "RDBMS")
+        Element configuration =
+            datasource.addElement("definition").addAttribute("type", "RDBMS")
                 .addElement("configuration");
         return configuration;
     }
 
-    public String toConfigurationEntry(Resource resource) {
+    public String toConfigurationEntry(Resource resource)
+    {
         Element res = DocumentHelper.createDocument().addElement("Resource");
         res.addAttribute("name", resource.getName());
         res.addAttribute("auth", "Container");
         res.addAttribute("type", resource.getType());
         res.addAttribute("driverClassName", resource.getClassName());
 
-        for (String parameterName : resource.getParameterNames()) {
+        for (String parameterName : resource.getParameterNames())
+        {
             res.addAttribute(parameterName, resource.getParameter(parameterName));
         }
         return res.asXML();

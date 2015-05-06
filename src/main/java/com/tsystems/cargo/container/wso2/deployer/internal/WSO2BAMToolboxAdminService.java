@@ -2,7 +2,8 @@ package com.tsystems.cargo.container.wso2.deployer.internal;
 
 import com.tsystems.cargo.container.wso2.deployable.BAMToolbox;
 
-public interface WSO2BAMToolboxAdminService extends WSO2BaseAdminService {
+public interface WSO2BAMToolboxAdminService extends WSO2BaseAdminService
+{
 
     public abstract void deploy(BAMToolbox deployable) throws WSO2AdminServicesException;
 

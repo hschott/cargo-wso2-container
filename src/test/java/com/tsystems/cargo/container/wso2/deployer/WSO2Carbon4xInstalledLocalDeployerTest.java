@@ -30,139 +30,148 @@ import com.tsystems.cargo.container.wso2.deployable.CarbonApplication;
 import com.tsystems.cargo.container.wso2.deployable.WSO2Axis2Service;
 import com.tsystems.cargo.container.wso2.deployable.WSO2Connector;
 
-public class WSO2Carbon4xInstalledLocalDeployerTest {
+public class WSO2Carbon4xInstalledLocalDeployerTest
+{
 
     private static final ContainerFactory CONTAINER_FACTORY = new DefaultContainerFactory();
-    private static final ConfigurationFactory CONFIGURATION_FACTORY = new DefaultConfigurationFactory();
+
+    private static final ConfigurationFactory CONFIGURATION_FACTORY =
+        new DefaultConfigurationFactory();
+
     private static final DeployerFactory DEPLOYER_FACTORY = new DefaultDeployerFactory();
+
     private static final DeployableFactory DEPLOYABLE_FACTORY = new DefaultDeployableFactory();
 
     private static final String DEPLOYABLE_DIR_PREFIX = "/repository/deployment/server";
 
     private Configuration configuration;
+
     private Container container;
+
     private Deployer deployer;
+
     private String home;
 
     @Before
-    public void setUp() throws Exception {
-	URL carbon = ClassLoader
-		.getSystemResource("repository/conf/carbon.xml");
-	home = new File(carbon.getFile()).getParentFile().getParentFile()
-		.getParentFile().getPath();
+    public void setUp() throws Exception
+    {
+        URL carbon = ClassLoader.getSystemResource("repository/conf/carbon.xml");
+        home =
+            new File(carbon.getFile()).getParentFile().getParentFile().getParentFile().getPath();
 
-	configuration = CONFIGURATION_FACTORY.createConfiguration(
-		WSO2Carbon4xContainer.ID, ContainerType.INSTALLED,
-		ConfigurationType.EXISTING, home);
+        configuration =
+            CONFIGURATION_FACTORY.createConfiguration(WSO2Carbon4xContainer.ID,
+                ContainerType.INSTALLED, ConfigurationType.EXISTING, home);
 
-	container = CONTAINER_FACTORY.createContainer(WSO2Carbon4xContainer.ID,
-		ContainerType.INSTALLED, configuration);
+        container =
+            CONTAINER_FACTORY.createContainer(WSO2Carbon4xContainer.ID, ContainerType.INSTALLED,
+                configuration);
 
-	deployer = DEPLOYER_FACTORY.createDeployer(container);
+        deployer = DEPLOYER_FACTORY.createDeployer(container);
     }
 
     @Test
-    public void testWarDeployableDir() {
-	Deployable deployable = DEPLOYABLE_FACTORY.createDeployable(
-		WSO2Carbon4xContainer.ID, "test.war", DeployableType.WAR);
+    public void testWarDeployableDir()
+    {
+        Deployable deployable =
+            DEPLOYABLE_FACTORY.createDeployable(WSO2Carbon4xContainer.ID, "test.war",
+                DeployableType.WAR);
 
-	String dir = ((WSO2Carbon4xInstalledLocalDeployer) deployer)
-		.getDeployableDir(deployable);
+        String dir = ((WSO2Carbon4xInstalledLocalDeployer) deployer).getDeployableDir(deployable);
 
-	Assert.assertEquals(home + DEPLOYABLE_DIR_PREFIX + "/webapps", dir);
+        Assert.assertEquals(home + DEPLOYABLE_DIR_PREFIX + "/webapps", dir);
     }
 
     @Test
-    public void testCarbonApplicationDeployableDir() {
-	Deployable deployable = DEPLOYABLE_FACTORY.createDeployable(
-		WSO2Carbon4xContainer.ID, "test.car", CarbonApplication.TYPE);
+    public void testCarbonApplicationDeployableDir()
+    {
+        Deployable deployable =
+            DEPLOYABLE_FACTORY.createDeployable(WSO2Carbon4xContainer.ID, "test.car",
+                CarbonApplication.TYPE);
 
-	String dir = ((WSO2Carbon4xInstalledLocalDeployer) deployer)
-		.getDeployableDir(deployable);
+        String dir = ((WSO2Carbon4xInstalledLocalDeployer) deployer).getDeployableDir(deployable);
 
-	Assert.assertEquals(home + DEPLOYABLE_DIR_PREFIX + "/carbonapps", dir);
+        Assert.assertEquals(home + DEPLOYABLE_DIR_PREFIX + "/carbonapps", dir);
     }
 
     @Test
-    public void testWSO2Axis2ServiceDeployableDir() {
-	Deployable deployable = DEPLOYABLE_FACTORY.createDeployable(
-		WSO2Carbon4xContainer.ID, "test.aar", WSO2Axis2Service.TYPE);
+    public void testWSO2Axis2ServiceDeployableDir()
+    {
+        Deployable deployable =
+            DEPLOYABLE_FACTORY.createDeployable(WSO2Carbon4xContainer.ID, "test.aar",
+                WSO2Axis2Service.TYPE);
 
-	String dir = ((WSO2Carbon4xInstalledLocalDeployer) deployer)
-		.getDeployableDir(deployable);
+        String dir = ((WSO2Carbon4xInstalledLocalDeployer) deployer).getDeployableDir(deployable);
 
-	Assert.assertEquals(home + DEPLOYABLE_DIR_PREFIX + "/axis2services",
-		dir);
+        Assert.assertEquals(home + DEPLOYABLE_DIR_PREFIX + "/axis2services", dir);
     }
 
     @Test
-    public void testAxis2ServiceDeployableDir() {
-	Deployable deployable = DEPLOYABLE_FACTORY.createDeployable(
-		WSO2Carbon4xContainer.ID, "test.aar", Axis2Service.TYPE);
+    public void testAxis2ServiceDeployableDir()
+    {
+        Deployable deployable =
+            DEPLOYABLE_FACTORY.createDeployable(WSO2Carbon4xContainer.ID, "test.aar",
+                Axis2Service.TYPE);
 
-	String dir = ((WSO2Carbon4xInstalledLocalDeployer) deployer)
-		.getDeployableDir(deployable);
+        String dir = ((WSO2Carbon4xInstalledLocalDeployer) deployer).getDeployableDir(deployable);
 
-	Assert.assertEquals(home + DEPLOYABLE_DIR_PREFIX + "/axis2services",
-		dir);
+        Assert.assertEquals(home + DEPLOYABLE_DIR_PREFIX + "/axis2services", dir);
     }
 
     @Test
-    public void testAxis2ModuleDeployableDir() {
-	Deployable deployable = DEPLOYABLE_FACTORY.createDeployable(
-		WSO2Carbon4xContainer.ID, "test.mar", Axis2Module.TYPE);
+    public void testAxis2ModuleDeployableDir()
+    {
+        Deployable deployable =
+            DEPLOYABLE_FACTORY.createDeployable(WSO2Carbon4xContainer.ID, "test.mar",
+                Axis2Module.TYPE);
 
-	String dir = ((WSO2Carbon4xInstalledLocalDeployer) deployer)
-		.getDeployableDir(deployable);
+        String dir = ((WSO2Carbon4xInstalledLocalDeployer) deployer).getDeployableDir(deployable);
 
-	Assert.assertEquals(home + DEPLOYABLE_DIR_PREFIX + "/axis2modules", dir);
+        Assert.assertEquals(home + DEPLOYABLE_DIR_PREFIX + "/axis2modules", dir);
     }
 
     @Test
-    public void testWSO2ConnectorDeployableDir() {
-	Deployable deployable = DEPLOYABLE_FACTORY.createDeployable(
-		WSO2Carbon4xContainer.ID, "test.zip", WSO2Connector.TYPE);
+    public void testWSO2ConnectorDeployableDir()
+    {
+        Deployable deployable =
+            DEPLOYABLE_FACTORY.createDeployable(WSO2Carbon4xContainer.ID, "test.zip",
+                WSO2Connector.TYPE);
 
-	String dir = ((WSO2Carbon4xInstalledLocalDeployer) deployer)
-		.getDeployableDir(deployable);
+        String dir = ((WSO2Carbon4xInstalledLocalDeployer) deployer).getDeployableDir(deployable);
 
-	Assert.assertEquals(home + DEPLOYABLE_DIR_PREFIX + "/synapse-libs", dir);
+        Assert.assertEquals(home + DEPLOYABLE_DIR_PREFIX + "/synapse-libs", dir);
     }
 
     @Test
-    public void testBAMToolboxDeployableDir() {
-	Deployable deployable = DEPLOYABLE_FACTORY.createDeployable(
-		WSO2Carbon4xContainer.ID, "test.tbox", BAMToolbox.TYPE);
+    public void testBAMToolboxDeployableDir()
+    {
+        Deployable deployable =
+            DEPLOYABLE_FACTORY.createDeployable(WSO2Carbon4xContainer.ID, "test.tbox",
+                BAMToolbox.TYPE);
 
-	String dir = ((WSO2Carbon4xInstalledLocalDeployer) deployer)
-		.getDeployableDir(deployable);
+        String dir = ((WSO2Carbon4xInstalledLocalDeployer) deployer).getDeployableDir(deployable);
 
-	Assert.assertEquals(home + DEPLOYABLE_DIR_PREFIX + "/bam-toolbox", dir);
+        Assert.assertEquals(home + DEPLOYABLE_DIR_PREFIX + "/bam-toolbox", dir);
     }
 
     @Test
-    public void testShouldDeployExpanded() {
-	Assert.assertEquals(true,
-		((WSO2Carbon4xInstalledLocalDeployer) deployer)
-			.shouldDeployExpanded(DeployableType.WAR));
-	Assert.assertEquals(false,
-		((WSO2Carbon4xInstalledLocalDeployer) deployer)
-			.shouldDeployExpanded(CarbonApplication.TYPE));
-	Assert.assertEquals(false,
-		((WSO2Carbon4xInstalledLocalDeployer) deployer)
-			.shouldDeployExpanded(WSO2Axis2Service.TYPE));
-	Assert.assertEquals(false,
-		((WSO2Carbon4xInstalledLocalDeployer) deployer)
-			.shouldDeployExpanded(Axis2Service.TYPE));
-	Assert.assertEquals(false,
-		((WSO2Carbon4xInstalledLocalDeployer) deployer)
-			.shouldDeployExpanded(Axis2Module.TYPE));
-	Assert.assertEquals(false,
-		((WSO2Carbon4xInstalledLocalDeployer) deployer)
-			.shouldDeployExpanded(WSO2Connector.TYPE));
-	Assert.assertEquals(false,
-		((WSO2Carbon4xInstalledLocalDeployer) deployer)
-			.shouldDeployExpanded(BAMToolbox.TYPE));
+    public void testShouldDeployExpanded()
+    {
+        Assert.assertEquals(true, ((WSO2Carbon4xInstalledLocalDeployer) deployer)
+            .shouldDeployExpanded(DeployableType.WAR));
+        Assert.assertEquals(false, ((WSO2Carbon4xInstalledLocalDeployer) deployer)
+            .shouldDeployExpanded(CarbonApplication.TYPE));
+        Assert.assertEquals(false, ((WSO2Carbon4xInstalledLocalDeployer) deployer)
+            .shouldDeployExpanded(WSO2Axis2Service.TYPE));
+        Assert.assertEquals(false, ((WSO2Carbon4xInstalledLocalDeployer) deployer)
+            .shouldDeployExpanded(Axis2Service.TYPE));
+        Assert.assertEquals(false, ((WSO2Carbon4xInstalledLocalDeployer) deployer)
+            .shouldDeployExpanded(Axis2Module.TYPE));
+        Assert.assertEquals(false, ((WSO2Carbon4xInstalledLocalDeployer) deployer)
+            .shouldDeployExpanded(WSO2Connector.TYPE));
+        Assert
+            .assertEquals(false, ((WSO2Carbon4xInstalledLocalDeployer) deployer)
+                .shouldDeployExpanded(BAMToolbox.TYPE));
     }
 
 }

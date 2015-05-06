@@ -2,7 +2,8 @@ package com.tsystems.cargo.container.wso2.deployable;
 
 import org.codehaus.cargo.container.deployable.Deployable;
 
-public interface WSO2Deployable extends Deployable {
+public interface WSO2Deployable extends Deployable
+{
 
     public String getApplicationName();
 

@@ -39,13 +39,14 @@ import com.tsystems.cargo.container.wso2.configuration.WSO2CarbonPropertySet;
 
 /**
  * JMX remoting (JSR 160) implementation to get a remote MBeanServerConnection.
- *
  */
-public class JSR160MBeanServerConnectionFactory {
+public class JSR160MBeanServerConnectionFactory
+{
     /**
      * The default JMX remote URL to use with WSO2 server.
      */
-    private static final String DEFAULT_URI = "service:jmx:rmi://localhost/jndi/rmi://localhost:9999/jmxrmi";
+    private static final String DEFAULT_URI =
+        "service:jmx:rmi://localhost/jndi/rmi://localhost:9999/jmxrmi";
 
     /**
      * JMX Connector to use with WSO2 server.
@@ -55,11 +56,16 @@ public class JSR160MBeanServerConnectionFactory {
     /**
      * Shutdown the connector.
      */
-    public void destroy() {
-        if (connector != null) {
-            try {
+    public void destroy()
+    {
+        if (connector != null)
+        {
+            try
+            {
                 connector.close();
-            } catch (IOException e) {
+            }
+            catch (IOException e)
+            {
                 e.getMessage();
             }
             connector = null;
@@ -70,27 +76,31 @@ public class JSR160MBeanServerConnectionFactory {
     /**
      * Creates a new connector and returns a MBeanServerConnection.
      *
-     * @param configuration
-     *            Configuration to read URI, username and password from.
+     * @param configuration Configuration to read URI, username and password from.
      * @return MBeanServerConnection fresh connection
      * @throws IOException
      */
-    public MBeanServerConnection getServerConnection(Configuration configuration) throws IOException {
+    public MBeanServerConnection getServerConnection(Configuration configuration)
+        throws IOException
+    {
         String username = configuration.getPropertyValue(WSO2CarbonPropertySet.CARBON_USERNAME);
         String password = configuration.getPropertyValue(WSO2CarbonPropertySet.CARBON_PASSWORD);
 
         String jmxRemoteURL = configuration.getPropertyValue(RemotePropertySet.URI);
 
-        if (jmxRemoteURL == null || jmxRemoteURL.trim().length() == 0) {
+        if (jmxRemoteURL == null || jmxRemoteURL.trim().length() == 0)
+        {
             jmxRemoteURL = DEFAULT_URI;
 
             String port = configuration.getPropertyValue(GeneralPropertySet.RMI_PORT);
-            if (port != null) {
+            if (port != null)
+            {
                 jmxRemoteURL = jmxRemoteURL.replace("9999", port);
             }
 
             String hostname = configuration.getPropertyValue(GeneralPropertySet.HOSTNAME);
-            if (hostname != null) {
+            if (hostname != null)
+            {
                 jmxRemoteURL = jmxRemoteURL.replace("localhost", hostname);
             }
 
@@ -98,11 +108,13 @@ public class JSR160MBeanServerConnectionFactory {
 
         Map<String, Object> environment = new HashMap<String, Object>();
 
-        Object credentials = new String[] { username, password };
+        Object credentials = new String[] {username, password};
         environment.put(JMXConnector.CREDENTIALS, credentials);
 
-        if (!environment.containsKey(JMXConnectorFactory.PROTOCOL_PROVIDER_CLASS_LOADER)) {
-            environment.put(JMXConnectorFactory.PROTOCOL_PROVIDER_CLASS_LOADER, this.getClass().getClassLoader());
+        if (!environment.containsKey(JMXConnectorFactory.PROTOCOL_PROVIDER_CLASS_LOADER))
+        {
+            environment.put(JMXConnectorFactory.PROTOCOL_PROVIDER_CLASS_LOADER, this.getClass()
+                .getClassLoader());
         }
 
         JMXServiceURL address = new JMXServiceURL(jmxRemoteURL);

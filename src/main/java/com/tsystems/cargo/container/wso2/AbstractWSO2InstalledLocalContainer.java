@@ -27,116 +27,151 @@ import org.w3c.dom.Node;
 
 import com.tsystems.cargo.jmx.JSR160MBeanServerConnectionFactory;
 
-public abstract class AbstractWSO2InstalledLocalContainer extends AbstractInstalledLocalContainer {
+public abstract class AbstractWSO2InstalledLocalContainer extends AbstractInstalledLocalContainer
+{
 
-    public AbstractWSO2InstalledLocalContainer(LocalConfiguration configuration) {
+    public AbstractWSO2InstalledLocalContainer(LocalConfiguration configuration)
+    {
         super(configuration);
     }
 
     protected abstract void addBootstrapJarToClasspath(JvmLauncher java);
 
     @Override
-    protected void addMemoryArguments(JvmLauncher java) {
+    protected void addMemoryArguments(JvmLauncher java)
+    {
         // if the jvmArgs don't already contain memory settings add the default
         String jvmArgs = getConfiguration().getPropertyValue(GeneralPropertySet.JVMARGS);
-        if (jvmArgs == null || !jvmArgs.contains("-Xms")) {
+        if (jvmArgs == null || !jvmArgs.contains("-Xms"))
+        {
             java.addJvmArguments("-Xms256m");
         }
-        if (jvmArgs == null || !jvmArgs.contains("-Xmx")) {
+        if (jvmArgs == null || !jvmArgs.contains("-Xmx"))
+        {
             java.addJvmArguments("-Xmx1024m");
         }
-        if (jvmArgs == null || !jvmArgs.contains("-XX:MaxPermSize")) {
+        if (jvmArgs == null || !jvmArgs.contains("-XX:MaxPermSize"))
+        {
             java.addJvmArguments("-XX:MaxPermSize=256m");
         }
     }
 
     @Override
-    public void doStart(JvmLauncher java) throws Exception {
+    public void doStart(JvmLauncher java) throws Exception
+    {
         invokeContainer("start", java);
     }
 
     @Override
-    public void doStop(JvmLauncher java) throws Exception {
+    public void doStop(JvmLauncher java) throws Exception
+    {
         JSR160MBeanServerConnectionFactory mbscf = new JSR160MBeanServerConnectionFactory();
-        try {
+        try
+        {
             MBeanServerConnection mbsc = mbscf.getServerConnection(getConfiguration());
-            mbsc.invoke(new ObjectName("org.wso2.carbon:type=ServerAdmin"), "shutdownGracefully", null, null);
-        } finally {
+            mbsc.invoke(new ObjectName("org.wso2.carbon:type=ServerAdmin"), "shutdownGracefully",
+                null, null);
+        }
+        finally
+        {
             mbscf.destroy();
         }
     }
 
-    public ContainerCapability getCapability() {
+    public ContainerCapability getCapability()
+    {
         return new WSO2ContainerCapability();
     }
 
-    public URL getCarbonURL(LocalConfiguration configuration) {
-        try {
+    public URL getCarbonURL(LocalConfiguration configuration)
+    {
+        try
+        {
 
-            String carbon = getFileHandler().append(configuration.getHome(), "repository/conf/carbon.xml");
+            String carbon =
+                getFileHandler().append(configuration.getHome(), "repository/conf/carbon.xml");
 
-            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File(carbon));
+            Document doc =
+                DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File(carbon));
 
-            XPathExpression xPathExpr = XPathFactory.newInstance().newXPath().compile("//Server/WebContextRoot");
+            XPathExpression xPathExpr =
+                XPathFactory.newInstance().newXPath().compile("//Server/WebContextRoot");
             Node node = (Node) xPathExpr.evaluate(doc, XPathConstants.NODE);
             String context = node.getFirstChild().getNodeValue();
 
             String hostname = configuration.getPropertyValue(GeneralPropertySet.HOSTNAME);
-            if ("0.0.0.0".equals(hostname) || "::0".equals(hostname)) {
+            if ("0.0.0.0".equals(hostname) || "::0".equals(hostname))
+            {
                 hostname = "localhost";
             }
-            return new URL(configuration.getPropertyValue(GeneralPropertySet.PROTOCOL) + "://" + hostname + ":"
-                    + configuration.getPropertyValue(ServletPropertySet.PORT) + context + "/carbon/");
-        } catch (Exception e) {
+            return new URL(configuration.getPropertyValue(GeneralPropertySet.PROTOCOL) + "://"
+                + hostname + ":" + configuration.getPropertyValue(ServletPropertySet.PORT)
+                + context + "/carbon/");
+        }
+        catch (Exception e)
+        {
             throw new ContainerException("Failed to compute Carbon URL", e);
         }
     }
 
     public abstract String getCommonName();
 
-    public String getName() {
+    public String getName()
+    {
         LocalConfiguration configuration = getConfiguration();
 
         String prefix = "";
 
-        if (configuration instanceof ExistingLocalConfiguration) {
+        if (configuration instanceof ExistingLocalConfiguration)
+        {
             prefix = "Existing ";
         }
-        if (configuration instanceof StandaloneLocalConfiguration) {
+        if (configuration instanceof StandaloneLocalConfiguration)
+        {
             prefix = "Standalone ";
         }
 
-        String carbon = getFileHandler().append(configuration.getHome(), "repository/conf/carbon.xml");
+        String carbon =
+            getFileHandler().append(configuration.getHome(), "repository/conf/carbon.xml");
         Document doc;
-        try {
-            doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File(carbon));
-            XPathExpression xPathExpr = XPathFactory.newInstance().newXPath().compile("//Server/Name");
+        try
+        {
+            doc =
+                DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File(carbon));
+            XPathExpression xPathExpr =
+                XPathFactory.newInstance().newXPath().compile("//Server/Name");
             Node node = (Node) xPathExpr.evaluate(doc, XPathConstants.NODE);
             String serverName = node.getFirstChild().getNodeValue();
 
             return prefix + getCommonName() + " " + serverName;
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             return prefix + getCommonName();
         }
     }
 
-    protected void invokeContainer(String action, JvmLauncher java) throws Exception {
+    protected void invokeContainer(String action, JvmLauncher java) throws Exception
+    {
         String containerHome = getFileHandler().getAbsolutePath(getHome());
-        String configurationHome = getFileHandler().getAbsolutePath(
+        String configurationHome =
+            getFileHandler().getAbsolutePath(
                 getFileHandler().append(getConfiguration().getHome(), "repository/conf"));
 
         java.setSystemProperty("carbon.home", containerHome);
-        java.setSystemProperty("catalina.base", getFileHandler().append(containerHome, "lib/tomcat"));
+        java.setSystemProperty("catalina.base",
+            getFileHandler().append(containerHome, "lib/tomcat"));
         java.setSystemProperty("wso2.server.standalone", "true");
 
-        java.setSystemProperty("java.endorsed.dirs", getFileHandler().append(containerHome, "lib/endorsed"));
+        java.setSystemProperty("java.endorsed.dirs",
+            getFileHandler().append(containerHome, "lib/endorsed"));
         java.setSystemProperty("components.repo",
-                getFileHandler().append(containerHome, "repository/components/plugins"));
+            getFileHandler().append(containerHome, "repository/components/plugins"));
         java.setSystemProperty("carbon.config.dir.path", configurationHome);
         java.setSystemProperty("conf.location", configurationHome);
         java.setSystemProperty("carbon.registry.root", "/");
         java.setSystemProperty("com.atomikos.icatch.file",
-                getFileHandler().append(containerHome, "lib/transactions.properties"));
+            getFileHandler().append(containerHome, "lib/transactions.properties"));
         java.setSystemProperty("com.atomikos.icatch.hide_init_file_path", "true");
         java.setSystemProperty("org.terracotta.quartz.skipUpdateCheck", "true");
         java.setSystemProperty("file.encoding", "UTF8");
@@ -145,36 +180,50 @@ public abstract class AbstractWSO2InstalledLocalContainer extends AbstractInstal
 
         String jvmArgs = getConfiguration().getPropertyValue(GeneralPropertySet.JVMARGS);
 
-        if (jvmArgs == null || !jvmArgs.contains("wso2.carbon.xml")) {
-            java.setSystemProperty("wso2.carbon.xml", getFileHandler().append(configurationHome, "carbon.xml"));
+        if (jvmArgs == null || !jvmArgs.contains("wso2.carbon.xml"))
+        {
+            java.setSystemProperty("wso2.carbon.xml",
+                getFileHandler().append(configurationHome, "carbon.xml"));
         }
-        if (jvmArgs == null || !jvmArgs.contains("wso2.registry.xml")) {
-            java.setSystemProperty("wso2.registry.xml", getFileHandler().append(configurationHome, "registry.xml"));
+        if (jvmArgs == null || !jvmArgs.contains("wso2.registry.xml"))
+        {
+            java.setSystemProperty("wso2.registry.xml",
+                getFileHandler().append(configurationHome, "registry.xml"));
         }
-        if (jvmArgs == null || !jvmArgs.contains("wso2.user.mgt.xml")) {
-            java.setSystemProperty("wso2.user.mgt.xml", getFileHandler().append(configurationHome, "user-mgt.xml"));
+        if (jvmArgs == null || !jvmArgs.contains("wso2.user.mgt.xml"))
+        {
+            java.setSystemProperty("wso2.user.mgt.xml",
+                getFileHandler().append(configurationHome, "user-mgt.xml"));
         }
-        if (jvmArgs == null || !jvmArgs.contains("wso2.transports.xml")) {
+        if (jvmArgs == null || !jvmArgs.contains("wso2.transports.xml"))
+        {
             java.setSystemProperty("wso2.transports.xml",
-                    getFileHandler().append(configurationHome, "mgt-transports.xml"));
+                getFileHandler().append(configurationHome, "mgt-transports.xml"));
         }
-        if (jvmArgs == null || !jvmArgs.contains("java.io.tmpdir")) {
-            java.setSystemProperty("java.io.tmpdir", getFileHandler().append(containerHome, "tmp"));
+        if (jvmArgs == null || !jvmArgs.contains("java.io.tmpdir"))
+        {
+            java.setSystemProperty("java.io.tmpdir", getFileHandler()
+                .append(containerHome, "tmp"));
         }
-        if (jvmArgs == null || !jvmArgs.contains("java.util.logging.config.file")) {
+        if (jvmArgs == null || !jvmArgs.contains("java.util.logging.config.file"))
+        {
             java.setSystemProperty("java.util.logging.config.file",
-                    getFileHandler().append(configurationHome, "etc/logging-bridge.properties"));
+                getFileHandler().append(configurationHome, "etc/logging-bridge.properties"));
         }
 
-        if (jvmArgs == null || !jvmArgs.contains("-Xbootclasspath/a:")) {
+        if (jvmArgs == null || !jvmArgs.contains("-Xbootclasspath/a:"))
+        {
 
             String xboot = getFileHandler().append(containerHome, "repository/lib/xboot");
-            if (getFileHandler().isDirectory(xboot)) {
+            if (getFileHandler().isDirectory(xboot))
+            {
                 String[] bootClasspathElements = getFileHandler().getChildren(xboot);
 
                 StringBuffer bootClasspath = new StringBuffer();
-                for (String element : bootClasspathElements) {
-                    if (element.endsWith(".jar")) {
+                for (String element : bootClasspathElements)
+                {
+                    if (element.endsWith(".jar"))
+                    {
                         bootClasspath.append(element).append(':');
                     }
                 }
@@ -191,17 +240,22 @@ public abstract class AbstractWSO2InstalledLocalContainer extends AbstractInstal
     }
 
     @Override
-    protected void waitForCompletion(boolean waitForStarting) throws InterruptedException {
+    protected void waitForCompletion(boolean waitForStarting) throws InterruptedException
+    {
         LocalConfiguration config = getConfiguration();
 
-        if (waitForStarting) {
-            DeployableMonitor monitor = new URLDeployableMonitor(getCarbonURL(config), getTimeout());
+        if (waitForStarting)
+        {
+            DeployableMonitor monitor =
+                new URLDeployableMonitor(getCarbonURL(config), getTimeout());
             monitor.setLogger(getLogger());
             DeployerWatchdog watchdog = new DeployerWatchdog(monitor);
             watchdog.setLogger(getLogger());
 
             watchdog.watch(waitForStarting);
-        } else {
+        }
+        else
+        {
             super.waitForCompletion(waitForStarting);
         }
     }

@@ -11,9 +11,11 @@ import org.codehaus.cargo.util.CargoException;
 
 import com.tsystems.cargo.container.wso2.deployer.WSO2Carbon4xInstalledLocalDeployer;
 
-public class WSO2ExistingLocalConfiguration extends AbstractExistingLocalConfiguration {
+public class WSO2ExistingLocalConfiguration extends AbstractExistingLocalConfiguration
+{
 
-    public WSO2ExistingLocalConfiguration(String dir) {
+    public WSO2ExistingLocalConfiguration(String dir)
+    {
         super(dir);
         // default properties
         this.setProperty(GeneralPropertySet.HOSTNAME, "127.0.0.1");
@@ -24,10 +26,13 @@ public class WSO2ExistingLocalConfiguration extends AbstractExistingLocalConfigu
     }
 
     @Override
-    protected void doConfigure(LocalContainer c) throws Exception {
+    protected void doConfigure(LocalContainer c) throws Exception
+    {
 
-        if (!(c instanceof InstalledLocalContainer)) {
-            throw new CargoException("Only InstalledLocalContainers are supported, got " + c.getClass().getName());
+        if (!(c instanceof InstalledLocalContainer))
+        {
+            throw new CargoException("Only InstalledLocalContainers are supported, got "
+                + c.getClass().getName());
         }
 
         InstalledLocalContainer container = (InstalledLocalContainer) c;
@@ -37,7 +42,8 @@ public class WSO2ExistingLocalConfiguration extends AbstractExistingLocalConfigu
 
     }
 
-    public ConfigurationCapability getCapability() {
+    public ConfigurationCapability getCapability()
+    {
         return new WSO2ExistingLocalConfigurationCapability();
     }
 

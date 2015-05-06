@@ -2,7 +2,8 @@ package com.tsystems.cargo.container.wso2.deployer.internal;
 
 import com.tsystems.cargo.container.wso2.deployable.Axis2Service;
 
-public interface WSO2Axis2ServiceAdminService extends WSO2BaseAdminService {
+public interface WSO2Axis2ServiceAdminService extends WSO2BaseAdminService
+{
 
     public abstract void deploy(Axis2Service deployable) throws WSO2AdminServicesException;
 

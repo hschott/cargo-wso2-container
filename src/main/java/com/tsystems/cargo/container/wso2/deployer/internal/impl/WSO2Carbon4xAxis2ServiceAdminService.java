@@ -15,18 +15,23 @@ import com.tsystems.cargo.container.wso2.deployable.Axis2Service;
 import com.tsystems.cargo.container.wso2.deployer.internal.WSO2AdminServicesException;
 import com.tsystems.cargo.container.wso2.deployer.internal.WSO2Axis2ServiceAdminService;
 
-public class WSO2Carbon4xAxis2ServiceAdminService extends AbstractWSO2Carbon4xAdminService implements
-        WSO2Axis2ServiceAdminService {
+public class WSO2Carbon4xAxis2ServiceAdminService extends AbstractWSO2Carbon4xAdminService
+    implements WSO2Axis2ServiceAdminService
+{
 
-    public WSO2Carbon4xAxis2ServiceAdminService(URL url, String wso2username, String wso2password, String httpUsername, String httpPassword) {
+    public WSO2Carbon4xAxis2ServiceAdminService(URL url, String wso2username,
+        String wso2password, String httpUsername, String httpPassword)
+    {
         super(url, wso2username, wso2password, httpUsername, httpPassword);
     }
 
-    public void deploy(Axis2Service deployable) throws WSO2AdminServicesException {
+    public void deploy(Axis2Service deployable) throws WSO2AdminServicesException
+    {
         logUpload(deployable);
-        try {
-            ServiceUploaderStub serviceUploaderStub = new ServiceUploaderStub(new URL(getUrl()
-                    + "/services/ServiceUploader").toString());
+        try
+        {
+            ServiceUploaderStub serviceUploaderStub =
+                new ServiceUploaderStub(new URL(getUrl() + "/services/ServiceUploader").toString());
             authenticate();
             prepareServiceClient(serviceUploaderStub._getServiceClient());
 
@@ -35,103 +40,133 @@ public class WSO2Carbon4xAxis2ServiceAdminService extends AbstractWSO2Carbon4xAd
             DataHandler dh = new DataHandler(new File(deployable.getFile()).toURI().toURL());
             aarServiceData.setDataHandler(dh);
             aarServiceData.setServiceHierarchy("");
-            serviceUploaderStub.uploadService(new AARServiceData[] { aarServiceData });
-        } catch (Exception e) {
+            serviceUploaderStub.uploadService(new AARServiceData[] {aarServiceData});
+        }
+        catch (Exception e)
+        {
             throw new WSO2AdminServicesException("error uploading axis2 service", e);
         }
     }
 
-    public boolean exists(Axis2Service deployable) throws WSO2AdminServicesException {
+    public boolean exists(Axis2Service deployable) throws WSO2AdminServicesException
+    {
         logExists(deployable);
-        try {
-            ServiceAdminStub serviceAdminStub = new ServiceAdminStub(
-                    new URL(getUrl() + "/services/ServiceGroupAdmin").toString());
+        try
+        {
+            ServiceAdminStub serviceAdminStub =
+                new ServiceAdminStub(new URL(getUrl() + "/services/ServiceGroupAdmin").toString());
             authenticate();
             prepareServiceClient(serviceAdminStub._getServiceClient());
 
             ServiceGroupMetaData serviceGroupMetaData = null;
-            try {
-                serviceGroupMetaData = serviceAdminStub.listServiceGroup(deployable.getApplicationName());
-            } catch (Exception e) {
+            try
+            {
+                serviceGroupMetaData =
+                    serviceAdminStub.listServiceGroup(deployable.getApplicationName());
+            }
+            catch (Exception e)
+            {
                 return false;
             }
 
-            if (serviceGroupMetaData != null) {
+            if (serviceGroupMetaData != null)
+            {
                 ServiceMetaData[] serviceMetaDataList = serviceGroupMetaData.getServices();
-                if (serviceMetaDataList == null || serviceMetaDataList.length == 0) {
+                if (serviceMetaDataList == null || serviceMetaDataList.length == 0)
+                {
                     return false;
-                } else {
+                }
+                else
+                {
                     return true;
                 }
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             throw new WSO2AdminServicesException("error checking axis2 service", e);
         }
         return false;
     }
 
-    public void start(Axis2Service deployable) throws WSO2AdminServicesException {
+    public void start(Axis2Service deployable) throws WSO2AdminServicesException
+    {
         logStart(deployable);
-        try {
-            ServiceAdminStub serviceGroupAdminStub = new ServiceAdminStub(new URL(getUrl()
-                    + "/services/ServiceGroupAdmin").toString());
-            ServiceAdminStub serviceAdminStub = new ServiceAdminStub(
-                    new URL(getUrl() + "/services/ServiceAdmin").toString());
+        try
+        {
+            ServiceAdminStub serviceGroupAdminStub =
+                new ServiceAdminStub(new URL(getUrl() + "/services/ServiceGroupAdmin").toString());
+            ServiceAdminStub serviceAdminStub =
+                new ServiceAdminStub(new URL(getUrl() + "/services/ServiceAdmin").toString());
             authenticate();
             prepareServiceClient(serviceGroupAdminStub._getServiceClient());
             prepareServiceClient(serviceAdminStub._getServiceClient());
 
-            ServiceGroupMetaData serviceGroupMetaData = serviceGroupAdminStub.listServiceGroup(deployable
-                    .getApplicationName());
+            ServiceGroupMetaData serviceGroupMetaData =
+                serviceGroupAdminStub.listServiceGroup(deployable.getApplicationName());
 
             ServiceMetaData[] serviceMetaDataList = serviceGroupMetaData.getServices();
-            if (serviceMetaDataList != null) {
-                for (ServiceMetaData serviceMetaData : serviceMetaDataList) {
+            if (serviceMetaDataList != null)
+            {
+                for (ServiceMetaData serviceMetaData : serviceMetaDataList)
+                {
                     serviceAdminStub.startService(serviceMetaData.getName());
                 }
             }
 
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             throw new WSO2AdminServicesException("error starting axis2 service", e);
         }
     }
 
-    public void stop(Axis2Service deployable) throws WSO2AdminServicesException {
+    public void stop(Axis2Service deployable) throws WSO2AdminServicesException
+    {
         logStop(deployable);
-        try {
-            ServiceAdminStub serviceGroupAdminStub = new ServiceAdminStub(new URL(getUrl()
-                    + "/services/ServiceGroupAdmin").toString());
-            ServiceAdminStub serviceAdminStub = new ServiceAdminStub(
-                    new URL(getUrl() + "/services/ServiceAdmin").toString());
+        try
+        {
+            ServiceAdminStub serviceGroupAdminStub =
+                new ServiceAdminStub(new URL(getUrl() + "/services/ServiceGroupAdmin").toString());
+            ServiceAdminStub serviceAdminStub =
+                new ServiceAdminStub(new URL(getUrl() + "/services/ServiceAdmin").toString());
             authenticate();
             prepareServiceClient(serviceGroupAdminStub._getServiceClient());
             prepareServiceClient(serviceAdminStub._getServiceClient());
 
-            ServiceGroupMetaData serviceGroupMetaData = serviceGroupAdminStub.listServiceGroup(deployable
-                    .getApplicationName());
+            ServiceGroupMetaData serviceGroupMetaData =
+                serviceGroupAdminStub.listServiceGroup(deployable.getApplicationName());
 
             ServiceMetaData[] serviceMetaDataList = serviceGroupMetaData.getServices();
-            if (serviceMetaDataList != null) {
-                for (ServiceMetaData serviceMetaData : serviceMetaDataList) {
+            if (serviceMetaDataList != null)
+            {
+                for (ServiceMetaData serviceMetaData : serviceMetaDataList)
+                {
                     serviceAdminStub.stopService(serviceMetaData.getName());
                 }
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             throw new WSO2AdminServicesException("error stopping axis2 service", e);
         }
     }
 
-    public void undeploy(Axis2Service deployable) throws WSO2AdminServicesException {
+    public void undeploy(Axis2Service deployable) throws WSO2AdminServicesException
+    {
         logRemove(deployable);
-        try {
-            ServiceAdminStub serviceAdminStub = new ServiceAdminStub(
-                    new URL(getUrl() + "/services/ServiceAdmin").toString());
+        try
+        {
+            ServiceAdminStub serviceAdminStub =
+                new ServiceAdminStub(new URL(getUrl() + "/services/ServiceAdmin").toString());
             authenticate();
             prepareServiceClient(serviceAdminStub._getServiceClient());
 
-            serviceAdminStub.deleteServiceGroups(new String[] { deployable.getApplicationName() });
+            serviceAdminStub.deleteServiceGroups(new String[] {deployable.getApplicationName()});
 
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             throw new WSO2AdminServicesException("error removing axis2 service", e);
         }
     }

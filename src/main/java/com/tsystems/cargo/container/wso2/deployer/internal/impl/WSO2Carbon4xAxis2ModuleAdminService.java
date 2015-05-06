@@ -13,18 +13,23 @@ import com.tsystems.cargo.container.wso2.deployable.Axis2Module;
 import com.tsystems.cargo.container.wso2.deployer.internal.WSO2AdminServicesException;
 import com.tsystems.cargo.container.wso2.deployer.internal.WSO2Axis2ModuleAdminService;
 
-public class WSO2Carbon4xAxis2ModuleAdminService extends AbstractWSO2Carbon4xAdminService implements
-        WSO2Axis2ModuleAdminService {
+public class WSO2Carbon4xAxis2ModuleAdminService extends AbstractWSO2Carbon4xAdminService
+    implements WSO2Axis2ModuleAdminService
+{
 
-    public WSO2Carbon4xAxis2ModuleAdminService(URL url, String wso2username, String wso2password, String httpUsername, String httpPassword) {
+    public WSO2Carbon4xAxis2ModuleAdminService(URL url, String wso2username, String wso2password,
+        String httpUsername, String httpPassword)
+    {
         super(url, wso2username, wso2password, httpUsername, httpPassword);
     }
 
-    public void deploy(Axis2Module deployable) throws WSO2AdminServicesException {
+    public void deploy(Axis2Module deployable) throws WSO2AdminServicesException
+    {
         logUpload(deployable);
-        try {
-            ModuleAdminServiceStub moduleAdminServiceStub = new ModuleAdminServiceStub(new URL(getUrl()
-                    + "/services/ModuleAdminService").toString());
+        try
+        {
+            ModuleAdminServiceStub moduleAdminServiceStub =
+                new ModuleAdminServiceStub(new URL(getUrl() + "/services/ModuleAdminService").toString());
             authenticate();
             prepareServiceClient(moduleAdminServiceStub._getServiceClient());
 
@@ -32,72 +37,93 @@ public class WSO2Carbon4xAxis2ModuleAdminService extends AbstractWSO2Carbon4xAdm
             ModuleUploadData moduleUploadData = new ModuleUploadData();
             moduleUploadData.setFileName(new File(deployable.getFile()).getName());
             moduleUploadData.setDataHandler(dh);
-            moduleAdminServiceStub.uploadModule(new ModuleUploadData[] { moduleUploadData });
+            moduleAdminServiceStub.uploadModule(new ModuleUploadData[] {moduleUploadData});
             getLogger().warn("WSO2 Carbon server restart required to get Axis2 module effective",
-                    getClass().getSimpleName());
-        } catch (Exception e) {
+                getClass().getSimpleName());
+        }
+        catch (Exception e)
+        {
             throw new WSO2AdminServicesException("error uploading axis2 module", e);
         }
     }
 
-    public boolean exists(Axis2Module deployable) throws WSO2AdminServicesException {
+    public boolean exists(Axis2Module deployable) throws WSO2AdminServicesException
+    {
         logExists(deployable);
-        try {
-            ModuleAdminServiceStub moduleAdminServiceStub = new ModuleAdminServiceStub(new URL(getUrl()
-                    + "/services/ModuleAdminService").toString());
+        try
+        {
+            ModuleAdminServiceStub moduleAdminServiceStub =
+                new ModuleAdminServiceStub(new URL(getUrl() + "/services/ModuleAdminService").toString());
             authenticate();
             prepareServiceClient(moduleAdminServiceStub._getServiceClient());
 
             ModuleMetaData[] moduleMetaData = moduleAdminServiceStub.listModules();
 
-            if (moduleMetaData != null) {
-                for (ModuleMetaData module : moduleMetaData) {
-                    if (module.getModulename().equals(deployable.getApplicationName())) {
+            if (moduleMetaData != null)
+            {
+                for (ModuleMetaData module : moduleMetaData)
+                {
+                    if (module.getModulename().equals(deployable.getApplicationName()))
+                    {
                         return true;
                     }
                 }
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             throw new WSO2AdminServicesException("error checking axis2 module", e);
         }
         return false;
     }
 
-    public void start(Axis2Module deployable) throws WSO2AdminServicesException {
+    public void start(Axis2Module deployable) throws WSO2AdminServicesException
+    {
         logStart(deployable);
-        try {
-            ModuleAdminServiceStub moduleAdminServiceStub = new ModuleAdminServiceStub(new URL(getUrl()
-                    + "/services/ModuleAdminService").toString());
+        try
+        {
+            ModuleAdminServiceStub moduleAdminServiceStub =
+                new ModuleAdminServiceStub(new URL(getUrl() + "/services/ModuleAdminService").toString());
             authenticate();
             prepareServiceClient(moduleAdminServiceStub._getServiceClient());
             moduleAdminServiceStub.globallyEngageModule(deployable.getApplicationName());
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             throw new WSO2AdminServicesException("error starting axis2 module", e);
         }
     }
 
-    public void stop(Axis2Module deployable) throws WSO2AdminServicesException {
+    public void stop(Axis2Module deployable) throws WSO2AdminServicesException
+    {
         logStop(deployable);
-        try {
-            ModuleAdminServiceStub moduleAdminServiceStub = new ModuleAdminServiceStub(new URL(getUrl()
-                    + "/services/ModuleAdminService").toString());
+        try
+        {
+            ModuleAdminServiceStub moduleAdminServiceStub =
+                new ModuleAdminServiceStub(new URL(getUrl() + "/services/ModuleAdminService").toString());
             authenticate();
             prepareServiceClient(moduleAdminServiceStub._getServiceClient());
             moduleAdminServiceStub.globallyDisengageModule(deployable.getApplicationName());
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             throw new WSO2AdminServicesException("error stopping axis2 module", e);
         }
     }
 
-    public void undeploy(Axis2Module deployable) throws WSO2AdminServicesException {
+    public void undeploy(Axis2Module deployable) throws WSO2AdminServicesException
+    {
         logRemove(deployable);
-        try {
-            ModuleAdminServiceStub moduleAdminServiceStub = new ModuleAdminServiceStub(new URL(getUrl()
-                    + "/services/ModuleAdminService").toString());
+        try
+        {
+            ModuleAdminServiceStub moduleAdminServiceStub =
+                new ModuleAdminServiceStub(new URL(getUrl() + "/services/ModuleAdminService").toString());
             authenticate();
             prepareServiceClient(moduleAdminServiceStub._getServiceClient());
             moduleAdminServiceStub.removeModule(deployable.getApplicationName());
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             throw new WSO2AdminServicesException("error removing axis2 module", e);
         }
     }

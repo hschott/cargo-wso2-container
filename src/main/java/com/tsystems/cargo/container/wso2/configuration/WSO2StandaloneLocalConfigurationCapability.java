@@ -8,11 +8,14 @@ import org.codehaus.cargo.container.property.GeneralPropertySet;
 import org.codehaus.cargo.container.property.ServletPropertySet;
 import org.codehaus.cargo.container.spi.configuration.AbstractStandaloneLocalConfigurationCapability;
 
-public class WSO2StandaloneLocalConfigurationCapability extends AbstractStandaloneLocalConfigurationCapability {
+public class WSO2StandaloneLocalConfigurationCapability extends
+    AbstractStandaloneLocalConfigurationCapability
+{
 
     private Map<String, Boolean> supportsMap;
 
-    public WSO2StandaloneLocalConfigurationCapability() {
+    public WSO2StandaloneLocalConfigurationCapability()
+    {
         super();
 
         this.supportsMap = new HashMap<String, Boolean>();
@@ -29,7 +32,8 @@ public class WSO2StandaloneLocalConfigurationCapability extends AbstractStandalo
     }
 
     @Override
-    protected Map<String, Boolean> getPropertySupportMap() {
+    protected Map<String, Boolean> getPropertySupportMap()
+    {
         return this.supportsMap;
     }
 
