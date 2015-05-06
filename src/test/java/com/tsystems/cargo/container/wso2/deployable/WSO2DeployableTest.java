@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.UUID;
 
+import org.codehaus.cargo.container.deployable.DeployableException;
 import org.codehaus.cargo.container.deployable.DeployableType;
 import org.codehaus.cargo.generic.deployable.DefaultDeployableFactory;
 import org.codehaus.cargo.generic.deployable.DeployableFactory;
@@ -49,6 +50,18 @@ public class WSO2DeployableTest
 
         deployable.setVersion("4.1-SNAPSHOT");
         Assert.assertEquals("berlin#4.1-SNAPSHOT", deployable.getApplicationName());
+    }
+
+    @Test(expected = DeployableException.class)
+    public void testWarSetApplicationName()
+    {
+        WSO2WAR deployable;
+
+        deployable =
+            (WSO2WAR) DEPLOYABLE_FACTORY.createDeployable(WSO2Carbon4xContainer.ID, "test.war",
+                DeployableType.WAR);
+
+        deployable.setApplicationName("delhi");
     }
 
     @Test
@@ -144,9 +157,20 @@ public class WSO2DeployableTest
         Assert.assertEquals("{org.wso2.carbon.connectors}twitter",
             deployable.getApplicationName());
 
+    }
+
+    @Test(expected = DeployableException.class)
+    public void testWSO2ConnectorSetApplicationName()
+    {
+        WSO2Connector deployable;
+
+        URL zip = ClassLoader.getSystemResource("twitter-connector-1.0.0.zip");
+
+        deployable =
+            (WSO2Connector) DEPLOYABLE_FACTORY.createDeployable(WSO2Carbon4xContainer.ID,
+                zip.getFile(), WSO2Connector.TYPE);
+
         deployable.setApplicationName("newyork");
-        Assert.assertEquals("{org.wso2.carbon.connectors}twitter",
-            deployable.getApplicationName());
     }
 
 }
