@@ -58,10 +58,10 @@ Remote deployment and un-deployment of:
 * ZIP (WSO2 ESB Connector)
 * TBOX
 
-For deployables of type AAR, TBOX and CAR an `<applicationName/>` under which the deployable resides on the server can be configured.
+For deployables of type AAR, MAR, TBOX and CAR an `<applicationName/>` under which the deployable resides on the server can be configured.
 For deployables of type WAR a `<context/>` and `<version/>` can be configured.
 
-For every remote deployable a `<deployTimeout/>` in milliseconds can be configured, which enables a check if the artifact is successfully deployed on the server.
+For every remote deployable a property `<deployTimeout/>` in milliseconds can be configured, which enables a check if the artifact is successfully deployed on or undeployed from the server.
 
 Remote start and stop of:
 
@@ -115,7 +115,16 @@ cargo.wso2carbon.username | admin
 cargo.wso2carbon.password | admin
 cargo.remote.uri | ${cargo.protocol}://${cargo.hostname}:${cargo.servlet.port}
 
-If configured cargo.remote.uri is preferred. Use cargo.remote.username and cargo.remote.password to authenticate on HTTP server in front of WSO2 Carbon Mangement Console. Use cargo.wso2carbon.username and cargo.wso2carbon.password to authenticate on WSO2 Carbon Mangement Console.
+If configured `cargo.remote.uri` is preferred.
+
+#### Authentication
+Use `cargo.remote.username` and `cargo.remote.password` to authenticate against an HTTP server in front of WSO2 Carbon Mangement Console. Use `cargo.wso2carbon.username` and `cargo.wso2carbon.password` to authenticate against the WSO2 Carbon Mangement Console.
+
+#### Watch for the deployable
+
+With Cargo it is possible to watch for a successful deployment by pinging a URL on the server. This is standard Cargo behavior but not usefull for every type of WSO2 deployable. 
+Therefore an additional property `deployTimeout` can be used to enable a check for successful deployment or undeployment of an deployable. Setting this property to a value larger then 0 will cause Cargo to wait for success for that amount of milliseconds.
+
 
 ### Supported Existing Local Configuration Properties (Existing Container)
 
@@ -133,14 +142,14 @@ cargo.wso2carbon.password | admin
 cargo.jvmargs | N/A
 cargo.runtime.args | N/A
 
-When a container is started cargo.protocol, cargo.hostname and cargo.servlet.port are used to check if the containers Carbon Management Console is up and running.
-The WSO2 Carbon container is stopped via JMX management bean invocation. Therefore cargo.rmi.port, cargo.wso2carbon.username and cargo.wso2carbon.password can be configured.
+When a container is started `cargo.protocol`, `cargo.hostname` and `cargo.servlet.port` are used to check if the containers Carbon Management Console is up and running.
+The WSO2 Carbon container is stopped via JMX management bean invocation. Therefore `cargo.rmi.port`, `cargo.wso2carbon.username` and `cargo.wso2carbon.password` can be configured.
 
-Use cargo.port.offset to shift all ports by the given integer value.
+Use `cargo.port.offset` to shift all ports by the given integer value.
 See [Default Ports of WSO2 Products](https://docs.wso2.com/display/Carbon420/Default+Ports+of+WSO2+Products)
 
 
-#### Supported Local Configuration Properties (Standalone Container)
+### Supported Local Configuration Properties (Standalone Container)
 
 Property name | Default value | Description
 ---: | --- | ---
@@ -149,7 +158,7 @@ cargo.wso2carbon.serverroles | N/A | Additional server roles (comma separated)
 
 In addition to the aforementioned properties, this container configuration can also set up datasources and/or resources.
 For more details, please read: [DataSource and Resource Support](http://cargo.codehaus.org/DataSource+and+Resource+Support).
-The JDBC driver jar file will be looked up from Maven dependencies by the classname and gets copied to local installation.
+The JDBC driver jar file will be looked up from the container shared classpath by the classname and gets copied to local installation.
 
 
 ## Examples
@@ -304,7 +313,7 @@ The JDBC driver jar file will be looked up from Maven dependencies by the classn
 
 ```txt
 
-    Copyright {2014} Holger Balow-Schott
+    Copyright {2014, 2015} Holger Balow-Schott
  
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use these files except in compliance with the License.
