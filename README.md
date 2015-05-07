@@ -2,11 +2,11 @@
 
 # Introduction
 
-This project is a [Cargo](http://cargo.codehaus.org/) container implementation for [WSO2 Carbon](http://www.wso2.com).
+This project is a [Cargo](https://codehaus-cargo.github.io/cargo/) container implementation for [WSO2 Carbon](http://www.wso2.com).
 It provides capabilities to deploy WSO2 applications to installed and remote WSO2 Carbon servers.
 
 This document will focus on [Maven](http://maven.apache.org/) integration.
-For more details about configuring Cargo visit please [Cargo](http://cargo.codehaus.org/) website.
+For more details about configuring Cargo visit please [Cargo](https://codehaus-cargo.github.io/cargo/) website.
 
 ## Supported Container Features
 
@@ -14,33 +14,33 @@ For more details about configuring Cargo visit please [Cargo](http://cargo.codeh
 
 Container ID: wso2carbon4x
 
-* [Container Instantiation](http://cargo.codehaus.org/Container+Instantiation)
-* [Local Container](http://cargo.codehaus.org/Local+Container)
-  * [Container Classpath](http://cargo.codehaus.org/Container+Classpath)
-  * [Container Start](http://cargo.codehaus.org/Container+Start)
-  * [Container Stop](http://cargo.codehaus.org/Container+Stop)
-  * [Container Timeout](http://cargo.codehaus.org/Container+Timeout)
-  * [Installed Container](http://cargo.codehaus.org/Installed+Container)
-    * [Installer](http://cargo.codehaus.org/Installer)
-    * [Passing System Properties](http://cargo.codehaus.org/Passing+system+properties)
-* [Remote Container](http://cargo.codehaus.org/Remote+Container)
+* [Container Instantiation](https://codehaus-cargo.github.io/cargo/Container+Instantiation)
+* [Local Container](https://codehaus-cargo.github.io/cargo/Local+Container)
+  * [Container Classpath](https://codehaus-cargo.github.io/cargo/Container+Classpath)
+  * [Container Start](https://codehaus-cargo.github.io/cargo/Container+Start)
+  * [Container Stop](https://codehaus-cargo.github.io/cargo/Container+Stop)
+  * [Container Timeout](https://codehaus-cargo.github.io/cargo/Container+Timeout)
+  * [Installed Container](https://codehaus-cargo.github.io/cargo/Installed+Container)
+    * [Installer](https://codehaus-cargo.github.io/cargo/Installer)
+    * [Passing System Properties](https://codehaus-cargo.github.io/cargo/Passing+system+properties)
+* [Remote Container](https://codehaus-cargo.github.io/cargo/Remote+Container)
 
 ## Unsupported Features
 
-* [Embedded Container](http://cargo.codehaus.org/Embedded+Container)
+* [Embedded Container](https://codehaus-cargo.github.io/cargo/Embedded+Container)
 
 ## Supported Configuration Feature
 
-* [Standalone Local Configuration for installed container](http://cargo.codehaus.org/Standalone+Local+Configuration)
-* [Existing Local Configuration for installed container](http://cargo.codehaus.org/Existing+Local+Configuration)
-* [Runtime Configuration](http://cargo.codehaus.org/Runtime+Configuration)
+* [Standalone Local Configuration for installed container](https://codehaus-cargo.github.io/cargo/Standalone+Local+Configuration)
+* [Existing Local Configuration for installed container](https://codehaus-cargo.github.io/cargo/Existing+Local+Configuration)
+* [Runtime Configuration](https://codehaus-cargo.github.io/cargo/Runtime+Configuration)
 
 ## Supported Deployer Features
 
 Static deployment and un-deployment of:
 
-* [WAR](http://cargo.codehaus.org/Static+deployment+of+WAR)
-* [Expanded WAR](http://cargo.codehaus.org/Static+deployment+of+expanded+WAR),
+* [WAR](https://codehaus-cargo.github.io/cargo/Static+deployment+of+WAR)
+* [Expanded WAR](https://codehaus-cargo.github.io/cargo/Static+deployment+of+expanded+WAR),
 * CAR (Carbon Application)
 * AAR (Axis2 Service)
 * MAR (Axis2 Module)
@@ -157,7 +157,7 @@ cargo.wso2carbon.contextroot | / | (context root of WSO2 Carbon Management Conso
 cargo.wso2carbon.serverroles | N/A | Additional server roles (comma separated)
 
 In addition to the aforementioned properties, this container configuration can also set up datasources and/or resources.
-For more details, please read: [DataSource and Resource Support](http://cargo.codehaus.org/DataSource+and+Resource+Support).
+For more details, please read: [DataSource and Resource Support](https://codehaus-cargo.github.io/cargo/DataSource+and+Resource+Support).
 The JDBC driver jar file will be looked up from the container shared classpath by the classname and gets copied to local installation.
 
 
