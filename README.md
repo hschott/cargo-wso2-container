@@ -2,7 +2,7 @@
 
 # Introduction
 
-This project is a [Cargo](https://codehaus-cargo.github.io/cargo/) container implementation for [WSO2 Carbon](http://www.wso2.com).
+This project is a [Cargo](https://codehaus-cargo.github.io/cargo/Home) container implementation for [WSO2 Carbon](http://www.wso2.com).
 It provides capabilities to deploy WSO2 applications to installed and remote WSO2 Carbon servers.
 
 This document will focus on [Maven](http://maven.apache.org/) integration.
@@ -143,6 +143,7 @@ cargo.jvmargs | N/A
 cargo.runtime.args | N/A
 
 When a container is started `cargo.protocol`, `cargo.hostname` and `cargo.servlet.port` are used to check if the containers Carbon Management Console is up and running.
+
 The WSO2 Carbon container is stopped via JMX management bean invocation. Therefore `cargo.rmi.port`, `cargo.wso2carbon.username` and `cargo.wso2carbon.password` can be configured.
 
 Use `cargo.port.offset` to shift all ports by the given integer value.
