@@ -28,6 +28,7 @@ import com.tsystems.cargo.container.wso2.deployable.Axis2Service;
 import com.tsystems.cargo.container.wso2.deployable.BAMToolbox;
 import com.tsystems.cargo.container.wso2.deployable.CarbonApplication;
 import com.tsystems.cargo.container.wso2.deployable.WSO2Axis2Service;
+import com.tsystems.cargo.container.wso2.deployable.WSO2CarbonApplication;
 import com.tsystems.cargo.container.wso2.deployable.WSO2Connector;
 
 public class WSO2Carbon4xInstalledLocalDeployerTest
@@ -157,21 +158,23 @@ public class WSO2Carbon4xInstalledLocalDeployerTest
     @Test
     public void testShouldDeployExpanded()
     {
-        Assert.assertEquals(true, ((WSO2Carbon4xInstalledLocalDeployer) deployer)
-            .shouldDeployExpanded(DeployableType.WAR));
-        Assert.assertEquals(false, ((WSO2Carbon4xInstalledLocalDeployer) deployer)
-            .shouldDeployExpanded(CarbonApplication.TYPE));
-        Assert.assertEquals(false, ((WSO2Carbon4xInstalledLocalDeployer) deployer)
-            .shouldDeployExpanded(WSO2Axis2Service.TYPE));
-        Assert.assertEquals(false, ((WSO2Carbon4xInstalledLocalDeployer) deployer)
-            .shouldDeployExpanded(Axis2Service.TYPE));
-        Assert.assertEquals(false, ((WSO2Carbon4xInstalledLocalDeployer) deployer)
-            .shouldDeployExpanded(Axis2Module.TYPE));
-        Assert.assertEquals(false, ((WSO2Carbon4xInstalledLocalDeployer) deployer)
-            .shouldDeployExpanded(WSO2Connector.TYPE));
+        WSO2Carbon4xInstalledLocalDeployer installedLocalDeployer =
+            (WSO2Carbon4xInstalledLocalDeployer) deployer;
+
         Assert
-            .assertEquals(false, ((WSO2Carbon4xInstalledLocalDeployer) deployer)
-                .shouldDeployExpanded(BAMToolbox.TYPE));
+            .assertEquals(true, installedLocalDeployer.shouldDeployExpanded(DeployableType.WAR));
+        Assert.assertEquals(false,
+            installedLocalDeployer.shouldDeployExpanded(CarbonApplication.TYPE));
+        Assert.assertEquals(false,
+            installedLocalDeployer.shouldDeployExpanded(WSO2CarbonApplication.TYPE));
+        Assert
+            .assertEquals(false, installedLocalDeployer.shouldDeployExpanded(Axis2Service.TYPE));
+        Assert.assertEquals(false,
+            installedLocalDeployer.shouldDeployExpanded(WSO2Axis2Service.TYPE));
+        Assert.assertEquals(false, installedLocalDeployer.shouldDeployExpanded(Axis2Module.TYPE));
+        Assert.assertEquals(false,
+            installedLocalDeployer.shouldDeployExpanded(WSO2Connector.TYPE));
+        Assert.assertEquals(false, installedLocalDeployer.shouldDeployExpanded(BAMToolbox.TYPE));
     }
 
 }

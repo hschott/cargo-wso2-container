@@ -147,7 +147,7 @@ When a container is started `cargo.protocol`, `cargo.hostname` and `cargo.servle
 The WSO2 Carbon container is stopped via JMX management bean invocation. Therefore `cargo.rmi.port`, `cargo.wso2carbon.username` and `cargo.wso2carbon.password` can be configured.
 
 Use `cargo.port.offset` to shift all ports by the given integer value.
-See [Default Ports of WSO2 Products](https://docs.wso2.com/display/Carbon420/Default+Ports+of+WSO2+Products)
+See [Default Ports of WSO2 Products](https://docs.wso2.com/display/shared/Default+Ports+of+WSO2+Products)
 
 
 ### Supported Local Configuration Properties (Standalone Container)
@@ -244,7 +244,11 @@ The JDBC driver jar file will be looked up from the container shared classpath b
               <deployable>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>${project.artifactId}</artifactId>
+                <type>car</type>
+                <!--
+                For reactor builds with the WSO2 maven-car-plugin use
                 <type>carbon/application</type>
+                -->
                 <properties>
                   <deployTimeout>120000</deployTimeout>
                 </properties>

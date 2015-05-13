@@ -23,7 +23,7 @@ import org.w3c.dom.Node;
 public class CarbonApplication extends AbstractWSO2Deployable implements WSO2Deployable
 {
 
-    public static final DeployableType TYPE = DeployableType.toType("carbon/application");
+    public static final DeployableType TYPE = DeployableType.toType("car");
 
     private String applicationName;
 

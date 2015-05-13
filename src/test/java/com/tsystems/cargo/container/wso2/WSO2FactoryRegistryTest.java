@@ -27,6 +27,7 @@ import com.tsystems.cargo.container.wso2.deployable.Axis2Service;
 import com.tsystems.cargo.container.wso2.deployable.BAMToolbox;
 import com.tsystems.cargo.container.wso2.deployable.CarbonApplication;
 import com.tsystems.cargo.container.wso2.deployable.WSO2Axis2Service;
+import com.tsystems.cargo.container.wso2.deployable.WSO2CarbonApplication;
 import com.tsystems.cargo.container.wso2.deployable.WSO2Connector;
 import com.tsystems.cargo.container.wso2.deployable.WSO2WAR;
 import com.tsystems.cargo.container.wso2.deployer.WSO2Carbon4xInstalledLocalDeployer;
@@ -34,7 +35,6 @@ import com.tsystems.cargo.container.wso2.deployer.WSO2Carbon4xRemoteDeployer;
 
 public class WSO2FactoryRegistryTest
 {
-
     private static final ContainerFactory CONTAINER_FACTORY = new DefaultContainerFactory();
 
     private static final ConfigurationFactory CONFIGURATION_FACTORY =
@@ -126,6 +126,11 @@ public class WSO2FactoryRegistryTest
             DEPLOYABLE_FACTORY.createDeployable(WSO2Carbon4xContainer.ID, "test.car",
                 CarbonApplication.TYPE);
         Assert.assertThat(deployable, CoreMatchers.instanceOf(CarbonApplication.class));
+
+        deployable =
+            DEPLOYABLE_FACTORY.createDeployable(WSO2Carbon4xContainer.ID, "test.car",
+                WSO2CarbonApplication.TYPE);
+        Assert.assertThat(deployable, CoreMatchers.instanceOf(WSO2CarbonApplication.class));
 
         deployable =
             DEPLOYABLE_FACTORY.createDeployable(WSO2Carbon4xContainer.ID, "test.mar",

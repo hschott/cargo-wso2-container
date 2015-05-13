@@ -19,6 +19,7 @@ import com.tsystems.cargo.container.wso2.deployable.Axis2Service;
 import com.tsystems.cargo.container.wso2.deployable.BAMToolbox;
 import com.tsystems.cargo.container.wso2.deployable.CarbonApplication;
 import com.tsystems.cargo.container.wso2.deployable.WSO2Axis2Service;
+import com.tsystems.cargo.container.wso2.deployable.WSO2CarbonApplication;
 import com.tsystems.cargo.container.wso2.deployable.WSO2Connector;
 
 public class WSO2Carbon4xInstalledLocalDeployer extends AbstractWSO2InstalledLocalDeployer
@@ -28,6 +29,7 @@ public class WSO2Carbon4xInstalledLocalDeployer extends AbstractWSO2InstalledLoc
     {
         super(container);
         setShouldDeployExpanded(CarbonApplication.TYPE, false);
+        setShouldDeployExpanded(WSO2CarbonApplication.TYPE, false);
         setShouldDeployExpanded(WSO2Axis2Service.TYPE, false);
         setShouldDeployExpanded(Axis2Service.TYPE, false);
         setShouldDeployExpanded(Axis2Module.TYPE, false);

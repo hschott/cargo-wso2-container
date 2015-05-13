@@ -24,6 +24,7 @@ import com.tsystems.cargo.container.wso2.deployable.Axis2Service;
 import com.tsystems.cargo.container.wso2.deployable.BAMToolbox;
 import com.tsystems.cargo.container.wso2.deployable.CarbonApplication;
 import com.tsystems.cargo.container.wso2.deployable.WSO2Axis2Service;
+import com.tsystems.cargo.container.wso2.deployable.WSO2CarbonApplication;
 import com.tsystems.cargo.container.wso2.deployable.WSO2Connector;
 import com.tsystems.cargo.container.wso2.deployable.WSO2WAR;
 import com.tsystems.cargo.container.wso2.deployer.WSO2Carbon4xInstalledLocalDeployer;
@@ -105,6 +106,8 @@ public class WSO2FactoryRegistry extends AbstractFactoryRegistry
     {
         factory.registerDeployable(WSO2Carbon4xContainer.ID, CarbonApplication.TYPE,
             CarbonApplication.class);
+        factory.registerDeployable(WSO2Carbon4xContainer.ID, WSO2CarbonApplication.TYPE,
+            WSO2CarbonApplication.class);
         factory.registerDeployable(WSO2Carbon4xContainer.ID, DeployableType.WAR, WSO2WAR.class);
         factory.registerDeployable(WSO2Carbon4xContainer.ID, Axis2Module.TYPE, Axis2Module.class);
         factory.registerDeployable(WSO2Carbon4xContainer.ID, Axis2Service.TYPE,
