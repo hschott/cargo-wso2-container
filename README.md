@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/hschott/cargo-wso2-container.svg?branch=master)](https://travis-ci.org/hschott/cargo-wso2-container)
+[![Travis Build Status](https://travis-ci.org/hschott/cargo-wso2-container.svg?branch=master)](https://travis-ci.org/hschott/cargo-wso2-container)  [![Maven Central](https://img.shields.io/maven-central/v/com.tsystems.cargo.wso2/cargo-wso2-container.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.tsystems.cargo.wso2%22%20AND%20a%3A%22cargo-wso2-container%22)
 
 # Introduction
 
