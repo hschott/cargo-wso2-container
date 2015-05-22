@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.tsystems.cargo.wso2</groupId>
 	<artifactId>cargo-wso2-container</artifactId>
-	<version>0.5.0</version>
+	<version>0.6.0-SNAPSHOT</version>
 	<name>Cargo container extension for WSO2</name>
 	<description>A Cargo container extension for WSO2 Carbon Container. Supports WSO2 Carbon 4.x</description>
 	<url>https://github.com/hschott/cargo-wso2-container</url>
@@ -28,7 +28,7 @@
 		<connection>scm:git:git@github.com:hschott/cargo-wso2-container</connection>
 		<developerConnection>scm:git:git@github.com:hschott/cargo-wso2-container</developerConnection>
 		<url>https://github.com/hschott/cargo-wso2-container</url>
-		<tag>v0.5.0</tag>
+		<tag>HEAD</tag>
 	</scm>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
