@@ -5,22 +5,22 @@ import java.net.URL;
 
 import javax.activation.DataHandler;
 
+import org.codehaus.cargo.container.configuration.Configuration;
 import org.wso2.carbon.webapp.mgt.WebappAdminStub;
 import org.wso2.carbon.webapp.mgt.xsd.WebappMetadata;
 import org.wso2.carbon.webapp.mgt.xsd.WebappUploadData;
 
 import com.tsystems.cargo.container.wso2.deployable.WSO2WAR;
 import com.tsystems.cargo.container.wso2.deployer.internal.WSO2AdminServicesException;
-import com.tsystems.cargo.container.wso2.deployer.internal.WSO2WarAdminService;
 
-public class WSO2Carbon4xWarAdminService extends AbstractWSO2Carbon4xAdminService implements
-    WSO2WarAdminService
+public class WSO2Carbon4xWarAdminService extends AbstractWSO2Carbon4xAdminService<WSO2WAR>
 {
 
-    public WSO2Carbon4xWarAdminService(URL url, String wso2username, String wso2password,
-        String httpUsername, String httpPassword)
+    private static final String SERVICES_WEBAPP_ADMIN = "/services/WebappAdmin";
+
+    public WSO2Carbon4xWarAdminService(Configuration configuration)
     {
-        super(url, wso2username, wso2password, httpUsername, httpPassword);
+        super(configuration);
     }
 
     public void deploy(WSO2WAR deployable) throws WSO2AdminServicesException
@@ -28,10 +28,11 @@ public class WSO2Carbon4xWarAdminService extends AbstractWSO2Carbon4xAdminServic
         logUpload(deployable);
         try
         {
-            WebappAdminStub webappAdminStub =
-                new WebappAdminStub(new URL(getUrl() + "/services/WebappAdmin").toString());
             authenticate();
-            prepareServiceClient(webappAdminStub._getServiceClient());
+            WebappAdminStub webappAdminStub =
+                new WebappAdminStub(new URL(getUrl() + SERVICES_WEBAPP_ADMIN).toString());
+            prepareStub(webappAdminStub);
+
             WebappUploadData webApp = new WebappUploadData();
             DataHandler dh = new DataHandler(new File(deployable.getFile()).toURI().toURL());
             webApp.setFileName(deployable.getApplicationName());
@@ -50,10 +51,10 @@ public class WSO2Carbon4xWarAdminService extends AbstractWSO2Carbon4xAdminServic
         logExists(deployable);
         try
         {
-            WebappAdminStub webappAdminStub =
-                new WebappAdminStub(new URL(getUrl() + "/services/WebappAdmin").toString());
             authenticate();
-            prepareServiceClient(webappAdminStub._getServiceClient());
+            WebappAdminStub webappAdminStub =
+                new WebappAdminStub(new URL(getUrl() + SERVICES_WEBAPP_ADMIN).toString());
+            prepareStub(webappAdminStub);
 
             String name = deployable.getApplicationName();
 
@@ -76,10 +77,10 @@ public class WSO2Carbon4xWarAdminService extends AbstractWSO2Carbon4xAdminServic
         logStart(deployable);
         try
         {
-            WebappAdminStub webappAdminStub =
-                new WebappAdminStub(new URL(getUrl() + "/services/WebappAdmin").toString());
             authenticate();
-            prepareServiceClient(webappAdminStub._getServiceClient());
+            WebappAdminStub webappAdminStub =
+                new WebappAdminStub(new URL(getUrl() + SERVICES_WEBAPP_ADMIN).toString());
+            prepareStub(webappAdminStub);
 
             String name = deployable.getApplicationName();
 
@@ -97,10 +98,10 @@ public class WSO2Carbon4xWarAdminService extends AbstractWSO2Carbon4xAdminServic
         logStop(deployable);
         try
         {
-            WebappAdminStub webappAdminStub =
-                new WebappAdminStub(new URL(getUrl() + "/services/WebappAdmin").toString());
             authenticate();
-            prepareServiceClient(webappAdminStub._getServiceClient());
+            WebappAdminStub webappAdminStub =
+                new WebappAdminStub(new URL(getUrl() + SERVICES_WEBAPP_ADMIN).toString());
+            prepareStub(webappAdminStub);
 
             String name = deployable.getApplicationName();
 
@@ -118,10 +119,10 @@ public class WSO2Carbon4xWarAdminService extends AbstractWSO2Carbon4xAdminServic
         logRemove(deployable);
         try
         {
-            WebappAdminStub webappAdminStub =
-                new WebappAdminStub(new URL(getUrl() + "/services/WebappAdmin").toString());
             authenticate();
-            prepareServiceClient(webappAdminStub._getServiceClient());
+            WebappAdminStub webappAdminStub =
+                new WebappAdminStub(new URL(getUrl() + SERVICES_WEBAPP_ADMIN).toString());
+            prepareStub(webappAdminStub);
 
             String name = deployable.getApplicationName();
 

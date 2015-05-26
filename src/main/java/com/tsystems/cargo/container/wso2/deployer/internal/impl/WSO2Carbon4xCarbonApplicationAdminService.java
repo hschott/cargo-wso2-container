@@ -6,22 +6,25 @@ import java.util.Arrays;
 
 import javax.activation.DataHandler;
 
+import org.codehaus.cargo.container.configuration.Configuration;
 import org.wso2.carbon.application.mgt.ApplicationAdminStub;
 import org.wso2.carbon.application.upload.CarbonAppUploaderStub;
 import org.wso2.carbon.application.upload.xsd.UploadedFileItem;
 
 import com.tsystems.cargo.container.wso2.deployable.CarbonApplication;
 import com.tsystems.cargo.container.wso2.deployer.internal.WSO2AdminServicesException;
-import com.tsystems.cargo.container.wso2.deployer.internal.WSO2CarbonApplicationAdminService;
 
-public class WSO2Carbon4xCarbonApplicationAdminService extends AbstractWSO2Carbon4xAdminService
-    implements WSO2CarbonApplicationAdminService
+public class WSO2Carbon4xCarbonApplicationAdminService extends
+    AbstractWSO2Carbon4xAdminService<CarbonApplication>
 {
 
-    public WSO2Carbon4xCarbonApplicationAdminService(URL url, String wso2username,
-        String wso2password, String httpUsername, String httpPassword)
+    private static final String SERVICES_CARBON_APP_UPLOADER = "/services/CarbonAppUploader";
+
+    private static final String SERVICES_APPLICATION_ADMIN = "/services/ApplicationAdmin";
+
+    public WSO2Carbon4xCarbonApplicationAdminService(Configuration configuration)
     {
-        super(url, wso2username, wso2password, httpUsername, httpPassword);
+        super(configuration);
     }
 
     public void deploy(CarbonApplication deployable) throws WSO2AdminServicesException
@@ -29,10 +32,11 @@ public class WSO2Carbon4xCarbonApplicationAdminService extends AbstractWSO2Carbo
         logUpload(deployable);
         try
         {
-            CarbonAppUploaderStub carbonAppUploaderStub =
-                new CarbonAppUploaderStub(new URL(getUrl() + "/services/CarbonAppUploader").toString());
             authenticate();
-            prepareServiceClient(carbonAppUploaderStub._getServiceClient());
+            CarbonAppUploaderStub carbonAppUploaderStub =
+                new CarbonAppUploaderStub(new URL(getUrl() + SERVICES_CARBON_APP_UPLOADER).toString());
+            prepareStub(carbonAppUploaderStub);
+
             UploadedFileItem[] carbonAppArray = new UploadedFileItem[1];
             UploadedFileItem carbonApp = new UploadedFileItem();
             DataHandler dh = new DataHandler(new File(deployable.getFile()).toURI().toURL());
@@ -53,10 +57,11 @@ public class WSO2Carbon4xCarbonApplicationAdminService extends AbstractWSO2Carbo
         logExists(deployable);
         try
         {
-            ApplicationAdminStub applicationAdminStub =
-                new ApplicationAdminStub(new URL(getUrl() + "/services/ApplicationAdmin").toString());
             authenticate();
-            prepareServiceClient(applicationAdminStub._getServiceClient());
+            ApplicationAdminStub applicationAdminStub =
+                new ApplicationAdminStub(new URL(getUrl() + SERVICES_APPLICATION_ADMIN).toString());
+            prepareStub(applicationAdminStub);
+
             String[] existingApplications = applicationAdminStub.listAllApplications();
             if (existingApplications != null
                 && Arrays.asList(existingApplications).contains(deployable.getApplicationName()))
@@ -77,16 +82,27 @@ public class WSO2Carbon4xCarbonApplicationAdminService extends AbstractWSO2Carbo
         logRemove(deployable);
         try
         {
-            ApplicationAdminStub applicationAdminStub =
-                new ApplicationAdminStub(new URL(getUrl() + "/services/ApplicationAdmin").toString());
             authenticate();
-            prepareServiceClient(applicationAdminStub._getServiceClient());
+            ApplicationAdminStub applicationAdminStub =
+                new ApplicationAdminStub(new URL(getUrl() + SERVICES_APPLICATION_ADMIN).toString());
+            prepareStub(applicationAdminStub);
+
             applicationAdminStub.deleteApplication(deployable.getApplicationName());
         }
         catch (Exception e)
         {
             throw new WSO2AdminServicesException("error removing carbon application", e);
         }
+    }
+
+    public void start(CarbonApplication deployable) throws WSO2AdminServicesException
+    {
+        throw new WSO2AdminServicesException("Not supported");
+    }
+
+    public void stop(CarbonApplication deployable) throws WSO2AdminServicesException
+    {
+        throw new WSO2AdminServicesException("Not supported");
     }
 
 }

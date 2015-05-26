@@ -5,6 +5,7 @@ import java.net.URL;
 
 import javax.activation.DataHandler;
 
+import org.codehaus.cargo.container.configuration.Configuration;
 import org.wso2.carbon.aarservices.xsd.AARServiceData;
 import org.wso2.carbon.service.mgt.ServiceAdminStub;
 import org.wso2.carbon.service.mgt.xsd.ServiceGroupMetaData;
@@ -13,16 +14,18 @@ import org.wso2.carbon.service.upload.ServiceUploaderStub;
 
 import com.tsystems.cargo.container.wso2.deployable.Axis2Service;
 import com.tsystems.cargo.container.wso2.deployer.internal.WSO2AdminServicesException;
-import com.tsystems.cargo.container.wso2.deployer.internal.WSO2Axis2ServiceAdminService;
 
-public class WSO2Carbon4xAxis2ServiceAdminService extends AbstractWSO2Carbon4xAdminService
-    implements WSO2Axis2ServiceAdminService
+public class WSO2Carbon4xAxis2ServiceAdminService extends
+    AbstractWSO2Carbon4xAdminService<Axis2Service>
 {
 
-    public WSO2Carbon4xAxis2ServiceAdminService(URL url, String wso2username,
-        String wso2password, String httpUsername, String httpPassword)
+    private static final String SERVICES_SERVICE_UPLOADER = "/services/ServiceUploader";
+    private static final String SERVICES_SERVICE_ADMIN = "/services/ServiceAdmin";
+    private static final String SERVICES_SERVICE_GROUP_ADMIN = "/services/ServiceGroupAdmin";
+
+    public WSO2Carbon4xAxis2ServiceAdminService(Configuration configuration)
     {
-        super(url, wso2username, wso2password, httpUsername, httpPassword);
+        super(configuration);
     }
 
     public void deploy(Axis2Service deployable) throws WSO2AdminServicesException
@@ -30,10 +33,10 @@ public class WSO2Carbon4xAxis2ServiceAdminService extends AbstractWSO2Carbon4xAd
         logUpload(deployable);
         try
         {
-            ServiceUploaderStub serviceUploaderStub =
-                new ServiceUploaderStub(new URL(getUrl() + "/services/ServiceUploader").toString());
             authenticate();
-            prepareServiceClient(serviceUploaderStub._getServiceClient());
+            ServiceUploaderStub serviceUploaderStub =
+                new ServiceUploaderStub(new URL(getUrl() + SERVICES_SERVICE_UPLOADER).toString());
+            prepareStub(serviceUploaderStub);
 
             AARServiceData aarServiceData = new AARServiceData();
             aarServiceData.setFileName(new File(deployable.getFile()).getName());
@@ -53,10 +56,10 @@ public class WSO2Carbon4xAxis2ServiceAdminService extends AbstractWSO2Carbon4xAd
         logExists(deployable);
         try
         {
-            ServiceAdminStub serviceAdminStub =
-                new ServiceAdminStub(new URL(getUrl() + "/services/ServiceGroupAdmin").toString());
             authenticate();
-            prepareServiceClient(serviceAdminStub._getServiceClient());
+            ServiceAdminStub serviceAdminStub =
+                new ServiceAdminStub(new URL(getUrl() + SERVICES_SERVICE_GROUP_ADMIN).toString());
+            prepareStub(serviceAdminStub);
 
             ServiceGroupMetaData serviceGroupMetaData = null;
             try
@@ -94,13 +97,13 @@ public class WSO2Carbon4xAxis2ServiceAdminService extends AbstractWSO2Carbon4xAd
         logStart(deployable);
         try
         {
-            ServiceAdminStub serviceGroupAdminStub =
-                new ServiceAdminStub(new URL(getUrl() + "/services/ServiceGroupAdmin").toString());
-            ServiceAdminStub serviceAdminStub =
-                new ServiceAdminStub(new URL(getUrl() + "/services/ServiceAdmin").toString());
             authenticate();
-            prepareServiceClient(serviceGroupAdminStub._getServiceClient());
-            prepareServiceClient(serviceAdminStub._getServiceClient());
+            ServiceAdminStub serviceGroupAdminStub =
+                new ServiceAdminStub(new URL(getUrl() + SERVICES_SERVICE_GROUP_ADMIN).toString());
+            ServiceAdminStub serviceAdminStub =
+                new ServiceAdminStub(new URL(getUrl() + SERVICES_SERVICE_ADMIN).toString());
+            prepareStub(serviceGroupAdminStub);
+            prepareStub(serviceAdminStub);
 
             ServiceGroupMetaData serviceGroupMetaData =
                 serviceGroupAdminStub.listServiceGroup(deployable.getApplicationName());
@@ -126,13 +129,13 @@ public class WSO2Carbon4xAxis2ServiceAdminService extends AbstractWSO2Carbon4xAd
         logStop(deployable);
         try
         {
-            ServiceAdminStub serviceGroupAdminStub =
-                new ServiceAdminStub(new URL(getUrl() + "/services/ServiceGroupAdmin").toString());
-            ServiceAdminStub serviceAdminStub =
-                new ServiceAdminStub(new URL(getUrl() + "/services/ServiceAdmin").toString());
             authenticate();
-            prepareServiceClient(serviceGroupAdminStub._getServiceClient());
-            prepareServiceClient(serviceAdminStub._getServiceClient());
+            ServiceAdminStub serviceGroupAdminStub =
+                new ServiceAdminStub(new URL(getUrl() + SERVICES_SERVICE_GROUP_ADMIN).toString());
+            ServiceAdminStub serviceAdminStub =
+                new ServiceAdminStub(new URL(getUrl() + SERVICES_SERVICE_ADMIN).toString());
+            prepareStub(serviceGroupAdminStub);
+            prepareStub(serviceAdminStub);
 
             ServiceGroupMetaData serviceGroupMetaData =
                 serviceGroupAdminStub.listServiceGroup(deployable.getApplicationName());
@@ -157,10 +160,10 @@ public class WSO2Carbon4xAxis2ServiceAdminService extends AbstractWSO2Carbon4xAd
         logRemove(deployable);
         try
         {
-            ServiceAdminStub serviceAdminStub =
-                new ServiceAdminStub(new URL(getUrl() + "/services/ServiceAdmin").toString());
             authenticate();
-            prepareServiceClient(serviceAdminStub._getServiceClient());
+            ServiceAdminStub serviceAdminStub =
+                new ServiceAdminStub(new URL(getUrl() + SERVICES_SERVICE_ADMIN).toString());
+            prepareStub(serviceAdminStub);
 
             serviceAdminStub.deleteServiceGroups(new String[] {deployable.getApplicationName()});
 

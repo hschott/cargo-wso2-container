@@ -1,33 +1,21 @@
 package com.tsystems.cargo.container.wso2.deployer;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.codehaus.cargo.container.ContainerException;
 import org.codehaus.cargo.container.RemoteContainer;
-import org.codehaus.cargo.container.configuration.Configuration;
 import org.codehaus.cargo.container.deployable.Deployable;
 import org.codehaus.cargo.container.deployer.DeployableMonitor;
-import org.codehaus.cargo.container.property.GeneralPropertySet;
-import org.codehaus.cargo.container.property.RemotePropertySet;
-import org.codehaus.cargo.container.property.ServletPropertySet;
 import org.codehaus.cargo.container.spi.deployable.AbstractDeployable;
 import org.codehaus.cargo.container.spi.deployer.AbstractRemoteDeployer;
 import org.codehaus.cargo.container.spi.deployer.DeployerWatchdog;
 
 import com.tsystems.cargo.container.wso2.deployable.Axis2Module;
-import com.tsystems.cargo.container.wso2.deployable.Axis2Service;
-import com.tsystems.cargo.container.wso2.deployable.BAMToolbox;
-import com.tsystems.cargo.container.wso2.deployable.CarbonApplication;
 import com.tsystems.cargo.container.wso2.deployable.WSO2Connector;
 import com.tsystems.cargo.container.wso2.deployable.WSO2Deployable;
-import com.tsystems.cargo.container.wso2.deployable.WSO2WAR;
-import com.tsystems.cargo.container.wso2.deployer.internal.WSO2Axis2ModuleAdminService;
-import com.tsystems.cargo.container.wso2.deployer.internal.WSO2Axis2ServiceAdminService;
-import com.tsystems.cargo.container.wso2.deployer.internal.WSO2BAMToolboxAdminService;
-import com.tsystems.cargo.container.wso2.deployer.internal.WSO2CarbonApplicationAdminService;
-import com.tsystems.cargo.container.wso2.deployer.internal.WSO2MediationLibraryAdminService;
-import com.tsystems.cargo.container.wso2.deployer.internal.WSO2WarAdminService;
+import com.tsystems.cargo.container.wso2.deployer.internal.WSO2AdminService;
+import com.tsystems.cargo.container.wso2.deployer.internal.WSO2AdminServicesException;
 
 public abstract class AbstractWSO2RemoteDeployer extends AbstractRemoteDeployer implements
     WSO2RemoteDeployer
@@ -35,26 +23,16 @@ public abstract class AbstractWSO2RemoteDeployer extends AbstractRemoteDeployer 
 
     private RemoteContainer container;
 
-    protected WSO2Axis2ModuleAdminService axis2ModuleAdminService;
-
-    protected WSO2Axis2ServiceAdminService axis2ServiceAdminService;
-
-    protected WSO2CarbonApplicationAdminService carbonApplicationAdminService;
-
-    protected WSO2MediationLibraryAdminService mediationLibraryAdminService;
-
-    protected WSO2WarAdminService warAdminService;
-
-    protected WSO2BAMToolboxAdminService bamToolboxAdminService;
+    private Map<Class< ? extends WSO2Deployable>, WSO2AdminService<Deployable>> adminServices =
+        new HashMap<Class< ? extends WSO2Deployable>, WSO2AdminService<Deployable>>();
 
     public AbstractWSO2RemoteDeployer(RemoteContainer container)
     {
         super(container);
         this.container = container;
-        createWso2AdminServices();
     }
 
-    protected void canBeDeployed(Deployable deployable)
+    private void canBeDeployed(Deployable deployable)
     {
         if (deployable instanceof WSO2Deployable)
         {
@@ -73,8 +51,6 @@ public abstract class AbstractWSO2RemoteDeployer extends AbstractRemoteDeployer 
                 + "]. Deployable is not a WSO2 deployable.");
     }
 
-    protected abstract void createWso2AdminServices();
-
     @Override
     public void deploy(Deployable deployable)
     {
@@ -82,34 +58,7 @@ public abstract class AbstractWSO2RemoteDeployer extends AbstractRemoteDeployer 
         canBeDeployed(deployable);
         preDeployment(deployable);
 
-        if (deployable instanceof Axis2Service)
-        {
-            axis2ServiceAdminService.deploy((Axis2Service) deployable);
-        }
-        else if (deployable instanceof Axis2Module)
-        {
-            axis2ModuleAdminService.deploy((Axis2Module) deployable);
-        }
-        else if (deployable instanceof WSO2WAR)
-        {
-            warAdminService.deploy((WSO2WAR) deployable);
-        }
-        else if (deployable instanceof CarbonApplication)
-        {
-            carbonApplicationAdminService.deploy((CarbonApplication) deployable);
-        }
-        else if (deployable instanceof WSO2Connector)
-        {
-            mediationLibraryAdminService.deploy((WSO2Connector) deployable);
-        }
-        else if (deployable instanceof BAMToolbox)
-        {
-            bamToolboxAdminService.deploy((BAMToolbox) deployable);
-        }
-        else
-        {
-            super.deploy(deployable);
-        }
+        getAdminService(deployable.getClass()).deploy(deployable);
 
         watchForDeployable(deployable, true);
         postDeployment(deployable);
@@ -118,34 +67,10 @@ public abstract class AbstractWSO2RemoteDeployer extends AbstractRemoteDeployer 
     public boolean exists(WSO2Deployable deployable)
     {
         supportsDeployable(deployable);
-        if (deployable instanceof Axis2Service)
-        {
-            return axis2ServiceAdminService.exists((Axis2Service) deployable);
-        }
-        else if (deployable instanceof Axis2Module)
-        {
-            return axis2ModuleAdminService.exists((Axis2Module) deployable);
-        }
-        else if (deployable instanceof WSO2WAR)
-        {
-            return warAdminService.exists((WSO2WAR) deployable);
-        }
-        else if (deployable instanceof CarbonApplication)
-        {
-            return carbonApplicationAdminService.exists((CarbonApplication) deployable);
-        }
-        else if (deployable instanceof WSO2Connector)
-        {
-            return mediationLibraryAdminService.exists((WSO2Connector) deployable);
-        }
-        else if (deployable instanceof BAMToolbox)
-        {
-            return bamToolboxAdminService.exists((BAMToolbox) deployable);
-        }
-        throw new ContainerException("Not supported");
+        return getAdminService(deployable.getClass()).exists(deployable);
     }
 
-    protected boolean found(Deployable deployable)
+    private boolean found(Deployable deployable)
     {
         if (deployable instanceof WSO2Deployable)
         {
@@ -156,52 +81,20 @@ public abstract class AbstractWSO2RemoteDeployer extends AbstractRemoteDeployer 
             return false;
     }
 
-    protected URL getCarbonBaseURL(Configuration configuration)
-    {
-        URL url;
-
-        String managerURL = configuration.getPropertyValue(RemotePropertySet.URI);
-
-        // If not defined by the user use a default URL
-        if (managerURL == null)
-        {
-            managerURL =
-                configuration.getPropertyValue(GeneralPropertySet.PROTOCOL) + "://"
-                    + configuration.getPropertyValue(GeneralPropertySet.HOSTNAME) + ":"
-                    + configuration.getPropertyValue(ServletPropertySet.PORT);
-
-            getLogger().info("Setting WSO2 Carbon URL to " + managerURL,
-                getClass().getSimpleName());
-        }
-
-        getLogger().debug("WSO2 Carbon URL is " + managerURL, getClass().getSimpleName());
-
-        try
-        {
-            url = new URL(managerURL);
-        }
-        catch (MalformedURLException e)
-        {
-            throw new ContainerException("Invalid WSO2 Carbon URL [" + managerURL + "]", e);
-        }
-
-        return url;
-    }
-
     public RemoteContainer getContainer()
     {
         return container;
     }
 
-    protected void postDeployment(Deployable deployable)
+    private void postDeployment(Deployable deployable)
     {
         if (deployable instanceof WSO2Connector)
         {
-            mediationLibraryAdminService.start((WSO2Connector) deployable);
+            getAdminService(deployable.getClass()).start(deployable);
         }
     }
 
-    protected void preDeployment(Deployable deployable)
+    private void preDeployment(Deployable deployable)
     {
         if (deployable instanceof WSO2Connector)
         {
@@ -215,36 +108,35 @@ public abstract class AbstractWSO2RemoteDeployer extends AbstractRemoteDeployer 
         }
     }
 
-    public void setAxis2ModuleAdminService(WSO2Axis2ModuleAdminService axis2ModuleAdminService)
+    private void preUndeployment(Deployable deployable)
     {
-        this.axis2ModuleAdminService = axis2ModuleAdminService;
+        if (deployable instanceof Axis2Module)
+        {
+            getAdminService(deployable.getClass()).stop(deployable);
+        }
     }
 
-    public void setAxis2ServiceAdminService(WSO2Axis2ServiceAdminService axis2ServiceAdminService)
+    private void postUndeployment(Deployable deployable)
     {
-        this.axis2ServiceAdminService = axis2ServiceAdminService;
+        //
     }
 
-    public void setBamToolboxAdminService(WSO2BAMToolboxAdminService bamToolboxAdminService)
+    @SuppressWarnings("unchecked")
+    protected void addAdminService(Class< ? extends WSO2Deployable> deployable,
+        @SuppressWarnings("rawtypes") WSO2AdminService adminService)
     {
-        this.bamToolboxAdminService = bamToolboxAdminService;
+        adminServices.put(deployable, adminService);
     }
 
-    public void setCarbonApplicationAdminService(
-        WSO2CarbonApplicationAdminService carbonApplicationAdminService)
+    protected WSO2AdminService<Deployable> getAdminService(Class< ? extends Deployable> deployable)
     {
-        this.carbonApplicationAdminService = carbonApplicationAdminService;
-    }
-
-    public void setMediationLibraryAdminService(
-        WSO2MediationLibraryAdminService mediationLibraryAdminService)
-    {
-        this.mediationLibraryAdminService = mediationLibraryAdminService;
-    }
-
-    public void setWarAdminService(WSO2WarAdminService warAdminService)
-    {
-        this.warAdminService = warAdminService;
+        WSO2AdminService<Deployable> adminService = adminServices.get(deployable);
+        if (adminService == null)
+        {
+            throw new WSO2AdminServicesException("No WSO2 admin service registred for deployable "
+                + deployable);
+        }
+        return adminService;
     }
 
     @Override
@@ -254,26 +146,7 @@ public abstract class AbstractWSO2RemoteDeployer extends AbstractRemoteDeployer 
 
         if (found(deployable))
         {
-            if (deployable instanceof Axis2Service)
-            {
-                axis2ServiceAdminService.start((Axis2Service) deployable);
-            }
-            else if (deployable instanceof Axis2Module)
-            {
-                axis2ModuleAdminService.start((Axis2Module) deployable);
-            }
-            else if (deployable instanceof WSO2WAR)
-            {
-                warAdminService.start((WSO2WAR) deployable);
-            }
-            else if (deployable instanceof WSO2Connector)
-            {
-                mediationLibraryAdminService.start((WSO2Connector) deployable);
-            }
-            else
-            {
-                super.start(deployable);
-            }
+            getAdminService(deployable.getClass()).start(deployable);
         }
         else
         {
@@ -288,26 +161,7 @@ public abstract class AbstractWSO2RemoteDeployer extends AbstractRemoteDeployer 
 
         if (found(deployable))
         {
-            if (deployable instanceof Axis2Service)
-            {
-                axis2ServiceAdminService.stop((Axis2Service) deployable);
-            }
-            else if (deployable instanceof Axis2Module)
-            {
-                axis2ModuleAdminService.stop((Axis2Module) deployable);
-            }
-            else if (deployable instanceof WSO2WAR)
-            {
-                warAdminService.stop((WSO2WAR) deployable);
-            }
-            else if (deployable instanceof WSO2Connector)
-            {
-                mediationLibraryAdminService.stop((WSO2Connector) deployable);
-            }
-            else
-            {
-                super.start(deployable);
-            }
+            getAdminService(deployable.getClass()).stop(deployable);
         }
         else
         {
@@ -346,38 +200,12 @@ public abstract class AbstractWSO2RemoteDeployer extends AbstractRemoteDeployer 
 
         if (found(deployable))
         {
-            if (deployable instanceof Axis2Service)
-            {
-                axis2ServiceAdminService.undeploy((Axis2Service) deployable);
-            }
-            else if (deployable instanceof Axis2Module)
-            {
-                axis2ModuleAdminService.stop((Axis2Module) deployable);
-                axis2ModuleAdminService.undeploy((Axis2Module) deployable);
-            }
-            else if (deployable instanceof WSO2WAR)
-            {
-                warAdminService.undeploy((WSO2WAR) deployable);
-            }
-            else if (deployable instanceof CarbonApplication)
-            {
-                carbonApplicationAdminService.undeploy((CarbonApplication) deployable);
-            }
-            else if (deployable instanceof WSO2Connector)
-            {
-                mediationLibraryAdminService.undeploy((WSO2Connector) deployable);
-            }
-            else if (deployable instanceof BAMToolbox)
-            {
-                bamToolboxAdminService.undeploy((BAMToolbox) deployable);
-            }
-            else
-            {
-                super.deploy(deployable);
-            }
+            preUndeployment(deployable);
+
+            getAdminService(deployable.getClass()).undeploy(deployable);
 
             watchForDeployable(deployable, false);
-
+            postUndeployment(deployable);
         }
         else
         {
@@ -385,10 +213,13 @@ public abstract class AbstractWSO2RemoteDeployer extends AbstractRemoteDeployer 
         }
     }
 
-    protected void watchForDeployable(Deployable deployable, boolean availability)
+    private void watchForDeployable(Deployable deployable, boolean availability)
     {
         if (deployable instanceof WSO2Deployable)
         {
+            getLogger().info(
+                "Watch deployable to become" + (availability ? " " : " not ") + "effective.",
+                getClass().getSimpleName());
             WSO2Deployable wso2Deployable = (WSO2Deployable) deployable;
 
             if (wso2Deployable.getDeployTimeout() > 0)

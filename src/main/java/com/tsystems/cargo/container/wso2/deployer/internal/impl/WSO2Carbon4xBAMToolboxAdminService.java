@@ -5,21 +5,22 @@ import java.net.URL;
 
 import javax.activation.DataHandler;
 
+import org.codehaus.cargo.container.configuration.Configuration;
 import org.wso2.carbon.bam.toolbox.deployer.service.BAMToolboxDepolyerServiceStub;
 import org.wso2.carbon.bam.toolbox.deployer.util.xsd.ToolBoxStatusDTO;
 
 import com.tsystems.cargo.container.wso2.deployable.BAMToolbox;
 import com.tsystems.cargo.container.wso2.deployer.internal.WSO2AdminServicesException;
-import com.tsystems.cargo.container.wso2.deployer.internal.WSO2BAMToolboxAdminService;
 
-public class WSO2Carbon4xBAMToolboxAdminService extends AbstractWSO2Carbon4xAdminService
-    implements WSO2BAMToolboxAdminService
+public class WSO2Carbon4xBAMToolboxAdminService extends
+    AbstractWSO2Carbon4xAdminService<BAMToolbox>
 {
 
-    public WSO2Carbon4xBAMToolboxAdminService(URL url, String wso2username, String wso2password,
-        String httpUsername, String httpPassword)
+    private static final String SERVICES_BAM_TOOLBOX_DEPOLYER_SERVICE = "/services/BAMToolboxDepolyerService";
+
+    public WSO2Carbon4xBAMToolboxAdminService(Configuration configuration)
     {
-        super(url, wso2username, wso2password, httpUsername, httpPassword);
+        super(configuration);
     }
 
     public void deploy(BAMToolbox deployable) throws WSO2AdminServicesException
@@ -27,11 +28,12 @@ public class WSO2Carbon4xBAMToolboxAdminService extends AbstractWSO2Carbon4xAdmi
         logUpload(deployable);
         try
         {
+            authenticate();
             BAMToolboxDepolyerServiceStub bamToolboxDepolyerServiceStub =
                 new BAMToolboxDepolyerServiceStub(new URL(getUrl()
-                    + "/services/BAMToolboxDepolyerService").toString());
-            authenticate();
-            prepareServiceClient(bamToolboxDepolyerServiceStub._getServiceClient());
+                    + SERVICES_BAM_TOOLBOX_DEPOLYER_SERVICE).toString());
+            prepareStub(bamToolboxDepolyerServiceStub);
+
             DataHandler dh = new DataHandler(new File(deployable.getFile()).toURI().toURL());
             bamToolboxDepolyerServiceStub.uploadBAMToolBox(dh,
                 new File(deployable.getFile()).getName());
@@ -47,11 +49,12 @@ public class WSO2Carbon4xBAMToolboxAdminService extends AbstractWSO2Carbon4xAdmi
         logExists(deployable);
         try
         {
+            authenticate();
             BAMToolboxDepolyerServiceStub bamToolboxDepolyerServiceStub =
                 new BAMToolboxDepolyerServiceStub(new URL(getUrl()
-                    + "/services/BAMToolboxDepolyerService").toString());
-            authenticate();
-            prepareServiceClient(bamToolboxDepolyerServiceStub._getServiceClient());
+                    + SERVICES_BAM_TOOLBOX_DEPOLYER_SERVICE).toString());
+            prepareStub(bamToolboxDepolyerServiceStub);
+
             ToolBoxStatusDTO toolBoxStatusDTO =
                 bamToolboxDepolyerServiceStub.getDeployedToolBoxes("1", "");
             String[] deployedTools = toolBoxStatusDTO.getDeployedTools();
@@ -78,11 +81,12 @@ public class WSO2Carbon4xBAMToolboxAdminService extends AbstractWSO2Carbon4xAdmi
         logRemove(deployable);
         try
         {
+            authenticate();
             BAMToolboxDepolyerServiceStub bamToolboxDepolyerServiceStub =
                 new BAMToolboxDepolyerServiceStub(new URL(getUrl()
-                    + "/services/BAMToolboxDepolyerService").toString());
-            authenticate();
-            prepareServiceClient(bamToolboxDepolyerServiceStub._getServiceClient());
+                    + SERVICES_BAM_TOOLBOX_DEPOLYER_SERVICE).toString());
+            prepareStub(bamToolboxDepolyerServiceStub);
+
             bamToolboxDepolyerServiceStub.undeployToolBox(new String[] {deployable
                 .getApplicationName()});
         }
@@ -90,6 +94,16 @@ public class WSO2Carbon4xBAMToolboxAdminService extends AbstractWSO2Carbon4xAdmi
         {
             throw new WSO2AdminServicesException("error removing bam toolbox", e);
         }
+    }
+
+    public void start(BAMToolbox deployable) throws WSO2AdminServicesException
+    {
+        throw new WSO2AdminServicesException("Not supported");
+    }
+
+    public void stop(BAMToolbox deployable) throws WSO2AdminServicesException
+    {
+        throw new WSO2AdminServicesException("Not supported");
     }
 
 }

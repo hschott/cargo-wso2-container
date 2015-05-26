@@ -5,22 +5,22 @@ import java.net.URL;
 
 import javax.activation.DataHandler;
 
+import org.codehaus.cargo.container.configuration.Configuration;
 import org.wso2.carbon.module.mgt.ModuleAdminServiceStub;
 import org.wso2.carbon.module.mgt.xsd.ModuleMetaData;
 import org.wso2.carbon.module.mgt.xsd.ModuleUploadData;
 
 import com.tsystems.cargo.container.wso2.deployable.Axis2Module;
 import com.tsystems.cargo.container.wso2.deployer.internal.WSO2AdminServicesException;
-import com.tsystems.cargo.container.wso2.deployer.internal.WSO2Axis2ModuleAdminService;
 
-public class WSO2Carbon4xAxis2ModuleAdminService extends AbstractWSO2Carbon4xAdminService
-    implements WSO2Axis2ModuleAdminService
+public class WSO2Carbon4xAxis2ModuleAdminService extends
+    AbstractWSO2Carbon4xAdminService<Axis2Module>
 {
+    private static final String SERVICES_MODULE_ADMIN_SERVICE = "/services/ModuleAdminService";
 
-    public WSO2Carbon4xAxis2ModuleAdminService(URL url, String wso2username, String wso2password,
-        String httpUsername, String httpPassword)
+    public WSO2Carbon4xAxis2ModuleAdminService(Configuration configuration)
     {
-        super(url, wso2username, wso2password, httpUsername, httpPassword);
+        super(configuration);
     }
 
     public void deploy(Axis2Module deployable) throws WSO2AdminServicesException
@@ -28,10 +28,10 @@ public class WSO2Carbon4xAxis2ModuleAdminService extends AbstractWSO2Carbon4xAdm
         logUpload(deployable);
         try
         {
-            ModuleAdminServiceStub moduleAdminServiceStub =
-                new ModuleAdminServiceStub(new URL(getUrl() + "/services/ModuleAdminService").toString());
             authenticate();
-            prepareServiceClient(moduleAdminServiceStub._getServiceClient());
+            ModuleAdminServiceStub moduleAdminServiceStub =
+                new ModuleAdminServiceStub(new URL(getUrl() + SERVICES_MODULE_ADMIN_SERVICE).toString());
+            prepareStub(moduleAdminServiceStub);
 
             DataHandler dh = new DataHandler(new File(deployable.getFile()).toURI().toURL());
             ModuleUploadData moduleUploadData = new ModuleUploadData();
@@ -52,10 +52,10 @@ public class WSO2Carbon4xAxis2ModuleAdminService extends AbstractWSO2Carbon4xAdm
         logExists(deployable);
         try
         {
-            ModuleAdminServiceStub moduleAdminServiceStub =
-                new ModuleAdminServiceStub(new URL(getUrl() + "/services/ModuleAdminService").toString());
             authenticate();
-            prepareServiceClient(moduleAdminServiceStub._getServiceClient());
+            ModuleAdminServiceStub moduleAdminServiceStub =
+                new ModuleAdminServiceStub(new URL(getUrl() + SERVICES_MODULE_ADMIN_SERVICE).toString());
+            prepareStub(moduleAdminServiceStub);
 
             ModuleMetaData[] moduleMetaData = moduleAdminServiceStub.listModules();
 
@@ -82,10 +82,11 @@ public class WSO2Carbon4xAxis2ModuleAdminService extends AbstractWSO2Carbon4xAdm
         logStart(deployable);
         try
         {
-            ModuleAdminServiceStub moduleAdminServiceStub =
-                new ModuleAdminServiceStub(new URL(getUrl() + "/services/ModuleAdminService").toString());
             authenticate();
-            prepareServiceClient(moduleAdminServiceStub._getServiceClient());
+            ModuleAdminServiceStub moduleAdminServiceStub =
+                new ModuleAdminServiceStub(new URL(getUrl() + SERVICES_MODULE_ADMIN_SERVICE).toString());
+            prepareStub(moduleAdminServiceStub);
+
             moduleAdminServiceStub.globallyEngageModule(deployable.getApplicationName());
         }
         catch (Exception e)
@@ -99,10 +100,11 @@ public class WSO2Carbon4xAxis2ModuleAdminService extends AbstractWSO2Carbon4xAdm
         logStop(deployable);
         try
         {
-            ModuleAdminServiceStub moduleAdminServiceStub =
-                new ModuleAdminServiceStub(new URL(getUrl() + "/services/ModuleAdminService").toString());
             authenticate();
-            prepareServiceClient(moduleAdminServiceStub._getServiceClient());
+            ModuleAdminServiceStub moduleAdminServiceStub =
+                new ModuleAdminServiceStub(new URL(getUrl() + SERVICES_MODULE_ADMIN_SERVICE).toString());
+            prepareStub(moduleAdminServiceStub);
+
             moduleAdminServiceStub.globallyDisengageModule(deployable.getApplicationName());
         }
         catch (Exception e)
@@ -116,10 +118,11 @@ public class WSO2Carbon4xAxis2ModuleAdminService extends AbstractWSO2Carbon4xAdm
         logRemove(deployable);
         try
         {
-            ModuleAdminServiceStub moduleAdminServiceStub =
-                new ModuleAdminServiceStub(new URL(getUrl() + "/services/ModuleAdminService").toString());
             authenticate();
-            prepareServiceClient(moduleAdminServiceStub._getServiceClient());
+            ModuleAdminServiceStub moduleAdminServiceStub =
+                new ModuleAdminServiceStub(new URL(getUrl() + SERVICES_MODULE_ADMIN_SERVICE).toString());
+            prepareStub(moduleAdminServiceStub);
+
             moduleAdminServiceStub.removeModule(deployable.getApplicationName());
         }
         catch (Exception e)

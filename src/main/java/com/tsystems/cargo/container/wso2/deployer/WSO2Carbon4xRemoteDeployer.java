@@ -1,18 +1,17 @@
 package com.tsystems.cargo.container.wso2.deployer;
 
-import java.net.URL;
-
 import org.codehaus.cargo.container.RemoteContainer;
 import org.codehaus.cargo.container.configuration.Configuration;
-import org.codehaus.cargo.container.property.RemotePropertySet;
 
-import com.tsystems.cargo.container.wso2.configuration.WSO2CarbonPropertySet;
-import com.tsystems.cargo.container.wso2.deployer.internal.WSO2Axis2ModuleAdminService;
-import com.tsystems.cargo.container.wso2.deployer.internal.WSO2Axis2ServiceAdminService;
-import com.tsystems.cargo.container.wso2.deployer.internal.WSO2BAMToolboxAdminService;
-import com.tsystems.cargo.container.wso2.deployer.internal.WSO2CarbonApplicationAdminService;
-import com.tsystems.cargo.container.wso2.deployer.internal.WSO2MediationLibraryAdminService;
-import com.tsystems.cargo.container.wso2.deployer.internal.WSO2WarAdminService;
+import com.tsystems.cargo.container.wso2.deployable.Axis2Module;
+import com.tsystems.cargo.container.wso2.deployable.Axis2Service;
+import com.tsystems.cargo.container.wso2.deployable.BAMToolbox;
+import com.tsystems.cargo.container.wso2.deployable.CarbonApplication;
+import com.tsystems.cargo.container.wso2.deployable.WSO2Axis2Service;
+import com.tsystems.cargo.container.wso2.deployable.WSO2CarbonApplication;
+import com.tsystems.cargo.container.wso2.deployable.WSO2Connector;
+import com.tsystems.cargo.container.wso2.deployable.WSO2WAR;
+import com.tsystems.cargo.container.wso2.deployer.internal.WSO2AdminService;
 import com.tsystems.cargo.container.wso2.deployer.internal.impl.WSO2Carbon4xAxis2ModuleAdminService;
 import com.tsystems.cargo.container.wso2.deployer.internal.impl.WSO2Carbon4xAxis2ServiceAdminService;
 import com.tsystems.cargo.container.wso2.deployer.internal.impl.WSO2Carbon4xBAMToolboxAdminService;
@@ -26,77 +25,38 @@ public class WSO2Carbon4xRemoteDeployer extends AbstractWSO2RemoteDeployer
     public WSO2Carbon4xRemoteDeployer(RemoteContainer container)
     {
         super(container);
+        createWso2AdminServices();
     }
 
-    @Override
     protected void createWso2AdminServices()
     {
         Configuration configuration = getContainer().getConfiguration();
 
-        URL managerURL = getCarbonBaseURL(configuration);
+        WSO2AdminService<Axis2Module> axis2ModuleAdminService =
+            new WSO2Carbon4xAxis2ModuleAdminService(configuration);
+        addAdminService(Axis2Module.class, axis2ModuleAdminService);
 
-        String wso2username =
-            configuration.getPropertyValue(WSO2CarbonPropertySet.CARBON_USERNAME);
-        String wso2password =
-            configuration.getPropertyValue(WSO2CarbonPropertySet.CARBON_PASSWORD);
+        WSO2AdminService<Axis2Service> axis2ServiceAdminService =
+            new WSO2Carbon4xAxis2ServiceAdminService(configuration);
+        addAdminService(Axis2Service.class, axis2ServiceAdminService);
+        addAdminService(WSO2Axis2Service.class, axis2ServiceAdminService);
 
-        String httpUsername = configuration.getPropertyValue(RemotePropertySet.USERNAME);
-        String httpPassword = configuration.getPropertyValue(RemotePropertySet.PASSWORD);
+        WSO2AdminService<CarbonApplication> carbonApplicationAdminService =
+            new WSO2Carbon4xCarbonApplicationAdminService(configuration);
+        addAdminService(CarbonApplication.class, carbonApplicationAdminService);
+        addAdminService(WSO2CarbonApplication.class, carbonApplicationAdminService);
 
-        WSO2Axis2ModuleAdminService axis2ModuleAdminService =
-            new WSO2Carbon4xAxis2ModuleAdminService(managerURL,
-                wso2username,
-                wso2password,
-                httpUsername,
-                httpPassword);
-        axis2ModuleAdminService.setLogger(getLogger());
-        setAxis2ModuleAdminService(axis2ModuleAdminService);
+        WSO2AdminService<WSO2WAR> warAdminService =
+            new WSO2Carbon4xWarAdminService(configuration);
+        addAdminService(WSO2WAR.class, warAdminService);
 
-        WSO2Axis2ServiceAdminService axis2ServiceAdminService =
-            new WSO2Carbon4xAxis2ServiceAdminService(managerURL,
-                wso2username,
-                wso2password,
-                httpUsername,
-                httpPassword);
-        axis2ServiceAdminService.setLogger(getLogger());
-        setAxis2ServiceAdminService(axis2ServiceAdminService);
+        WSO2AdminService<WSO2Connector> mediationLibraryAdminService =
+            new WSO2Carbon4xMediationLibraryAdminService(configuration);
+        addAdminService(WSO2Connector.class, mediationLibraryAdminService);
 
-        WSO2CarbonApplicationAdminService carbonApplicationAdminService =
-            new WSO2Carbon4xCarbonApplicationAdminService(managerURL,
-                wso2username,
-                wso2password,
-                httpUsername,
-                httpPassword);
-        carbonApplicationAdminService.setLogger(getLogger());
-        setCarbonApplicationAdminService(carbonApplicationAdminService);
-
-        WSO2WarAdminService warAdminService =
-            new WSO2Carbon4xWarAdminService(managerURL,
-                wso2username,
-                wso2password,
-                httpUsername,
-                httpPassword);
-        warAdminService.setLogger(getLogger());
-        setWarAdminService(warAdminService);
-
-        WSO2MediationLibraryAdminService mediationLibraryAdminService =
-            new WSO2Carbon4xMediationLibraryAdminService(managerURL,
-                wso2username,
-                wso2password,
-                httpUsername,
-                httpPassword);
-        mediationLibraryAdminService.setLogger(getLogger());
-        setMediationLibraryAdminService(mediationLibraryAdminService);
-
-        WSO2BAMToolboxAdminService bamToolboxAdminService =
-            new WSO2Carbon4xBAMToolboxAdminService(managerURL,
-                wso2username,
-                wso2password,
-                httpUsername,
-                httpPassword);
-        bamToolboxAdminService.setLogger(getLogger());
-        setBamToolboxAdminService(bamToolboxAdminService);
-
+        WSO2AdminService<BAMToolbox> bamToolboxAdminService =
+            new WSO2Carbon4xBAMToolboxAdminService(configuration);
+        addAdminService(BAMToolbox.class, bamToolboxAdminService);
     }
 
 }
