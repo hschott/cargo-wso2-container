@@ -106,9 +106,9 @@ Update your pom to use cargo plugin and cargo-wso2-container as a dependency:
 
 Property name | Default value
 ---: | ---
-cargo.protocol | http
-cargo.hostname | 127.0.0.1
-cargo.servlet.port | 9763
+cargo.protocol | https
+cargo.hostname | localhost
+cargo.servlet.port | 9443
 cargo.remote.username | N/A
 cargo.remote.password | N/A
 cargo.wso2carbon.username | admin

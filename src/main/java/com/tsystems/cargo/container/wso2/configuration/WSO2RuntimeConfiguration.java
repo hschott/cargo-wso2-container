@@ -12,11 +12,11 @@ public class WSO2RuntimeConfiguration extends AbstractRuntimeConfiguration
     {
         super();
         // default properties
-        this.setProperty(GeneralPropertySet.HOSTNAME, "127.0.0.1");
-        this.setProperty(GeneralPropertySet.PROTOCOL, "http");
+        this.setProperty(GeneralPropertySet.HOSTNAME, "localhost");
+        this.setProperty(GeneralPropertySet.PROTOCOL, "https");
         this.setProperty(WSO2CarbonPropertySet.CARBON_USERNAME, "admin");
         this.setProperty(WSO2CarbonPropertySet.CARBON_PASSWORD, "admin");
-        this.setProperty(ServletPropertySet.PORT, "9763");
+        this.setProperty(ServletPropertySet.PORT, "9443");
     }
 
     public ConfigurationCapability getCapability()
