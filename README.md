@@ -6,7 +6,7 @@ This project is a [Cargo](https://codehaus-cargo.github.io/cargo/Home) container
 It provides capabilities to deploy WSO2 applications to installed and remote WSO2 Carbon servers.
 
 This document will focus on [Maven](http://maven.apache.org/) integration.
-For more details about configuring Cargo visit please [Cargo](https://codehaus-cargo.github.io/cargo/) website.
+For more details about configuring Cargo visit please [Cargo](https://codehaus-cargo.github.io/cargo/Home) website.
 
 ## Supported Container Features
 
