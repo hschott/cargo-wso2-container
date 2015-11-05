@@ -1,9 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.tsystems.cargo.wso2</groupId>
 	<artifactId>cargo-wso2-container</artifactId>
-	<version>0.6.0-SNAPSHOT</version>
+	<version>0.6.0</version>
 	<name>Cargo container extension for WSO2</name>
 	<description>A Cargo container extension for WSO2 Carbon Container. Supports WSO2 Carbon 4.x</description>
 	<url>https://github.com/hschott/cargo-wso2-container</url>
@@ -29,7 +28,7 @@
 		<connection>scm:git:git@github.com:hschott/cargo-wso2-container</connection>
 		<developerConnection>scm:git:git@github.com:hschott/cargo-wso2-container</developerConnection>
 		<url>https://github.com/hschott/cargo-wso2-container</url>
-		<tag>HEAD</tag>
+		<tag>v0.6.0</tag>
 	</scm>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
