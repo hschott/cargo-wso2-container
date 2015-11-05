@@ -8,3 +8,6 @@ release.properties
 .project
 .classpath
 .DS_Store
+/target/
+
+src/test/java/main/Main.java

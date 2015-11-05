@@ -75,10 +75,13 @@ public class WSO2DeployableTest
             (CarbonApplication) DEPLOYABLE_FACTORY.createDeployable(WSO2Carbon4xContainer.ID,
                 car.getFile(), CarbonApplication.TYPE);
 
-        Assert.assertEquals("Capp_1.0.0", deployable.getApplicationName());
+        deployable.setIgnoreVersion("true");
+        Assert.assertTrue(deployable.matchesApplication("Capp_1.0.1"));
+        Assert.assertTrue(deployable.matchesApplication("Capp_1.0.0"));
 
-        deployable.setApplicationName("berlin");
-        Assert.assertEquals("berlin", deployable.getApplicationName());
+        deployable.setIgnoreVersion("false");
+        Assert.assertFalse(deployable.matchesApplication("Capp_1.0.1"));
+        Assert.assertTrue(deployable.matchesApplication("Capp_1.0.0"));
     }
 
     @Test
@@ -93,9 +96,6 @@ public class WSO2DeployableTest
                 mar.getFile(), Axis2Module.TYPE);
 
         Assert.assertEquals("rampart", deployable.getApplicationName());
-
-        deployable.setApplicationName("berlin");
-        Assert.assertEquals("berlin", deployable.getApplicationName());
     }
 
     @Test

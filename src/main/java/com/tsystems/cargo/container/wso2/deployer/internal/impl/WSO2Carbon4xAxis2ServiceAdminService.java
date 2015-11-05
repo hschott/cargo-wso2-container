@@ -20,7 +20,9 @@ public class WSO2Carbon4xAxis2ServiceAdminService extends
 {
 
     private static final String SERVICES_SERVICE_UPLOADER = "/services/ServiceUploader";
+
     private static final String SERVICES_SERVICE_ADMIN = "/services/ServiceAdmin";
+
     private static final String SERVICES_SERVICE_GROUP_ADMIN = "/services/ServiceGroupAdmin";
 
     public WSO2Carbon4xAxis2ServiceAdminService(Configuration configuration)
@@ -30,7 +32,7 @@ public class WSO2Carbon4xAxis2ServiceAdminService extends
 
     public void deploy(Axis2Service deployable) throws WSO2AdminServicesException
     {
-        logUpload(deployable);
+        logUpload(deployable.getFile());
         try
         {
             authenticate();
@@ -53,7 +55,7 @@ public class WSO2Carbon4xAxis2ServiceAdminService extends
 
     public boolean exists(Axis2Service deployable) throws WSO2AdminServicesException
     {
-        logExists(deployable);
+        logExists(deployable.getApplicationName());
         try
         {
             authenticate();
@@ -94,7 +96,6 @@ public class WSO2Carbon4xAxis2ServiceAdminService extends
 
     public void start(Axis2Service deployable) throws WSO2AdminServicesException
     {
-        logStart(deployable);
         try
         {
             authenticate();
@@ -113,6 +114,7 @@ public class WSO2Carbon4xAxis2ServiceAdminService extends
             {
                 for (ServiceMetaData serviceMetaData : serviceMetaDataList)
                 {
+                    logStart(serviceMetaData.getName());
                     serviceAdminStub.startService(serviceMetaData.getName());
                 }
             }
@@ -126,7 +128,6 @@ public class WSO2Carbon4xAxis2ServiceAdminService extends
 
     public void stop(Axis2Service deployable) throws WSO2AdminServicesException
     {
-        logStop(deployable);
         try
         {
             authenticate();
@@ -145,6 +146,7 @@ public class WSO2Carbon4xAxis2ServiceAdminService extends
             {
                 for (ServiceMetaData serviceMetaData : serviceMetaDataList)
                 {
+                    logStop(serviceMetaData.getName());
                     serviceAdminStub.stopService(serviceMetaData.getName());
                 }
             }
@@ -157,7 +159,7 @@ public class WSO2Carbon4xAxis2ServiceAdminService extends
 
     public void undeploy(Axis2Service deployable) throws WSO2AdminServicesException
     {
-        logRemove(deployable);
+        logRemove(deployable.getApplicationName());
         try
         {
             authenticate();

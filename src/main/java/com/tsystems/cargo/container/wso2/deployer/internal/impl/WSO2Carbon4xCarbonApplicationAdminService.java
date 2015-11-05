@@ -2,7 +2,6 @@ package com.tsystems.cargo.container.wso2.deployer.internal.impl;
 
 import java.io.File;
 import java.net.URL;
-import java.util.Arrays;
 
 import javax.activation.DataHandler;
 
@@ -29,7 +28,7 @@ public class WSO2Carbon4xCarbonApplicationAdminService extends
 
     public void deploy(CarbonApplication deployable) throws WSO2AdminServicesException
     {
-        logUpload(deployable);
+        logUpload(deployable.getFile());
         try
         {
             authenticate();
@@ -54,7 +53,7 @@ public class WSO2Carbon4xCarbonApplicationAdminService extends
 
     public boolean exists(CarbonApplication deployable) throws WSO2AdminServicesException
     {
-        logExists(deployable);
+        logExists(deployable.getApplicationName());
         try
         {
             authenticate();
@@ -63,10 +62,17 @@ public class WSO2Carbon4xCarbonApplicationAdminService extends
             prepareStub(applicationAdminStub);
 
             String[] existingApplications = applicationAdminStub.listAllApplications();
-            if (existingApplications != null
-                && Arrays.asList(existingApplications).contains(deployable.getApplicationName()))
+            if (existingApplications == null)
             {
-                return true;
+                return false;
+            }
+
+            for (String application : existingApplications)
+            {
+                if (deployable.matchesApplication(application))
+                {
+                    return true;
+                }
             }
         }
         catch (Exception e)
@@ -79,7 +85,6 @@ public class WSO2Carbon4xCarbonApplicationAdminService extends
 
     public void undeploy(CarbonApplication deployable) throws WSO2AdminServicesException
     {
-        logRemove(deployable);
         try
         {
             authenticate();
@@ -87,7 +92,21 @@ public class WSO2Carbon4xCarbonApplicationAdminService extends
                 new ApplicationAdminStub(new URL(getUrl() + SERVICES_APPLICATION_ADMIN).toString());
             prepareStub(applicationAdminStub);
 
-            applicationAdminStub.deleteApplication(deployable.getApplicationName());
+            String[] existingApplications = applicationAdminStub.listAllApplications();
+            if (existingApplications == null)
+            {
+                return;
+            }
+
+            for (String application : existingApplications)
+            {
+                if (deployable.matchesApplication(application))
+                {
+                    logRemove(application);
+                    applicationAdminStub.deleteApplication(application);
+                }
+            }
+
         }
         catch (Exception e)
         {

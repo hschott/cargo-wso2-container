@@ -49,7 +49,7 @@ public class Axis2Module extends AbstractWSO2Deployable implements WSO2Deployabl
         return TYPE;
     }
 
-    public final void parseApplicationName()
+    private void parseApplicationName()
     {
         try
         {
@@ -74,6 +74,6 @@ public class Axis2Module extends AbstractWSO2Deployable implements WSO2Deployabl
 
     public void setApplicationName(String applicationName)
     {
-        this.applicationName = applicationName;
+        throw new DeployableException("Deployable applicationName can not be overwritten by user.");
     }
 }

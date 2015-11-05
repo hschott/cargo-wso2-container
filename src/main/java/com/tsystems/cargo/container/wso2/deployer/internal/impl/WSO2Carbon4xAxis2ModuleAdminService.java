@@ -25,7 +25,7 @@ public class WSO2Carbon4xAxis2ModuleAdminService extends
 
     public void deploy(Axis2Module deployable) throws WSO2AdminServicesException
     {
-        logUpload(deployable);
+        logUpload(deployable.getFile());
         try
         {
             authenticate();
@@ -49,7 +49,7 @@ public class WSO2Carbon4xAxis2ModuleAdminService extends
 
     public boolean exists(Axis2Module deployable) throws WSO2AdminServicesException
     {
-        logExists(deployable);
+        logExists(deployable.getApplicationName());
         try
         {
             authenticate();
@@ -79,7 +79,7 @@ public class WSO2Carbon4xAxis2ModuleAdminService extends
 
     public void start(Axis2Module deployable) throws WSO2AdminServicesException
     {
-        logStart(deployable);
+        logStart(deployable.getApplicationName());
         try
         {
             authenticate();
@@ -97,7 +97,7 @@ public class WSO2Carbon4xAxis2ModuleAdminService extends
 
     public void stop(Axis2Module deployable) throws WSO2AdminServicesException
     {
-        logStop(deployable);
+        logStop(deployable.getApplicationName());
         try
         {
             authenticate();
@@ -115,7 +115,7 @@ public class WSO2Carbon4xAxis2ModuleAdminService extends
 
     public void undeploy(Axis2Module deployable) throws WSO2AdminServicesException
     {
-        logRemove(deployable);
+        logRemove(deployable.getApplicationName());
         try
         {
             authenticate();

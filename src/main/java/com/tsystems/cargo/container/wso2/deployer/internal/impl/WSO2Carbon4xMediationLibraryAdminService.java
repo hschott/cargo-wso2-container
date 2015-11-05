@@ -17,8 +17,11 @@ public class WSO2Carbon4xMediationLibraryAdminService extends
     AbstractWSO2Carbon4xAdminService<WSO2Connector>
 {
 
-    private static final String SERVICES_MEDIATION_LIBRARY_UPLOADER = "/services/MediationLibraryUploader";
-    private static final String SERVICES_MEDIATION_LIBRARY_ADMIN_SERVICE = "/services/MediationLibraryAdminService";
+    private static final String SERVICES_MEDIATION_LIBRARY_UPLOADER =
+        "/services/MediationLibraryUploader";
+
+    private static final String SERVICES_MEDIATION_LIBRARY_ADMIN_SERVICE =
+        "/services/MediationLibraryAdminService";
 
     public WSO2Carbon4xMediationLibraryAdminService(Configuration configuration)
     {
@@ -27,7 +30,7 @@ public class WSO2Carbon4xMediationLibraryAdminService extends
 
     public void deploy(WSO2Connector deployable) throws WSO2AdminServicesException
     {
-        logUpload(deployable);
+        logUpload(deployable.getFile());
         try
         {
             authenticate();
@@ -55,7 +58,7 @@ public class WSO2Carbon4xMediationLibraryAdminService extends
 
     public boolean exists(WSO2Connector deployable) throws WSO2AdminServicesException
     {
-        logExists(deployable);
+        logExists(deployable.getApplicationName());
         try
         {
             authenticate();
@@ -84,7 +87,7 @@ public class WSO2Carbon4xMediationLibraryAdminService extends
 
     public void start(WSO2Connector deployable) throws WSO2AdminServicesException
     {
-        logStart(deployable);
+        logStart(deployable.getApplicationName());
         try
         {
             authenticate();
@@ -105,7 +108,7 @@ public class WSO2Carbon4xMediationLibraryAdminService extends
 
     public void stop(WSO2Connector deployable) throws WSO2AdminServicesException
     {
-        logStop(deployable);
+        logStop(deployable.getApplicationName());
         try
         {
             authenticate();
@@ -126,7 +129,7 @@ public class WSO2Carbon4xMediationLibraryAdminService extends
 
     public void undeploy(WSO2Connector deployable) throws WSO2AdminServicesException
     {
-        logRemove(deployable);
+        logRemove(deployable.getApplicationName());
         try
         {
             authenticate();

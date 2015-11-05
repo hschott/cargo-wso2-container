@@ -16,7 +16,8 @@ public class WSO2Carbon4xBAMToolboxAdminService extends
     AbstractWSO2Carbon4xAdminService<BAMToolbox>
 {
 
-    private static final String SERVICES_BAM_TOOLBOX_DEPOLYER_SERVICE = "/services/BAMToolboxDepolyerService";
+    private static final String SERVICES_BAM_TOOLBOX_DEPOLYER_SERVICE =
+        "/services/BAMToolboxDepolyerService";
 
     public WSO2Carbon4xBAMToolboxAdminService(Configuration configuration)
     {
@@ -25,7 +26,7 @@ public class WSO2Carbon4xBAMToolboxAdminService extends
 
     public void deploy(BAMToolbox deployable) throws WSO2AdminServicesException
     {
-        logUpload(deployable);
+        logUpload(deployable.getFile());
         try
         {
             authenticate();
@@ -46,7 +47,7 @@ public class WSO2Carbon4xBAMToolboxAdminService extends
 
     public boolean exists(BAMToolbox deployable) throws WSO2AdminServicesException
     {
-        logExists(deployable);
+        logExists(deployable.getApplicationName());
         try
         {
             authenticate();
@@ -78,7 +79,7 @@ public class WSO2Carbon4xBAMToolboxAdminService extends
 
     public void undeploy(BAMToolbox deployable) throws WSO2AdminServicesException
     {
-        logRemove(deployable);
+        logRemove(deployable.getApplicationName());
         try
         {
             authenticate();

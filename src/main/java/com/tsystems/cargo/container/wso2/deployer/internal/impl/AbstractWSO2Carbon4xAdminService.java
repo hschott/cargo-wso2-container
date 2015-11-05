@@ -13,7 +13,6 @@ import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 import org.codehaus.cargo.container.ContainerException;
 import org.codehaus.cargo.container.configuration.Configuration;
-import org.codehaus.cargo.container.deployable.Deployable;
 import org.codehaus.cargo.container.property.GeneralPropertySet;
 import org.codehaus.cargo.container.property.RemotePropertySet;
 import org.codehaus.cargo.container.property.ServletPropertySet;
@@ -136,34 +135,32 @@ public abstract class AbstractWSO2Carbon4xAdminService<T> extends LoggedObject i
         return url;
     }
 
-    void logExists(Deployable deployable)
+    void logExists(String deployable)
     {
-        getLogger().debug("Check deploy status of [" + deployable.getFile() + "] on " + getUrl(),
+        getLogger().debug("Check deploy status of [" + deployable + "] on " + getUrl(),
             getClass().getSimpleName());
     }
 
-    void logRemove(Deployable deployable)
+    void logRemove(String deployable)
     {
-        getLogger().info("Remove [" + deployable.getFile() + "] from " + getUrl(),
+        getLogger().info("Remove [" + deployable + "] from " + getUrl(),
             getClass().getSimpleName());
     }
 
-    void logStart(Deployable deployable)
+    void logStart(String deployable)
     {
-        getLogger().info("Start [" + deployable.getFile() + "] on " + getUrl(),
-            getClass().getSimpleName());
+        getLogger().info("Start [" + deployable + "] on " + getUrl(), getClass().getSimpleName());
     }
 
-    void logStop(Deployable deployable)
+    void logStop(String deployable)
     {
-        getLogger().info("Stopp [" + deployable.getFile() + "] on " + getUrl(),
-            getClass().getSimpleName());
+        getLogger().info("Stopp [" + deployable + "] on " + getUrl(), getClass().getSimpleName());
     }
 
-    void logUpload(Deployable deployable)
+    void logUpload(String deployable)
     {
-        getLogger().info("Upload [" + deployable.getFile() + "] to " + getUrl(),
-            getClass().getSimpleName());
+        getLogger()
+            .info("Upload [" + deployable + "] to " + getUrl(), getClass().getSimpleName());
 
     }
 

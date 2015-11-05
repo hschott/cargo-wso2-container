@@ -27,6 +27,12 @@ public class CarbonApplication extends AbstractWSO2Deployable implements WSO2Dep
 
     private String applicationName;
 
+    private String application;
+
+    private String version;
+
+    private boolean ignoreVersion = false;
+
     public CarbonApplication(final String file)
     {
         super(file);
@@ -34,14 +40,47 @@ public class CarbonApplication extends AbstractWSO2Deployable implements WSO2Dep
 
     public final String getApplicationName()
     {
-        if (applicationName == null || applicationName.length() == 0)
-        {
-            parseApplicationName();
-        }
-        return applicationName;
+        initApplicationName();
+        return ignoreVersion ? application : applicationName;
     }
 
-    public final void parseApplicationName()
+    private void initApplicationName()
+    {
+        parseApplicationName();
+        applicationName = application + "_" + version;
+    }
+
+    public DeployableType getType()
+    {
+        return TYPE;
+    }
+
+    public boolean getIgnoreVersion()
+    {
+        return ignoreVersion;
+    }
+
+    public boolean matchesApplication(String candidate)
+    {
+        if (candidate == null || candidate.length() == 0)
+        {
+            return false;
+        }
+
+        initApplicationName();
+
+        if (ignoreVersion)
+        {
+            return candidate.startsWith(application);
+        }
+        else
+        {
+            return candidate.equals(applicationName);
+        }
+
+    }
+
+    private void parseApplicationName()
     {
         try
         {
@@ -54,14 +93,12 @@ public class CarbonApplication extends AbstractWSO2Deployable implements WSO2Dep
             XPathExpression xPathName =
                 xPath.compile("//artifacts/artifact[1][@type='carbon/application']/@name");
             Node nodeName = (Node) xPathName.evaluate(doc, XPathConstants.NODE);
-            String nameString = nodeName.getNodeValue();
+            application = nodeName.getNodeValue();
 
             XPathExpression xPathVersion =
                 xPath.compile("//artifacts/artifact[1][@type='carbon/application']/@version");
             Node nodeVersion = (Node) xPathVersion.evaluate(doc, XPathConstants.NODE);
-            String versionString = nodeVersion.getNodeValue();
-
-            applicationName = nameString + "_" + versionString;
+            version = nodeVersion.getNodeValue();
 
         }
         catch (Exception e)
@@ -70,13 +107,13 @@ public class CarbonApplication extends AbstractWSO2Deployable implements WSO2Dep
         }
     }
 
-    public DeployableType getType()
-    {
-        return TYPE;
-    }
-
     public void setApplicationName(String applicationName)
     {
-        this.applicationName = applicationName;
+        throw new DeployableException("Deployable applicationName can not be overwritten by user.");
+    }
+
+    public void setIgnoreVersion(String ignoreVersion)
+    {
+        this.ignoreVersion = Boolean.parseBoolean(ignoreVersion);
     }
 }
