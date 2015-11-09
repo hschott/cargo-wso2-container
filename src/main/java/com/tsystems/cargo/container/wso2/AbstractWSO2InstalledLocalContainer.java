@@ -185,6 +185,7 @@ public abstract class AbstractWSO2InstalledLocalContainer extends AbstractInstal
             java.setSystemProperty("wso2.carbon.xml",
                 getFileHandler().append(configurationHome, "carbon.xml"));
         }
+
         if (jvmArgs == null || !jvmArgs.contains("wso2.registry.xml"))
         {
             java.setSystemProperty("wso2.registry.xml",
