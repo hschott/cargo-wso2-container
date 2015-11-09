@@ -62,7 +62,7 @@ public abstract class AbstractWSO2InstalledLocalDeployer extends AbstractInstall
      * @see org.codehaus.cargo.container.deployer.Deployer#deploy(Deployable)
      */
     @Override
-    public synchronized void deploy(Deployable deployable)
+    public void deploy(Deployable deployable)
     {
 
         // Check that the container supports the deployable type to deploy

@@ -1,5 +1,7 @@
 package com.tsystems.cargo.container.wso2.deployable;
 
+import java.util.Locale;
+
 import org.codehaus.cargo.container.spi.deployable.AbstractDeployable;
 
 public abstract class AbstractWSO2Deployable extends AbstractDeployable
@@ -26,7 +28,7 @@ public abstract class AbstractWSO2Deployable extends AbstractDeployable
     {
         String name = getFileHandler().getName(getFile());
 
-        int index = name.toLowerCase().lastIndexOf(extension);
+        int index = name.toLowerCase(Locale.ENGLISH).lastIndexOf(extension);
         if (index >= 0)
         {
             name = name.substring(0, index);

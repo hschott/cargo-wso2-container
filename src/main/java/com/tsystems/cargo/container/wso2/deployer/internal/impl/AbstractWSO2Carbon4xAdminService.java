@@ -28,7 +28,7 @@ public abstract class AbstractWSO2Carbon4xAdminService<T> extends LoggedObject i
 {
     private static final String SERVICES_AUTHENTICATION_ADMIN = "/services/AuthenticationAdmin";
 
-    private static long DEFAULT_TIMEOUT = 30 * 1000;
+    private static final long DEFAULT_TIMEOUT = 30 * 1000;
 
     private long timeout = DEFAULT_TIMEOUT;
 
@@ -58,7 +58,7 @@ public abstract class AbstractWSO2Carbon4xAdminService<T> extends LoggedObject i
         easySSL();
     }
 
-    URL getCarbonBaseURL(Configuration configuration)
+    private URL getCarbonBaseURL(Configuration configuration)
     {
         URL carbonUrl;
 
