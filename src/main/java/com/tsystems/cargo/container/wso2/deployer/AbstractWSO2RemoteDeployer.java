@@ -118,7 +118,7 @@ public abstract class AbstractWSO2RemoteDeployer extends AbstractRemoteDeployer 
 
     private void postUndeployment(Deployable deployable)
     {
-        //
+        watchForDeployable(deployable, false);
     }
 
     @SuppressWarnings("unchecked")
@@ -204,7 +204,6 @@ public abstract class AbstractWSO2RemoteDeployer extends AbstractRemoteDeployer 
 
             getAdminService(deployable.getClass()).undeploy(deployable);
 
-            watchForDeployable(deployable, false);
             postUndeployment(deployable);
         }
         else

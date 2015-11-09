@@ -77,14 +77,7 @@ public class WSO2Carbon4xAxis2ServiceAdminService extends
             if (serviceGroupMetaData != null)
             {
                 ServiceMetaData[] serviceMetaDataList = serviceGroupMetaData.getServices();
-                if (serviceMetaDataList == null || serviceMetaDataList.length == 0)
-                {
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
+                return !(serviceMetaDataList == null || serviceMetaDataList.length == 0);
             }
         }
         catch (Exception e)

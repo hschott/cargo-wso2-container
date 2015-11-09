@@ -45,20 +45,16 @@ public class WSO2Carbon4xRemoteDeployerTest
 
     private static final DeployableFactory DEPLOYABLE_FACTORY = new DefaultDeployableFactory();
 
-    private Configuration configuration;
-
-    private Container container;
-
     private WSO2Carbon4xRemoteDeployer deployer;
 
     @Before
     public void setUp() throws Exception
     {
-        configuration =
+        Configuration configuration =
             CONFIGURATION_FACTORY.createConfiguration(WSO2Carbon4xContainer.ID,
                 ContainerType.REMOTE, ConfigurationType.RUNTIME);
 
-        container =
+        Container container =
             CONTAINER_FACTORY.createContainer(WSO2Carbon4xContainer.ID, ContainerType.REMOTE,
                 configuration);
 

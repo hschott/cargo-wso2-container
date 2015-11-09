@@ -90,7 +90,7 @@ public abstract class AbstractWSO2Carbon4xAdminService<T> extends LoggedObject i
         return carbonUrl;
     }
 
-    void authenticate() throws WSO2AdminServicesException
+    protected void authenticate() throws WSO2AdminServicesException
     {
         if (sessionCookie != null)
         {
@@ -130,41 +130,41 @@ public abstract class AbstractWSO2Carbon4xAdminService<T> extends LoggedObject i
             getUrl().getPort() == -1 ? 443 : getUrl().getPort()));
     }
 
-    URL getUrl()
+    protected URL getUrl()
     {
         return url;
     }
 
-    void logExists(String deployable)
+    protected void logExists(String deployable)
     {
         getLogger().debug("Check deploy status of [" + deployable + "] on " + getUrl(),
             getClass().getSimpleName());
     }
 
-    void logRemove(String deployable)
+    protected void logRemove(String deployable)
     {
         getLogger().info("Remove [" + deployable + "] from " + getUrl(),
             getClass().getSimpleName());
     }
 
-    void logStart(String deployable)
+    protected void logStart(String deployable)
     {
         getLogger().info("Start [" + deployable + "] on " + getUrl(), getClass().getSimpleName());
     }
 
-    void logStop(String deployable)
+    protected void logStop(String deployable)
     {
         getLogger().info("Stopp [" + deployable + "] on " + getUrl(), getClass().getSimpleName());
     }
 
-    void logUpload(String deployable)
+    protected void logUpload(String deployable)
     {
         getLogger()
             .info("Upload [" + deployable + "] to " + getUrl(), getClass().getSimpleName());
 
     }
 
-    void prepareStub(Stub stub)
+    protected void prepareStub(Stub stub)
     {
         Options options = stub._getServiceClient().getOptions();
         options.setExceptionToBeThrownOnSOAPFault(true);

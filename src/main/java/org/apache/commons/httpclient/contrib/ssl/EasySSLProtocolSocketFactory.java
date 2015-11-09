@@ -94,6 +94,10 @@ import org.apache.commons.logging.LogFactory;
 
 public class EasySSLProtocolSocketFactory implements SecureProtocolSocketFactory
 {
+    /** Log object for this class. */
+    private static final Log LOG = LogFactory.getLog(EasySSLProtocolSocketFactory.class);
+
+    private SSLContext sslcontext = null;
 
     private static SSLContext createEasySSLContext()
     {
@@ -108,19 +112,6 @@ public class EasySSLProtocolSocketFactory implements SecureProtocolSocketFactory
             LOG.error(e.getMessage(), e);
             throw new HttpClientError(e.toString());
         }
-    }
-
-    /** Log object for this class. */
-    private static final Log LOG = LogFactory.getLog(EasySSLProtocolSocketFactory.class);
-
-    private SSLContext sslcontext = null;
-
-    /**
-     * Constructor for EasySSLProtocolSocketFactory.
-     */
-    public EasySSLProtocolSocketFactory()
-    {
-        super();
     }
 
     /**

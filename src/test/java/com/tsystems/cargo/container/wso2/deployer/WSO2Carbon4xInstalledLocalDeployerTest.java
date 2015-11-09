@@ -45,10 +45,6 @@ public class WSO2Carbon4xInstalledLocalDeployerTest
 
     private static final String DEPLOYABLE_DIR_PREFIX = "/repository/deployment/server";
 
-    private Configuration configuration;
-
-    private Container container;
-
     private Deployer deployer;
 
     private String home;
@@ -60,11 +56,11 @@ public class WSO2Carbon4xInstalledLocalDeployerTest
         home =
             new File(carbon.getFile()).getParentFile().getParentFile().getParentFile().getPath();
 
-        configuration =
+        Configuration configuration =
             CONFIGURATION_FACTORY.createConfiguration(WSO2Carbon4xContainer.ID,
                 ContainerType.INSTALLED, ConfigurationType.EXISTING, home);
 
-        container =
+        Container container =
             CONTAINER_FACTORY.createContainer(WSO2Carbon4xContainer.ID, ContainerType.INSTALLED,
                 configuration);
 
