@@ -1,4 +1,4 @@
-[![Travis Build Status](https://travis-ci.org/hschott/cargo-wso2-container.svg?branch=master)](https://travis-ci.org/hschott/cargo-wso2-container)  [![Maven Central](https://img.shields.io/maven-central/v/com.tsystems.cargo.wso2/cargo-wso2-container.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.tsystems.cargo.wso2%22%20AND%20a%3A%22cargo-wso2-container%22)
+[![Travis Build Status](https://travis-ci.org/hschott/cargo-wso2-container.svg?branch=master)](https://travis-ci.org/hschott/cargo-wso2-container)  [![Maven Central](https://img.shields.io/maven-central/v/com.tsystems.cargo.wso2/cargo-wso2-container.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.tsystems.cargo.wso2%22%20AND%20a%3A%22cargo-wso2-container%22)  [![Codacy Badge](https://api.codacy.com/project/badge/grade/c3a1b598d53d47ab8dd01819d1c8e4be)](https://www.codacy.com/app/hschott/cargo-wso2-container)
 
 # Introduction
 
