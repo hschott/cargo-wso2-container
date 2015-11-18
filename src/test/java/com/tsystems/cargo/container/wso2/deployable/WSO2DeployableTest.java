@@ -103,7 +103,7 @@ public class WSO2DeployableTest
     {
         Axis2Service deployable;
 
-        URL aar = ClassLoader.getSystemResource("Version.aar");
+        URL aar = ClassLoader.getSystemResource("VersionGroup.aar");
 
         deployable =
             (Axis2Service) DEPLOYABLE_FACTORY.createDeployable(WSO2Carbon4xContainer.ID,
@@ -117,7 +117,7 @@ public class WSO2DeployableTest
     {
         WSO2Axis2Service deployable;
 
-        URL aar = ClassLoader.getSystemResource("Version.aar");
+        URL aar = ClassLoader.getSystemResource("VersionGroup.aar");
 
         deployable =
             (WSO2Axis2Service) DEPLOYABLE_FACTORY.createDeployable(WSO2Carbon4xContainer.ID,
