@@ -1,6 +1,7 @@
 package com.tsystems.cargo.container.wso2.deployer.internal.impl;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 
 import javax.activation.DataHandler;
@@ -18,9 +19,24 @@ public class WSO2Carbon4xAxis2ModuleAdminService extends
 {
     private static final String SERVICES_MODULE_ADMIN_SERVICE = "/services/ModuleAdminService";
 
+    private ModuleAdminServiceStub serviceStub;
+
     public WSO2Carbon4xAxis2ModuleAdminService(Configuration configuration)
     {
         super(configuration);
+    }
+
+    protected ModuleAdminServiceStub getServiceStub() throws IOException
+    {
+        if (serviceStub == null)
+        {
+            ModuleAdminServiceStub moduleAdminServiceStub =
+                new ModuleAdminServiceStub(new URL(getUrl() + SERVICES_MODULE_ADMIN_SERVICE).toString());
+            prepareStub(moduleAdminServiceStub);
+
+            serviceStub = moduleAdminServiceStub;
+        }
+        return serviceStub;
     }
 
     public void deploy(Axis2Module deployable) throws WSO2AdminServicesException
@@ -28,10 +44,7 @@ public class WSO2Carbon4xAxis2ModuleAdminService extends
         logUpload(deployable.getFile());
         try
         {
-            authenticate();
-            ModuleAdminServiceStub moduleAdminServiceStub =
-                new ModuleAdminServiceStub(new URL(getUrl() + SERVICES_MODULE_ADMIN_SERVICE).toString());
-            prepareStub(moduleAdminServiceStub);
+            ModuleAdminServiceStub moduleAdminServiceStub = getServiceStub();
 
             DataHandler dh = new DataHandler(new File(deployable.getFile()).toURI().toURL());
             ModuleUploadData moduleUploadData = new ModuleUploadData();
@@ -47,15 +60,16 @@ public class WSO2Carbon4xAxis2ModuleAdminService extends
         }
     }
 
-    public boolean exists(Axis2Module deployable) throws WSO2AdminServicesException
+    public boolean exists(Axis2Module deployable, boolean handleFaultyAsExistent)
+        throws WSO2AdminServicesException
     {
-        logExists(deployable.getApplicationName());
         try
         {
-            authenticate();
-            ModuleAdminServiceStub moduleAdminServiceStub =
-                new ModuleAdminServiceStub(new URL(getUrl() + SERVICES_MODULE_ADMIN_SERVICE).toString());
-            prepareStub(moduleAdminServiceStub);
+            String name = deployable.getApplicationName();
+
+            logExists(name);
+
+            ModuleAdminServiceStub moduleAdminServiceStub = getServiceStub();
 
             ModuleMetaData[] moduleMetaData = moduleAdminServiceStub.listModules();
 
@@ -63,7 +77,7 @@ public class WSO2Carbon4xAxis2ModuleAdminService extends
             {
                 for (ModuleMetaData module : moduleMetaData)
                 {
-                    if (module.getModulename().equals(deployable.getApplicationName()))
+                    if (module.getModulename().equals(name))
                     {
                         return true;
                     }
@@ -82,10 +96,7 @@ public class WSO2Carbon4xAxis2ModuleAdminService extends
         logStart(deployable.getApplicationName());
         try
         {
-            authenticate();
-            ModuleAdminServiceStub moduleAdminServiceStub =
-                new ModuleAdminServiceStub(new URL(getUrl() + SERVICES_MODULE_ADMIN_SERVICE).toString());
-            prepareStub(moduleAdminServiceStub);
+            ModuleAdminServiceStub moduleAdminServiceStub = getServiceStub();
 
             moduleAdminServiceStub.globallyEngageModule(deployable.getApplicationName());
         }
@@ -97,15 +108,15 @@ public class WSO2Carbon4xAxis2ModuleAdminService extends
 
     public void stop(Axis2Module deployable) throws WSO2AdminServicesException
     {
-        logStop(deployable.getApplicationName());
         try
         {
-            authenticate();
-            ModuleAdminServiceStub moduleAdminServiceStub =
-                new ModuleAdminServiceStub(new URL(getUrl() + SERVICES_MODULE_ADMIN_SERVICE).toString());
-            prepareStub(moduleAdminServiceStub);
+            String name = deployable.getApplicationName();
 
-            moduleAdminServiceStub.globallyDisengageModule(deployable.getApplicationName());
+            logStop(name);
+
+            ModuleAdminServiceStub moduleAdminServiceStub = getServiceStub();
+
+            moduleAdminServiceStub.globallyDisengageModule(name);
         }
         catch (Exception e)
         {
@@ -115,15 +126,15 @@ public class WSO2Carbon4xAxis2ModuleAdminService extends
 
     public void undeploy(Axis2Module deployable) throws WSO2AdminServicesException
     {
-        logRemove(deployable.getApplicationName());
         try
         {
-            authenticate();
-            ModuleAdminServiceStub moduleAdminServiceStub =
-                new ModuleAdminServiceStub(new URL(getUrl() + SERVICES_MODULE_ADMIN_SERVICE).toString());
-            prepareStub(moduleAdminServiceStub);
+            String name = deployable.getApplicationName();
 
-            moduleAdminServiceStub.removeModule(deployable.getApplicationName());
+            logRemove(name);
+
+            ModuleAdminServiceStub moduleAdminServiceStub = getServiceStub();
+
+            moduleAdminServiceStub.removeModule(name);
         }
         catch (Exception e)
         {

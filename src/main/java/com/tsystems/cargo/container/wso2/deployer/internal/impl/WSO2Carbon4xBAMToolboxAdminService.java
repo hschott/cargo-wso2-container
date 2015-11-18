@@ -1,6 +1,7 @@
 package com.tsystems.cargo.container.wso2.deployer.internal.impl;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 
 import javax.activation.DataHandler;
@@ -19,9 +20,25 @@ public class WSO2Carbon4xBAMToolboxAdminService extends
     private static final String SERVICES_BAM_TOOLBOX_DEPOLYER_SERVICE =
         "/services/BAMToolboxDepolyerService";
 
+    private BAMToolboxDepolyerServiceStub serviceStub;
+
     public WSO2Carbon4xBAMToolboxAdminService(Configuration configuration)
     {
         super(configuration);
+    }
+
+    protected BAMToolboxDepolyerServiceStub getServiceStub() throws IOException
+    {
+        if (serviceStub == null)
+        {
+            BAMToolboxDepolyerServiceStub bamToolboxDepolyerServiceStub =
+                new BAMToolboxDepolyerServiceStub(new URL(getUrl()
+                    + SERVICES_BAM_TOOLBOX_DEPOLYER_SERVICE).toString());
+            prepareStub(bamToolboxDepolyerServiceStub);
+
+            serviceStub = bamToolboxDepolyerServiceStub;
+        }
+        return serviceStub;
     }
 
     public void deploy(BAMToolbox deployable) throws WSO2AdminServicesException
@@ -29,11 +46,7 @@ public class WSO2Carbon4xBAMToolboxAdminService extends
         logUpload(deployable.getFile());
         try
         {
-            authenticate();
-            BAMToolboxDepolyerServiceStub bamToolboxDepolyerServiceStub =
-                new BAMToolboxDepolyerServiceStub(new URL(getUrl()
-                    + SERVICES_BAM_TOOLBOX_DEPOLYER_SERVICE).toString());
-            prepareStub(bamToolboxDepolyerServiceStub);
+            BAMToolboxDepolyerServiceStub bamToolboxDepolyerServiceStub = getServiceStub();
 
             DataHandler dh = new DataHandler(new File(deployable.getFile()).toURI().toURL());
             bamToolboxDepolyerServiceStub.uploadBAMToolBox(dh,
@@ -45,16 +58,16 @@ public class WSO2Carbon4xBAMToolboxAdminService extends
         }
     }
 
-    public boolean exists(BAMToolbox deployable) throws WSO2AdminServicesException
+    public boolean exists(BAMToolbox deployable, boolean handleFaultyAsExistent)
+        throws WSO2AdminServicesException
     {
-        logExists(deployable.getApplicationName());
         try
         {
-            authenticate();
-            BAMToolboxDepolyerServiceStub bamToolboxDepolyerServiceStub =
-                new BAMToolboxDepolyerServiceStub(new URL(getUrl()
-                    + SERVICES_BAM_TOOLBOX_DEPOLYER_SERVICE).toString());
-            prepareStub(bamToolboxDepolyerServiceStub);
+            String name = deployable.getApplicationName();
+
+            logExists(name);
+
+            BAMToolboxDepolyerServiceStub bamToolboxDepolyerServiceStub = getServiceStub();
 
             ToolBoxStatusDTO toolBoxStatusDTO =
                 bamToolboxDepolyerServiceStub.getDeployedToolBoxes("1", "");
@@ -63,7 +76,7 @@ public class WSO2Carbon4xBAMToolboxAdminService extends
             {
                 for (String deployedTool : deployedTools)
                 {
-                    if (deployedTool.equals(deployable.getApplicationName()))
+                    if (deployedTool.equals(name))
                     {
                         return true;
                     }
@@ -79,17 +92,15 @@ public class WSO2Carbon4xBAMToolboxAdminService extends
 
     public void undeploy(BAMToolbox deployable) throws WSO2AdminServicesException
     {
-        logRemove(deployable.getApplicationName());
         try
         {
-            authenticate();
-            BAMToolboxDepolyerServiceStub bamToolboxDepolyerServiceStub =
-                new BAMToolboxDepolyerServiceStub(new URL(getUrl()
-                    + SERVICES_BAM_TOOLBOX_DEPOLYER_SERVICE).toString());
-            prepareStub(bamToolboxDepolyerServiceStub);
+            String name = deployable.getApplicationName();
 
-            bamToolboxDepolyerServiceStub.undeployToolBox(new String[] {deployable
-                .getApplicationName()});
+            logRemove(name);
+
+            BAMToolboxDepolyerServiceStub bamToolboxDepolyerServiceStub = getServiceStub();
+
+            bamToolboxDepolyerServiceStub.undeployToolBox(new String[] {name});
         }
         catch (Exception e)
         {

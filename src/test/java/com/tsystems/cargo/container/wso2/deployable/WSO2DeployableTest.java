@@ -103,14 +103,13 @@ public class WSO2DeployableTest
     {
         Axis2Service deployable;
 
+        URL aar = ClassLoader.getSystemResource("Version.aar");
+
         deployable =
             (Axis2Service) DEPLOYABLE_FACTORY.createDeployable(WSO2Carbon4xContainer.ID,
-                "berlin.aar", Axis2Service.TYPE);
+                aar.getFile(), Axis2Service.TYPE);
 
-        Assert.assertEquals("berlin", deployable.getApplicationName());
-
-        deployable.setApplicationName("london");
-        Assert.assertEquals("london", deployable.getApplicationName());
+        Assert.assertEquals("Version", deployable.getApplicationName());
     }
 
     @Test
@@ -118,14 +117,14 @@ public class WSO2DeployableTest
     {
         WSO2Axis2Service deployable;
 
+        URL aar = ClassLoader.getSystemResource("Version.aar");
+
         deployable =
             (WSO2Axis2Service) DEPLOYABLE_FACTORY.createDeployable(WSO2Carbon4xContainer.ID,
-                "berlin.aar", WSO2Axis2Service.TYPE);
+                aar.getFile(), WSO2Axis2Service.TYPE);
 
-        Assert.assertEquals("berlin", deployable.getApplicationName());
+        Assert.assertEquals("Version", deployable.getApplicationName());
 
-        deployable.setApplicationName("tokio");
-        Assert.assertEquals("tokio", deployable.getApplicationName());
     }
 
     @Test

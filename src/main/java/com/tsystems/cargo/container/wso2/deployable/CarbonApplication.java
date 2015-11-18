@@ -2,6 +2,7 @@ package com.tsystems.cargo.container.wso2.deployable;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Locale;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
@@ -22,6 +23,8 @@ import org.w3c.dom.Node;
  */
 public class CarbonApplication extends AbstractWSO2Deployable implements WSO2Deployable
 {
+
+    private static final String CAR_EXTENSION = ".car";
 
     public static final DeployableType TYPE = DeployableType.toType("car");
 
@@ -68,6 +71,11 @@ public class CarbonApplication extends AbstractWSO2Deployable implements WSO2Dep
         }
 
         initApplicationName();
+
+        if (candidate.toLowerCase(Locale.ENGLISH).endsWith(CAR_EXTENSION))
+        {
+            return candidate.equals(getFileHandler().getName(getFile()));
+        }
 
         if (ignoreVersion)
         {

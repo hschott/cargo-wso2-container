@@ -7,6 +7,6 @@ import com.tsystems.cargo.container.wso2.deployable.WSO2Deployable;
 public interface WSO2RemoteDeployer extends Deployer
 {
 
-    public boolean exists(WSO2Deployable deployable);
+    public boolean exists(WSO2Deployable deployable, boolean handleFaultyAsExistent);
 
 }

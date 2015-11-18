@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.codehaus.cargo.container.ContainerException;
 import org.codehaus.cargo.container.RemoteContainer;
+import org.codehaus.cargo.container.configuration.Configuration;
 import org.codehaus.cargo.container.deployable.Deployable;
 import org.codehaus.cargo.container.deployer.DeployableMonitor;
 import org.codehaus.cargo.container.spi.deployable.AbstractDeployable;
@@ -16,6 +17,7 @@ import com.tsystems.cargo.container.wso2.deployable.WSO2Connector;
 import com.tsystems.cargo.container.wso2.deployable.WSO2Deployable;
 import com.tsystems.cargo.container.wso2.deployer.internal.WSO2AdminService;
 import com.tsystems.cargo.container.wso2.deployer.internal.WSO2AdminServicesException;
+import com.tsystems.cargo.container.wso2.deployer.internal.impl.WSO2Carbon4xLoggingViewService;
 
 public abstract class AbstractWSO2RemoteDeployer extends AbstractRemoteDeployer implements
     WSO2RemoteDeployer
@@ -26,10 +28,16 @@ public abstract class AbstractWSO2RemoteDeployer extends AbstractRemoteDeployer 
     private Map<Class< ? extends WSO2Deployable>, WSO2AdminService<Deployable>> adminServices =
         new HashMap<Class< ? extends WSO2Deployable>, WSO2AdminService<Deployable>>();
 
+    private WSO2Carbon4xLoggingViewService loggingViewService;
+
     public AbstractWSO2RemoteDeployer(RemoteContainer container)
     {
         super(container);
         this.container = container;
+
+        Configuration configuration = getContainer().getConfiguration();
+
+        loggingViewService = new WSO2Carbon4xLoggingViewService(configuration);
     }
 
     private void canBeDeployed(Deployable deployable)
@@ -37,9 +45,10 @@ public abstract class AbstractWSO2RemoteDeployer extends AbstractRemoteDeployer 
         if (deployable instanceof WSO2Deployable)
         {
             WSO2Deployable wso2Deployable = (WSO2Deployable) deployable;
-            if (exists(wso2Deployable))
-                throw new ContainerException("Failed to deploy [" + deployable.getFile()
-                    + "]. Deployable with the same name or context is already deployed.");
+            if (found(wso2Deployable, true))
+                throw new ContainerException("Failed to deploy ["
+                    + deployable.getFile()
+                    + "]. Deployable with the same name or context is already deployed. Undeloy it first!");
             if (!((AbstractDeployable) deployable).getFileHandler().exists(deployable.getFile()))
             {
                 throw new ContainerException("Failed to deploy [" + deployable.getFile()
@@ -60,22 +69,21 @@ public abstract class AbstractWSO2RemoteDeployer extends AbstractRemoteDeployer 
 
         getAdminService(deployable.getClass()).deploy(deployable);
 
-        watchForDeployable(deployable, true);
         postDeployment(deployable);
     }
 
-    public boolean exists(WSO2Deployable deployable)
+    public boolean exists(WSO2Deployable deployable, boolean handleFaultyAsExistent)
     {
         supportsDeployable(deployable);
-        return getAdminService(deployable.getClass()).exists(deployable);
+        return getAdminService(deployable.getClass()).exists(deployable, handleFaultyAsExistent);
     }
 
-    private boolean found(Deployable deployable)
+    private boolean found(Deployable deployable, boolean handleFaultyAsExistent)
     {
         if (deployable instanceof WSO2Deployable)
         {
             WSO2Deployable wso2Deployable = (WSO2Deployable) deployable;
-            return exists(wso2Deployable);
+            return exists(wso2Deployable, handleFaultyAsExistent);
         }
         else
             return false;
@@ -88,6 +96,16 @@ public abstract class AbstractWSO2RemoteDeployer extends AbstractRemoteDeployer 
 
     private void postDeployment(Deployable deployable)
     {
+        try
+        {
+            watchForDeployable(deployable, true);
+        }
+        catch (ContainerException e)
+        {
+            loggingViewService.remoteLog();
+            throw e;
+        }
+
         if (deployable instanceof WSO2Connector)
         {
             getAdminService(deployable.getClass()).start(deployable);
@@ -118,7 +136,15 @@ public abstract class AbstractWSO2RemoteDeployer extends AbstractRemoteDeployer 
 
     private void postUndeployment(Deployable deployable)
     {
-        watchForDeployable(deployable, false);
+        try
+        {
+            watchForDeployable(deployable, false);
+        }
+        catch (ContainerException e)
+        {
+            loggingViewService.remoteLog();
+            throw e;
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -144,7 +170,7 @@ public abstract class AbstractWSO2RemoteDeployer extends AbstractRemoteDeployer 
     {
         supportsDeployable(deployable);
 
-        if (found(deployable))
+        if (found(deployable, false))
         {
             getAdminService(deployable.getClass()).start(deployable);
         }
@@ -159,7 +185,7 @@ public abstract class AbstractWSO2RemoteDeployer extends AbstractRemoteDeployer 
     {
         supportsDeployable(deployable);
 
-        if (found(deployable))
+        if (found(deployable, false))
         {
             getAdminService(deployable.getClass()).stop(deployable);
         }
@@ -198,7 +224,7 @@ public abstract class AbstractWSO2RemoteDeployer extends AbstractRemoteDeployer 
     {
         supportsDeployable(deployable);
 
-        if (found(deployable))
+        if (found(deployable, true))
         {
             preUndeployment(deployable);
 
@@ -217,24 +243,38 @@ public abstract class AbstractWSO2RemoteDeployer extends AbstractRemoteDeployer 
         if (deployable instanceof WSO2Deployable)
         {
             getLogger().info(
-                "Watch deployable to become" + (availability ? " " : " not ") + "effective.",
+                "Watch for deployable to become" + (availability ? " " : " not ") + "effective.",
                 getClass().getSimpleName());
             WSO2Deployable wso2Deployable = (WSO2Deployable) deployable;
 
             if (wso2Deployable.getDeployTimeout() > 0)
             {
                 WSO2RemoteDeployerMonitor monitor =
-                    new WSO2RemoteDeployerMonitor(wso2Deployable, this);
+                    new WSO2RemoteDeployerMonitor(wso2Deployable, this, availability);
                 monitor.setLogger(getLogger());
                 DeployerWatchdog watchdog = new DeployerWatchdog(monitor);
                 watchdog.setLogger(getLogger());
                 if (availability)
                 {
                     watchdog.watchForAvailability();
+                    getLogger().info("Deployable is effective.", getClass().getSimpleName());
                 }
                 else
                 {
                     watchdog.watchForUnavailability();
+
+                    // server immediately reports none existent deployable for faulty applications
+                    // but the deployer thread has to run one cycle, wait for default deployment
+                    // interval
+                    try
+                    {
+                        Thread.sleep(15000);
+                    }
+                    catch (InterruptedException e)
+                    {
+                        //
+                    }
+                    getLogger().info("Deployable is not effective.", getClass().getSimpleName());
                 }
             }
         }

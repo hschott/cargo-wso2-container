@@ -1,6 +1,7 @@
 package com.tsystems.cargo.container.wso2.deployer.internal.impl;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 
 import javax.activation.DataHandler;
@@ -23,9 +24,25 @@ public class WSO2Carbon4xMediationLibraryAdminService extends
     private static final String SERVICES_MEDIATION_LIBRARY_ADMIN_SERVICE =
         "/services/MediationLibraryAdminService";
 
+    private MediationLibraryAdminServiceStub serviceStub;
+
     public WSO2Carbon4xMediationLibraryAdminService(Configuration configuration)
     {
         super(configuration);
+    }
+
+    protected MediationLibraryAdminServiceStub getServiceStub() throws IOException
+    {
+        if (serviceStub == null)
+        {
+            MediationLibraryAdminServiceStub mediationLibraryAdminServiceStub =
+                new MediationLibraryAdminServiceStub(new URL(getUrl()
+                    + SERVICES_MEDIATION_LIBRARY_ADMIN_SERVICE).toString());
+            prepareStub(mediationLibraryAdminServiceStub);
+
+            serviceStub = mediationLibraryAdminServiceStub;
+        }
+        return serviceStub;
     }
 
     public void deploy(WSO2Connector deployable) throws WSO2AdminServicesException
@@ -33,7 +50,6 @@ public class WSO2Carbon4xMediationLibraryAdminService extends
         logUpload(deployable.getFile());
         try
         {
-            authenticate();
             MediationLibraryUploaderStub mediationLibraryUploaderStub =
                 new MediationLibraryUploaderStub(new URL(getUrl()
                     + SERVICES_MEDIATION_LIBRARY_UPLOADER).toString());
@@ -56,16 +72,16 @@ public class WSO2Carbon4xMediationLibraryAdminService extends
         }
     }
 
-    public boolean exists(WSO2Connector deployable) throws WSO2AdminServicesException
+    public boolean exists(WSO2Connector deployable, boolean handleFaultyAsExistent)
+        throws WSO2AdminServicesException
     {
-        logExists(deployable.getApplicationName());
         try
         {
-            authenticate();
-            MediationLibraryAdminServiceStub mediationLibraryAdminServiceStub =
-                new MediationLibraryAdminServiceStub(new URL(getUrl()
-                    + SERVICES_MEDIATION_LIBRARY_ADMIN_SERVICE).toString());
-            prepareStub(mediationLibraryAdminServiceStub);
+            String name = deployable.getApplicationName();
+
+            logExists(name);
+
+            MediationLibraryAdminServiceStub mediationLibraryAdminServiceStub = getServiceStub();
 
             String[] libraries = mediationLibraryAdminServiceStub.getAllLibraries();
             if (libraries == null)
@@ -74,7 +90,7 @@ public class WSO2Carbon4xMediationLibraryAdminService extends
             }
             for (String library : libraries)
             {
-                if (library.equals(deployable.getApplicationName()))
+                if (library.equals(name))
                     return true;
             }
         }
@@ -90,11 +106,7 @@ public class WSO2Carbon4xMediationLibraryAdminService extends
         logStart(deployable.getApplicationName());
         try
         {
-            authenticate();
-            MediationLibraryAdminServiceStub mediationLibraryAdminServiceStub =
-                new MediationLibraryAdminServiceStub(new URL(getUrl()
-                    + SERVICES_MEDIATION_LIBRARY_ADMIN_SERVICE).toString());
-            prepareStub(mediationLibraryAdminServiceStub);
+            MediationLibraryAdminServiceStub mediationLibraryAdminServiceStub = getServiceStub();
 
             mediationLibraryAdminServiceStub.updateStatus(deployable.getApplicationName(),
                 deployable.getLibName(), deployable.getPackageName(), "enabled");
@@ -108,17 +120,15 @@ public class WSO2Carbon4xMediationLibraryAdminService extends
 
     public void stop(WSO2Connector deployable) throws WSO2AdminServicesException
     {
-        logStop(deployable.getApplicationName());
         try
         {
-            authenticate();
-            MediationLibraryAdminServiceStub mediationLibraryAdminServiceStub =
-                new MediationLibraryAdminServiceStub(new URL(getUrl()
-                    + SERVICES_MEDIATION_LIBRARY_ADMIN_SERVICE).toString());
-            prepareStub(mediationLibraryAdminServiceStub);
+            String name = deployable.getApplicationName();
 
-            mediationLibraryAdminServiceStub.updateStatus(deployable.getApplicationName(), null,
-                null, "disabled");
+            logStop(name);
+
+            MediationLibraryAdminServiceStub mediationLibraryAdminServiceStub = getServiceStub();
+
+            mediationLibraryAdminServiceStub.updateStatus(name, null, null, "disabled");
 
         }
         catch (Exception e)
@@ -129,16 +139,15 @@ public class WSO2Carbon4xMediationLibraryAdminService extends
 
     public void undeploy(WSO2Connector deployable) throws WSO2AdminServicesException
     {
-        logRemove(deployable.getApplicationName());
         try
         {
-            authenticate();
-            MediationLibraryAdminServiceStub mediationLibraryAdminServiceStub =
-                new MediationLibraryAdminServiceStub(new URL(getUrl()
-                    + SERVICES_MEDIATION_LIBRARY_ADMIN_SERVICE).toString());
-            prepareStub(mediationLibraryAdminServiceStub);
+            String name = deployable.getApplicationName();
 
-            mediationLibraryAdminServiceStub.deleteLibrary(deployable.getApplicationName());
+            logRemove(name);
+
+            MediationLibraryAdminServiceStub mediationLibraryAdminServiceStub = getServiceStub();
+
+            mediationLibraryAdminServiceStub.deleteLibrary(name);
         }
         catch (Exception e)
         {

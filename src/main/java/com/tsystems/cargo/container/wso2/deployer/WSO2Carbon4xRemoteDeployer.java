@@ -25,12 +25,13 @@ public class WSO2Carbon4xRemoteDeployer extends AbstractWSO2RemoteDeployer
     public WSO2Carbon4xRemoteDeployer(RemoteContainer container)
     {
         super(container);
-        createWso2AdminServices();
+
+        Configuration configuration = getContainer().getConfiguration();
+        createWso2AdminServices(configuration);
     }
 
-    protected void createWso2AdminServices()
+    protected void createWso2AdminServices(Configuration configuration)
     {
-        Configuration configuration = getContainer().getConfiguration();
 
         WSO2AdminService<Axis2Module> axis2ModuleAdminService =
             new WSO2Carbon4xAxis2ModuleAdminService(configuration);
@@ -57,6 +58,7 @@ public class WSO2Carbon4xRemoteDeployer extends AbstractWSO2RemoteDeployer
         WSO2AdminService<BAMToolbox> bamToolboxAdminService =
             new WSO2Carbon4xBAMToolboxAdminService(configuration);
         addAdminService(BAMToolbox.class, bamToolboxAdminService);
+
     }
 
 }

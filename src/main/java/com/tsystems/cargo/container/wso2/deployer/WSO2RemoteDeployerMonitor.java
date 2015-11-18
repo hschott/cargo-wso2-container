@@ -18,12 +18,16 @@ public class WSO2RemoteDeployerMonitor extends LoggedObject implements Deployabl
 
     private WSO2RemoteDeployer remoteDeployer;
 
-    public WSO2RemoteDeployerMonitor(WSO2Deployable deployable, WSO2RemoteDeployer remoteDeployer)
+    private boolean availability;
+
+    public WSO2RemoteDeployerMonitor(WSO2Deployable deployable,
+        WSO2RemoteDeployer remoteDeployer, boolean availability)
     {
         super();
         this.listeners = new ArrayList<DeployableMonitorListener>();
         this.deployable = deployable;
         this.remoteDeployer = remoteDeployer;
+        this.availability = availability;
     }
 
     public String getDeployableName()
@@ -42,7 +46,7 @@ public class WSO2RemoteDeployerMonitor extends LoggedObject implements Deployabl
             "Checking Deployable [" + getDeployableName() + "] for status using a timeout of ["
                 + getTimeout() + "] ms...", this.getClass().getSimpleName());
 
-        boolean isDeployed = remoteDeployer.exists(deployable);
+        boolean isDeployed = remoteDeployer.exists(deployable, availability ? false : true);
 
         for (DeployableMonitorListener listener : listeners)
         {

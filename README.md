@@ -58,7 +58,7 @@ Remote deployment and un-deployment of:
 * ZIP (WSO2 ESB Connector)
 * TBOX
 
-For deployables of type AAR and TBOX an `<applicationName/>` under which the deployable resides on the server can be configured.
+For deployables of type TBOX an `<applicationName/>` under which the deployable resides on the server can be configured.
 For deployables of type WAR a `<context/>` and `<version/>` can be configured.
 
 For deployables of type CAR an `<ignoreVersion/>` can be configured. When set to `true` all CAR deployables with a matching name will be un-deployed regardless of their actual version.

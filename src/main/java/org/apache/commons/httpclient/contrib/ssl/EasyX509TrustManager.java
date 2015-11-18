@@ -84,7 +84,7 @@ public class EasyX509TrustManager implements X509TrustManager
     }
 
     /**
-     * @see javax.net.ssl.X509TrustManager#checkClientTrusted(X509Certificate[], String authType)
+     * @see javax.net.ssl.X509TrustManager#checkClientTrusted(X509Certificate[], String )
      */
     public void checkClientTrusted(X509Certificate[] certificates, String authType)
         throws CertificateException
@@ -93,7 +93,7 @@ public class EasyX509TrustManager implements X509TrustManager
     }
 
     /**
-     * @see javax.net.ssl.X509TrustManager#checkServerTrusted(X509Certificate[], String authType)
+     * @see javax.net.ssl.X509TrustManager#checkServerTrusted(X509Certificate[], String )
      */
     public void checkServerTrusted(X509Certificate[] certificates, String authType)
         throws CertificateException

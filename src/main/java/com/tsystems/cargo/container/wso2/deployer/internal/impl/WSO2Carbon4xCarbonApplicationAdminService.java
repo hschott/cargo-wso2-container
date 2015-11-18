@@ -1,6 +1,7 @@
 package com.tsystems.cargo.container.wso2.deployer.internal.impl;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 
 import javax.activation.DataHandler;
@@ -21,9 +22,24 @@ public class WSO2Carbon4xCarbonApplicationAdminService extends
 
     private static final String SERVICES_APPLICATION_ADMIN = "/services/ApplicationAdmin";
 
+    private ApplicationAdminStub serviceStub;
+
     public WSO2Carbon4xCarbonApplicationAdminService(Configuration configuration)
     {
         super(configuration);
+    }
+
+    protected ApplicationAdminStub getServiceStub() throws IOException
+    {
+        if (serviceStub == null)
+        {
+            ApplicationAdminStub applicationAdminStub =
+                new ApplicationAdminStub(new URL(getUrl() + SERVICES_APPLICATION_ADMIN).toString());
+            prepareStub(applicationAdminStub);
+
+            serviceStub = applicationAdminStub;
+        }
+        return serviceStub;
     }
 
     public void deploy(CarbonApplication deployable) throws WSO2AdminServicesException
@@ -31,7 +47,6 @@ public class WSO2Carbon4xCarbonApplicationAdminService extends
         logUpload(deployable.getFile());
         try
         {
-            authenticate();
             CarbonAppUploaderStub carbonAppUploaderStub =
                 new CarbonAppUploaderStub(new URL(getUrl() + SERVICES_CARBON_APP_UPLOADER).toString());
             prepareStub(carbonAppUploaderStub);
@@ -51,27 +66,41 @@ public class WSO2Carbon4xCarbonApplicationAdminService extends
         }
     }
 
-    public boolean exists(CarbonApplication deployable) throws WSO2AdminServicesException
+    public boolean exists(CarbonApplication deployable, boolean handleFaultyAsExistent)
+        throws WSO2AdminServicesException
     {
         logExists(deployable.getApplicationName());
         try
         {
-            authenticate();
-            ApplicationAdminStub applicationAdminStub =
-                new ApplicationAdminStub(new URL(getUrl() + SERVICES_APPLICATION_ADMIN).toString());
-            prepareStub(applicationAdminStub);
+            ApplicationAdminStub applicationAdminStub = getServiceStub();
 
-            String[] existingApplications = applicationAdminStub.listAllApplications();
-            if (existingApplications == null)
+            String[] faultyApplications = applicationAdminStub.listAllFaultyApplications();
+            if (faultyApplications != null)
             {
-                return false;
+                String artifactName = deployable.getFileHandler().getName(deployable.getFile());
+
+                for (String faultyApplication : faultyApplications)
+                {
+                    boolean deployed =
+                        deployable.getFileHandler().getName(faultyApplication)
+                            .equals(artifactName);
+
+                    if (deployed)
+                    {
+                        return handleFaultyAsExistent ? true : false;
+                    }
+                }
             }
 
-            for (String application : existingApplications)
+            String[] existingApplications = applicationAdminStub.listAllApplications();
+            if (existingApplications != null)
             {
-                if (deployable.matchesApplication(application))
+                for (String existingApplication : existingApplications)
                 {
-                    return true;
+                    if (deployable.matchesApplication(existingApplication))
+                    {
+                        return true;
+                    }
                 }
             }
         }
@@ -87,23 +116,38 @@ public class WSO2Carbon4xCarbonApplicationAdminService extends
     {
         try
         {
-            authenticate();
-            ApplicationAdminStub applicationAdminStub =
-                new ApplicationAdminStub(new URL(getUrl() + SERVICES_APPLICATION_ADMIN).toString());
-            prepareStub(applicationAdminStub);
+            ApplicationAdminStub applicationAdminStub = getServiceStub();
 
-            String[] existingApplications = applicationAdminStub.listAllApplications();
-            if (existingApplications == null)
+            String[] faultyApplications = applicationAdminStub.listAllFaultyApplications();
+            if (faultyApplications != null)
             {
-                return;
+                String artifactName = deployable.getFileHandler().getName(deployable.getFile());
+
+                for (String faultyApplication : faultyApplications)
+                {
+                    boolean deployed =
+                        deployable.getFileHandler().getName(faultyApplication)
+                            .equals(artifactName);
+
+                    if (deployed)
+                    {
+                        logRemove(artifactName);
+                        applicationAdminStub
+                            .deleteFaultyApplication(new String[] {faultyApplication});
+                    }
+                }
             }
 
-            for (String application : existingApplications)
+            String[] existingApplications = applicationAdminStub.listAllApplications();
+            if (existingApplications != null)
             {
-                if (deployable.matchesApplication(application))
+                for (String application : existingApplications)
                 {
-                    logRemove(application);
-                    applicationAdminStub.deleteApplication(application);
+                    if (deployable.matchesApplication(application))
+                    {
+                        logRemove(application);
+                        applicationAdminStub.deleteApplication(application);
+                    }
                 }
             }
 

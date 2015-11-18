@@ -1,6 +1,7 @@
 package com.tsystems.cargo.container.wso2.deployer.internal.impl;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 
 import javax.activation.DataHandler;
@@ -8,8 +9,10 @@ import javax.activation.DataHandler;
 import org.codehaus.cargo.container.configuration.Configuration;
 import org.wso2.carbon.aarservices.xsd.AARServiceData;
 import org.wso2.carbon.service.mgt.ServiceAdminStub;
-import org.wso2.carbon.service.mgt.xsd.ServiceGroupMetaData;
+import org.wso2.carbon.service.mgt.xsd.FaultyService;
+import org.wso2.carbon.service.mgt.xsd.FaultyServicesWrapper;
 import org.wso2.carbon.service.mgt.xsd.ServiceMetaData;
+import org.wso2.carbon.service.mgt.xsd.ServiceMetaDataWrapper;
 import org.wso2.carbon.service.upload.ServiceUploaderStub;
 
 import com.tsystems.cargo.container.wso2.deployable.Axis2Service;
@@ -23,11 +26,24 @@ public class WSO2Carbon4xAxis2ServiceAdminService extends
 
     private static final String SERVICES_SERVICE_ADMIN = "/services/ServiceAdmin";
 
-    private static final String SERVICES_SERVICE_GROUP_ADMIN = "/services/ServiceGroupAdmin";
+    private ServiceAdminStub serviceStub;
 
     public WSO2Carbon4xAxis2ServiceAdminService(Configuration configuration)
     {
         super(configuration);
+    }
+
+    protected ServiceAdminStub getServiceStub() throws IOException
+    {
+        if (serviceStub == null)
+        {
+            ServiceAdminStub serviceAdminStub =
+                new ServiceAdminStub(new URL(getUrl() + SERVICES_SERVICE_ADMIN).toString());
+            prepareStub(serviceAdminStub);
+
+            serviceStub = serviceAdminStub;
+        }
+        return serviceStub;
     }
 
     public void deploy(Axis2Service deployable) throws WSO2AdminServicesException
@@ -35,7 +51,6 @@ public class WSO2Carbon4xAxis2ServiceAdminService extends
         logUpload(deployable.getFile());
         try
         {
-            authenticate();
             ServiceUploaderStub serviceUploaderStub =
                 new ServiceUploaderStub(new URL(getUrl() + SERVICES_SERVICE_UPLOADER).toString());
             prepareStub(serviceUploaderStub);
@@ -53,64 +68,81 @@ public class WSO2Carbon4xAxis2ServiceAdminService extends
         }
     }
 
-    public boolean exists(Axis2Service deployable) throws WSO2AdminServicesException
+    public boolean exists(Axis2Service deployable, boolean handleFaultyAsExistent)
+        throws WSO2AdminServicesException
     {
         logExists(deployable.getApplicationName());
         try
         {
-            authenticate();
-            ServiceAdminStub serviceAdminStub =
-                new ServiceAdminStub(new URL(getUrl() + SERVICES_SERVICE_GROUP_ADMIN).toString());
-            prepareStub(serviceAdminStub);
+            ServiceAdminStub serviceAdminStub = getServiceStub();
 
-            ServiceGroupMetaData serviceGroupMetaData = null;
-            try
+            FaultyServicesWrapper faultyServicesWrapper =
+                serviceAdminStub.getFaultyServiceArchives(0);
+
+            if (faultyServicesWrapper != null)
             {
-                serviceGroupMetaData =
-                    serviceAdminStub.listServiceGroup(deployable.getApplicationName());
-            }
-            catch (Exception e)
-            {
-                return false;
+                FaultyService[] faultyServices = faultyServicesWrapper.getFaultyServices();
+
+                if (faultyServices != null)
+                {
+                    String artifactName =
+                        deployable.getFileHandler().getName(deployable.getFile());
+
+                    for (FaultyService faultyService : faultyServices)
+                    {
+                        boolean deployed =
+                            deployable.getFileHandler().getName(faultyService.getArtifact())
+                                .equals(artifactName);
+
+                        if (deployed)
+                        {
+                            return handleFaultyAsExistent ? true : false;
+                        }
+                    }
+                }
             }
 
-            if (serviceGroupMetaData != null)
+            ServiceMetaDataWrapper serviceMetaDataWrapper =
+                serviceAdminStub.listServices("ALL", null, 0);
+
+            if (serviceMetaDataWrapper != null)
             {
-                ServiceMetaData[] serviceMetaDataList = serviceGroupMetaData.getServices();
-                return !(serviceMetaDataList == null || serviceMetaDataList.length == 0);
+                ServiceMetaData[] serviceMetaDataList = serviceMetaDataWrapper.getServices();
+
+                if (serviceMetaDataList != null)
+                {
+                    for (ServiceMetaData serviceMetaData : serviceMetaDataList)
+                    {
+                        if (serviceMetaData != null
+                            && serviceMetaData.getName().equals(deployable.getApplicationName()))
+                        {
+                            return true;
+                        }
+                    }
+                }
             }
+
         }
         catch (Exception e)
         {
             throw new WSO2AdminServicesException("error checking axis2 service", e);
         }
+
         return false;
+
     }
 
     public void start(Axis2Service deployable) throws WSO2AdminServicesException
     {
         try
         {
-            authenticate();
-            ServiceAdminStub serviceGroupAdminStub =
-                new ServiceAdminStub(new URL(getUrl() + SERVICES_SERVICE_GROUP_ADMIN).toString());
-            ServiceAdminStub serviceAdminStub =
-                new ServiceAdminStub(new URL(getUrl() + SERVICES_SERVICE_ADMIN).toString());
-            prepareStub(serviceGroupAdminStub);
-            prepareStub(serviceAdminStub);
+            String name = deployable.getApplicationName();
 
-            ServiceGroupMetaData serviceGroupMetaData =
-                serviceGroupAdminStub.listServiceGroup(deployable.getApplicationName());
+            logStart(name);
 
-            ServiceMetaData[] serviceMetaDataList = serviceGroupMetaData.getServices();
-            if (serviceMetaDataList != null)
-            {
-                for (ServiceMetaData serviceMetaData : serviceMetaDataList)
-                {
-                    logStart(serviceMetaData.getName());
-                    serviceAdminStub.startService(serviceMetaData.getName());
-                }
-            }
+            ServiceAdminStub serviceAdminStub = getServiceStub();
+
+            serviceAdminStub.startService(name);
 
         }
         catch (Exception e)
@@ -123,26 +155,14 @@ public class WSO2Carbon4xAxis2ServiceAdminService extends
     {
         try
         {
-            authenticate();
-            ServiceAdminStub serviceGroupAdminStub =
-                new ServiceAdminStub(new URL(getUrl() + SERVICES_SERVICE_GROUP_ADMIN).toString());
-            ServiceAdminStub serviceAdminStub =
-                new ServiceAdminStub(new URL(getUrl() + SERVICES_SERVICE_ADMIN).toString());
-            prepareStub(serviceGroupAdminStub);
-            prepareStub(serviceAdminStub);
+            String name = deployable.getApplicationName();
 
-            ServiceGroupMetaData serviceGroupMetaData =
-                serviceGroupAdminStub.listServiceGroup(deployable.getApplicationName());
+            logStop(name);
 
-            ServiceMetaData[] serviceMetaDataList = serviceGroupMetaData.getServices();
-            if (serviceMetaDataList != null)
-            {
-                for (ServiceMetaData serviceMetaData : serviceMetaDataList)
-                {
-                    logStop(serviceMetaData.getName());
-                    serviceAdminStub.stopService(serviceMetaData.getName());
-                }
-            }
+            ServiceAdminStub serviceAdminStub = getServiceStub();
+
+            serviceAdminStub.stopService(name);
+
         }
         catch (Exception e)
         {
@@ -155,12 +175,53 @@ public class WSO2Carbon4xAxis2ServiceAdminService extends
         logRemove(deployable.getApplicationName());
         try
         {
-            authenticate();
-            ServiceAdminStub serviceAdminStub =
-                new ServiceAdminStub(new URL(getUrl() + SERVICES_SERVICE_ADMIN).toString());
-            prepareStub(serviceAdminStub);
 
-            serviceAdminStub.deleteServiceGroups(new String[] {deployable.getApplicationName()});
+            ServiceAdminStub serviceAdminStub = getServiceStub();
+
+            FaultyServicesWrapper faultyServicesWrapper =
+                serviceAdminStub.getFaultyServiceArchives(0);
+
+            {
+                FaultyService[] faultyServices = faultyServicesWrapper.getFaultyServices();
+
+                if (faultyServices != null)
+                {
+                    String artifactName =
+                        deployable.getFileHandler().getName(deployable.getFile());
+
+                    for (FaultyService faultyService : faultyServices)
+                    {
+                        boolean deployed =
+                            deployable.getFileHandler().getName(faultyService.getArtifact())
+                                .equals(artifactName);
+
+                        if (deployed)
+                        {
+                            serviceAdminStub
+                                .deleteFaultyServiceGroups(new String[] {faultyService
+                                    .getArtifact()});
+                        }
+                    }
+                }
+            }
+
+            ServiceMetaDataWrapper serviceMetaDataWrapper =
+                serviceStub.listServices("ALL", null, 0);
+
+            ServiceMetaData[] serviceMetaDataList = serviceMetaDataWrapper.getServices();
+
+            if (serviceMetaDataList != null)
+            {
+                for (ServiceMetaData serviceMetaData : serviceMetaDataList)
+                {
+                    if (serviceMetaData != null
+                        && serviceMetaData.getName().equals(deployable.getApplicationName()))
+                    {
+                        serviceStub.deleteServiceGroups(new String[] {serviceMetaData
+                            .getServiceGroupName()});
+                    }
+                }
+            }
 
         }
         catch (Exception e)

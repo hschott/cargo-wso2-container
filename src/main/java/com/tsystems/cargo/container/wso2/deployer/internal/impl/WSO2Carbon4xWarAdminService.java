@@ -1,14 +1,18 @@
 package com.tsystems.cargo.container.wso2.deployer.internal.impl;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.rmi.RemoteException;
 
 import javax.activation.DataHandler;
 
 import org.codehaus.cargo.container.configuration.Configuration;
 import org.wso2.carbon.webapp.mgt.WebappAdminStub;
+import org.wso2.carbon.webapp.mgt.xsd.VersionedWebappMetadata;
 import org.wso2.carbon.webapp.mgt.xsd.WebappMetadata;
 import org.wso2.carbon.webapp.mgt.xsd.WebappUploadData;
+import org.wso2.carbon.webapp.mgt.xsd.WebappsWrapper;
 
 import com.tsystems.cargo.container.wso2.deployable.WSO2WAR;
 import com.tsystems.cargo.container.wso2.deployer.internal.WSO2AdminServicesException;
@@ -18,9 +22,24 @@ public class WSO2Carbon4xWarAdminService extends AbstractWSO2Carbon4xAdminServic
 
     private static final String SERVICES_WEBAPP_ADMIN = "/services/WebappAdmin";
 
+    private WebappAdminStub serviceStub;
+
     public WSO2Carbon4xWarAdminService(Configuration configuration)
     {
         super(configuration);
+    }
+
+    protected WebappAdminStub getServiceStub() throws IOException
+    {
+        if (serviceStub == null)
+        {
+            WebappAdminStub webappAdminStub =
+                new WebappAdminStub(new URL(getUrl() + SERVICES_WEBAPP_ADMIN).toString());
+            prepareStub(webappAdminStub);
+
+            serviceStub = webappAdminStub;
+        }
+        return serviceStub;
     }
 
     public void deploy(WSO2WAR deployable) throws WSO2AdminServicesException
@@ -28,10 +47,7 @@ public class WSO2Carbon4xWarAdminService extends AbstractWSO2Carbon4xAdminServic
         logUpload(deployable.getFile());
         try
         {
-            authenticate();
-            WebappAdminStub webappAdminStub =
-                new WebappAdminStub(new URL(getUrl() + SERVICES_WEBAPP_ADMIN).toString());
-            prepareStub(webappAdminStub);
+            WebappAdminStub webappAdminStub = getServiceStub();
 
             WebappUploadData webApp = new WebappUploadData();
             DataHandler dh = new DataHandler(new File(deployable.getFile()).toURI().toURL());
@@ -46,24 +62,29 @@ public class WSO2Carbon4xWarAdminService extends AbstractWSO2Carbon4xAdminServic
         }
     }
 
-    public boolean exists(WSO2WAR deployable) throws WSO2AdminServicesException
+    public boolean exists(WSO2WAR deployable, boolean handleFaultyAsExistent)
+        throws WSO2AdminServicesException
     {
-        logExists(deployable.getApplicationName());
         try
         {
-            authenticate();
-            WebappAdminStub webappAdminStub =
-                new WebappAdminStub(new URL(getUrl() + SERVICES_WEBAPP_ADMIN).toString());
-            prepareStub(webappAdminStub);
-
             String name = deployable.getApplicationName();
 
-            WebappMetadata webappMetadata = webappAdminStub.getStartedWebapp(name);
-            if (webappMetadata != null)
+            logExists(name);
+
+            WebappAdminStub webappAdminStub = getServiceStub();
+
+            WebappMetadata startedWebappMetadata = webappAdminStub.getStartedWebapp(name);
+            if (startedWebappMetadata != null)
                 return true;
-            webappMetadata = webappAdminStub.getStoppedWebapp(name);
-            if (webappMetadata != null)
+
+            WebappMetadata stoppedWebappMetadata = webappAdminStub.getStoppedWebapp(name);
+            if (stoppedWebappMetadata != null)
                 return true;
+
+            WebappMetadata faultyWebappMetadata = getFaultWebappMetadata(webappAdminStub, name);
+            if (faultyWebappMetadata != null)
+                return handleFaultyAsExistent ? true : false;
+
         }
         catch (Exception e)
         {
@@ -72,17 +93,47 @@ public class WSO2Carbon4xWarAdminService extends AbstractWSO2Carbon4xAdminServic
         return false;
     }
 
+    private WebappMetadata getFaultWebappMetadata(WebappAdminStub webappAdminStub, String name)
+        throws RemoteException
+    {
+        WebappsWrapper webappsWrapper =
+            webappAdminStub.getPagedFaultyWebappsSummary(name, null, 0);
+
+        if (webappsWrapper != null)
+        {
+            VersionedWebappMetadata[] versionedWebappMetadatas = webappsWrapper.getWebapps();
+            if (versionedWebappMetadatas != null)
+            {
+                for (VersionedWebappMetadata versionedWebappMetadata : versionedWebappMetadatas)
+                {
+                    if (versionedWebappMetadata != null)
+                    {
+                        WebappMetadata[] webappMetadatas =
+                            versionedWebappMetadata.getVersionGroups();
+                        if (webappMetadatas != null)
+                        {
+                            for (WebappMetadata webappMetadata : webappMetadatas)
+                            {
+                                return webappMetadata;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
     public void start(WSO2WAR deployable) throws WSO2AdminServicesException
     {
-        logStart(deployable.getApplicationName());
         try
         {
-            authenticate();
-            WebappAdminStub webappAdminStub =
-                new WebappAdminStub(new URL(getUrl() + SERVICES_WEBAPP_ADMIN).toString());
-            prepareStub(webappAdminStub);
-
             String name = deployable.getApplicationName();
+
+            logStart(name);
+
+            WebappAdminStub webappAdminStub = getServiceStub();
 
             webappAdminStub.startWebapps(new String[] {name});
 
@@ -95,15 +146,13 @@ public class WSO2Carbon4xWarAdminService extends AbstractWSO2Carbon4xAdminServic
 
     public void stop(WSO2WAR deployable) throws WSO2AdminServicesException
     {
-        logStop(deployable.getApplicationName());
         try
         {
-            authenticate();
-            WebappAdminStub webappAdminStub =
-                new WebappAdminStub(new URL(getUrl() + SERVICES_WEBAPP_ADMIN).toString());
-            prepareStub(webappAdminStub);
-
             String name = deployable.getApplicationName();
+
+            logStop(name);
+
+            WebappAdminStub webappAdminStub = getServiceStub();
 
             webappAdminStub.stopWebapps(new String[] {name});
 
@@ -118,33 +167,23 @@ public class WSO2Carbon4xWarAdminService extends AbstractWSO2Carbon4xAdminServic
     {
         try
         {
-            authenticate();
-            WebappAdminStub webappAdminStub =
-                new WebappAdminStub(new URL(getUrl() + SERVICES_WEBAPP_ADMIN).toString());
-            prepareStub(webappAdminStub);
-
             String name = deployable.getApplicationName();
 
-            WebappMetadata webappMetadata = webappAdminStub.getStoppedWebapp(name);
-            if (webappMetadata != null)
-            {
-                logRemove(name);
-                if (webappMetadata.getFaulty())
-                {
-                    webappAdminStub.deleteFaultyWebapps(new String[] {name});
-                }
-                else
-                {
-                    webappAdminStub.deleteStoppedWebapps(new String[] {name});
-                }
-            }
-            else
-            {
-                logStop(name);
-                webappAdminStub.stopWebapps(new String[] {name});
-                logRemove(name);
+            logRemove(name);
+
+            WebappAdminStub webappAdminStub = getServiceStub();
+
+            WebappMetadata faultyWebappMetadata = getFaultWebappMetadata(webappAdminStub, name);
+            if (faultyWebappMetadata != null)
+                webappAdminStub.deleteFaultyWebapps(new String[] {name});
+
+            WebappMetadata stoppedWebappMetadata = webappAdminStub.getStoppedWebapp(name);
+            if (stoppedWebappMetadata != null)
                 webappAdminStub.deleteStoppedWebapps(new String[] {name});
-            }
+
+            WebappMetadata startedWebappMetadata = webappAdminStub.getStartedWebapp(name);
+            if (startedWebappMetadata != null)
+                webappAdminStub.deleteStartedWebapps(new String[] {name});
 
         }
         catch (Exception e)

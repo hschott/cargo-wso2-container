@@ -9,7 +9,8 @@ public interface WSO2AdminService<T> extends Loggable
 
     public abstract void undeploy(T deployable) throws WSO2AdminServicesException;
 
-    public abstract boolean exists(T deployable) throws WSO2AdminServicesException;
+    public abstract boolean exists(T deployable, boolean handleFaultyAsExistent)
+        throws WSO2AdminServicesException;
 
     public abstract void start(T deployable) throws WSO2AdminServicesException;
 
