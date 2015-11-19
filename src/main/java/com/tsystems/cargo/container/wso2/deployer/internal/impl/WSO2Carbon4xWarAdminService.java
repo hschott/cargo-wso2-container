@@ -81,7 +81,7 @@ public class WSO2Carbon4xWarAdminService extends AbstractWSO2Carbon4xAdminServic
             if (stoppedWebappMetadata != null)
                 return true;
 
-            WebappMetadata faultyWebappMetadata = getFaultWebappMetadata(webappAdminStub, name);
+            WebappMetadata faultyWebappMetadata = getFaultyWebappMetadata(webappAdminStub, name);
             if (faultyWebappMetadata != null)
                 return handleFaultyAsExistent ? true : false;
 
@@ -93,7 +93,7 @@ public class WSO2Carbon4xWarAdminService extends AbstractWSO2Carbon4xAdminServic
         return false;
     }
 
-    private WebappMetadata getFaultWebappMetadata(WebappAdminStub webappAdminStub, String name)
+    private WebappMetadata getFaultyWebappMetadata(WebappAdminStub webappAdminStub, String name)
         throws RemoteException
     {
         WebappsWrapper webappsWrapper =
@@ -114,7 +114,10 @@ public class WSO2Carbon4xWarAdminService extends AbstractWSO2Carbon4xAdminServic
                         {
                             for (WebappMetadata webappMetadata : webappMetadatas)
                             {
-                                return webappMetadata;
+                                if (webappMetadata.getWebappFile().equals(name))
+                                {
+                                    return webappMetadata;
+                                }
                             }
                         }
                     }
@@ -173,7 +176,7 @@ public class WSO2Carbon4xWarAdminService extends AbstractWSO2Carbon4xAdminServic
 
             WebappAdminStub webappAdminStub = getServiceStub();
 
-            WebappMetadata faultyWebappMetadata = getFaultWebappMetadata(webappAdminStub, name);
+            WebappMetadata faultyWebappMetadata = getFaultyWebappMetadata(webappAdminStub, name);
             if (faultyWebappMetadata != null)
                 webappAdminStub.deleteFaultyWebapps(new String[] {name});
 
